@@ -1,9 +1,13 @@
 package com.eclipseashes;
 
+import com.eclipseashes.block.ModBlocks;
+import com.eclipseashes.item.ModItem;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.eclipseashes.item.tool.ModTools;
+import com.eclipseashes.world.ModWorldGen;
 
 public class EclipseAshes implements ModInitializer {
 
@@ -12,6 +16,11 @@ public class EclipseAshes implements ModInitializer {
 
     @Override
     public void onInitialize() {
+
+        ModItem.initialize();
+        ModBlocks.initialize();
+        ModTools.initialize();
+        ModWorldGen.initialize();
 
         LOGGER.info("Eclipse Ashes initialized.");
     }
