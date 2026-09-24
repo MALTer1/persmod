@@ -1,38 +1,19 @@
 {
-	"schemaVersion": 1,
-	"id": "eclipseashes",
-	"version": "${version}",
-	"name": "Eclipse Ashes",
-	"description": "This is an example description! Tell everyone what your mod is about!",
-	"authors": [
-		"Me!"
-	],
-	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
-	},
-	"license": "CC0-1.0",
-	"icon": "assets/eclipseashes/icon.png",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-			"com.eclipseashes.EclipseAshes"
-		],
-		"client": [
-  			"com.eclipseashes.client.EclipseAshesClient"
-		]
-	},
-	"mixins": [
-		"modid.mixins.json",
-		{
-			"config": "modid.client.mixins.json",
-			"environment": "client"
-		}
-	],
-	"depends": {
-		"fabricloader": ">=0.19.5",
-		"minecraft": "~26.3",
-		"java": ">=25",
-		"fabric-api": "*"
-	}
+  "schemaVersion": 1,
+  "id": "eclipseashes",
+  "version": "1.0.0",
+  "name": "Eclipse Ashes",
+  "description": "Eclipse Ashes RPG progression mod.",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.eclipseashes.EclipseAshes"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "26.3",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
 }
