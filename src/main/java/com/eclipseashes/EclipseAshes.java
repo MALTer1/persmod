@@ -13,9 +13,6 @@ public class EclipseAshes implements ModInitializer {
     @Override
     public void onInitialize() {
 
-        ModItems.initialize();
-        ModBlocks.initialize();
-
         LOGGER.info("Eclipse Ashes initialized.");
     }
 
