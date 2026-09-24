@@ -12,14 +12,14 @@
 		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
 	"license": "CC0-1.0",
-	"icon": "assets/modid/icon.png",
+	"icon": "assets/eclipseashes/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
 			"com.eclipseashes.EclipseAshes"
 		],
 		"client": [
-			"com.example.client.ExampleModClient"
+  			"com.eclipseashes.client.EclipseAshesClient"
 		]
 	},
 	"mixins": [
