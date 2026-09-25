@@ -40,9 +40,10 @@ public class ModBlocks {
             BuiltInRegistries.BLOCK,
             CRIMSON_IRON_ORE_KEY,
             new Block(
-                    Block.Properties.ofFullCopy(Blocks.IRON_ORE)
-                            .setId(CRIMSON_IRON_ORE_KEY)
-            )
+                Block.Properties.ofFullCopy(Blocks.IRON_ORE)
+                        .setId(CRIMSON_IRON_ORE_KEY)
+                        .requiresCorrectToolForDrops()
+                )
     );
 
     public static final Block CRIMSON_IRON_BLOCK = Registry.register(

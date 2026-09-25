@@ -18,7 +18,7 @@ public class ModWorldGen {
 
     public static void initialize() {
         BiomeModifications.addFeature(
-                BiomeSelectors.tag(net.minecraft.tags.BiomeTags.IS_MOUNTAIN),
+                BiomeSelectors.foundInOverworld(),
                 GenerationStep.Decoration.UNDERGROUND_ORES,
                 CRIMSON_IRON_ORE_PLACED
         );
