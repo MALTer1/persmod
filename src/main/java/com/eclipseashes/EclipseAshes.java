@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.eclipseashes.item.tool.ModTools;
 import com.eclipseashes.world.ModWorldGen;
+import com.eclipseashes.item.ModCreativeTab;
 
 public class EclipseAshes implements ModInitializer {
 
@@ -20,7 +21,9 @@ public class EclipseAshes implements ModInitializer {
         ModItem.initialize();
         ModBlocks.initialize();
         ModTools.initialize();
-        ModWorldGen.initialize();
+        ModCreativeTab.initialize();
+        //ModWorldGen.initialize();
+        //ToolPerks.initialize();
 
         LOGGER.info("Eclipse Ashes initialized.");
     }

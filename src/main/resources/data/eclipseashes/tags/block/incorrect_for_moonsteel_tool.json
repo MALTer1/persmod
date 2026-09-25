@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:incorrect_for_iron_tool",
+    "#eclipseashes:needs_dragonite_tool",
+    "#eclipseashes:needs_void_crystal_tool",
+    "#eclipseashes:needs_celestial_alloy_tool",
+    "#eclipseashes:needs_eclipse_tool"
+  ]
+}

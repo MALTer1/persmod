@@ -1,0 +1,75 @@
+{
+  "creativeTab.eclipseashes": "Eclipse Ashes",
+
+  "block.eclipseashes.crimson_iron_ore": "Crimson Iron Ore",
+  "block.eclipseashes.moonsteel_ore": "Moonsteel Ore",
+  "block.eclipseashes.sunsteel_ore": "Sunsteel Ore",
+  "block.eclipseashes.dragonite_ore": "Dragonite Ore",
+  "block.eclipseashes.void_crystal_ore": "Void Crystal Ore",
+  "block.eclipseashes.celestial_alloy_ore": "Celestial Alloy Ore",
+  "block.eclipseashes.eclipse_ore": "Eclipse Ore",
+
+  "block.eclipseashes.crimson_iron_block": "Crimson Iron Block",
+  "block.eclipseashes.moonsteel_block": "Moonsteel Block",
+  "block.eclipseashes.sunsteel_block": "Sunsteel Block",
+  "block.eclipseashes.dragonite_block": "Dragonite Block",
+  "block.eclipseashes.void_crystal_block": "Void Crystal Block",
+  "block.eclipseashes.celestial_alloy_block": "Celestial Alloy Block",
+  "block.eclipseashes.eclipse_block": "Eclipse Block",
+
+  "item.eclipseashes.crimson_iron": "Crimson Iron",
+  "item.eclipseashes.raw_crimson_iron": "Raw Crimson Iron",
+
+  "item.eclipseashes.moonsteel": "Moonsteel",
+  "item.eclipseashes.raw_moonsteel": "Raw Moonsteel",
+
+  "item.eclipseashes.sunsteel": "Sunsteel",
+  "item.eclipseashes.raw_sunsteel": "Raw Sunsteel",
+
+  "item.eclipseashes.dragonite": "Dragonite",
+  "item.eclipseashes.raw_dragonite": "Raw Dragonite",
+
+  "item.eclipseashes.void_crystal": "Void Crystal",
+  "item.eclipseashes.raw_void_crystal": "Raw Void Crystal",
+
+  "item.eclipseashes.celestial_alloy": "Celestial Alloy",
+  "item.eclipseashes.raw_celestial_alloy": "Raw Celestial Alloy",
+
+  "item.eclipseashes.eclipse": "Eclipse",
+  "item.eclipseashes.raw_eclipse": "Raw Eclipse",
+
+  "item.eclipseashes.crimson_iron_pickaxe": "Crimson Iron Pickaxe",
+  "item.eclipseashes.crimson_iron_axe": "Crimson Iron Axe",
+  "item.eclipseashes.crimson_iron_shovel": "Crimson Iron Shovel",
+  "item.eclipseashes.crimson_iron_hoe": "Crimson Iron Hoe",
+
+  "item.eclipseashes.moonsteel_pickaxe": "Moonsteel Pickaxe",
+  "item.eclipseashes.moonsteel_axe": "Moonsteel Axe",
+  "item.eclipseashes.moonsteel_shovel": "Moonsteel Shovel",
+  "item.eclipseashes.moonsteel_hoe": "Moonsteel Hoe",
+
+  "item.eclipseashes.sunsteel_pickaxe": "Sunsteel Pickaxe",
+  "item.eclipseashes.sunsteel_axe": "Sunsteel Axe",
+  "item.eclipseashes.sunsteel_shovel": "Sunsteel Shovel",
+  "item.eclipseashes.sunsteel_hoe": "Sunsteel Hoe",
+
+  "item.eclipseashes.dragonite_pickaxe": "Dragonite Pickaxe",
+  "item.eclipseashes.dragonite_axe": "Dragonite Axe",
+  "item.eclipseashes.dragonite_shovel": "Dragonite Shovel",
+  "item.eclipseashes.dragonite_hoe": "Dragonite Hoe",
+
+  "item.eclipseashes.void_crystal_pickaxe": "Void Crystal Pickaxe",
+  "item.eclipseashes.void_crystal_axe": "Void Crystal Axe",
+  "item.eclipseashes.void_crystal_shovel": "Void Crystal Shovel",
+  "item.eclipseashes.void_crystal_hoe": "Void Crystal Hoe",
+
+  "item.eclipseashes.celestial_alloy_pickaxe": "Celestial Alloy Pickaxe",
+  "item.eclipseashes.celestial_alloy_axe": "Celestial Alloy Axe",
+  "item.eclipseashes.celestial_alloy_shovel": "Celestial Alloy Shovel",
+  "item.eclipseashes.celestial_alloy_hoe": "Celestial Alloy Hoe",
+
+  "item.eclipseashes.eclipse_pickaxe": "Eclipse Pickaxe",
+  "item.eclipseashes.eclipse_axe": "Eclipse Axe",
+  "item.eclipseashes.eclipse_shovel": "Eclipse Shovel",
+  "item.eclipseashes.eclipse_hoe": "Eclipse Hoe"
+}

@@ -1,6 +1,12 @@
 {
   "replace": false,
   "values": [
-    "eclipseashes:crimson_iron_ore"
+    "eclipseashes:crimson_iron_ore",
+    "eclipseashes:moonsteel_ore",
+    "eclipseashes:sunsteel_ore",
+    "eclipseashes:dragonite_ore",
+    "eclipseashes:void_crystal_ore",
+    "eclipseashes:celestial_alloy_ore",
+    "eclipseashes:eclipse_ore"
   ]
 }
