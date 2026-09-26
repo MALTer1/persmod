@@ -1,6 +1,8 @@
 {
   "creativeTab.eclipseashes": "Eclipse Ashes",
 
+  "block.eclipseashes.forge_floor": "Forge Floor",
+  "block.eclipseashes.basic_workshop": "Basic Workshop",
   "block.eclipseashes.crimson_iron_ore": "Crimson Iron Ore",
   "block.eclipseashes.moonsteel_ore": "Moonsteel Ore",
   "block.eclipseashes.sunsteel_ore": "Sunsteel Ore",
@@ -71,5 +73,9 @@
   "item.eclipseashes.eclipse_pickaxe": "Eclipse Pickaxe",
   "item.eclipseashes.eclipse_axe": "Eclipse Axe",
   "item.eclipseashes.eclipse_shovel": "Eclipse Shovel",
-  "item.eclipseashes.eclipse_hoe": "Eclipse Hoe"
+  "item.eclipseashes.eclipse_hoe": "Eclipse Hoe",
+
+  "container.eclipseashes.basic_workshop": "Basic Workshop",
+  "block.eclipseashes.forge_section": "Forge Section",
+  "block.eclipseashes.metal_forge": "Metal Forge"
 }

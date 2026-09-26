@@ -9,6 +9,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceKey;
+import com.eclipseashes.block.ModWorkshopBlocks;
 
 public class ModCreativeTab {
 
@@ -103,6 +104,12 @@ public class ModCreativeTab {
                         output.accept(ModTools.ECLIPSE_AXE);
                         output.accept(ModTools.ECLIPSE_SHOVEL);
                         output.accept(ModTools.ECLIPSE_HOE);
+                        
+                        // Workshop blocks
+                        output.accept(ModWorkshopBlocks.FORGE_FLOOR);
+                        output.accept(ModWorkshopBlocks.FORGE_SECTION);
+                        output.accept(ModWorkshopBlocks.BASIC_WORKSHOP);
+                        output.accept(ModWorkshopBlocks.METAL_FORGE);
                     })
                     .build();
 

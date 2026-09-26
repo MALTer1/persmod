@@ -6,9 +6,12 @@
   "description": "Eclipse Ashes RPG progression mod.",
   "environment": "*",
   "entrypoints": {
-    "main": [
-      "com.eclipseashes.EclipseAshes"
-    ]
+  "main": [
+    "com.eclipseashes.EclipseAshes"
+  ],
+  "client": [
+    "com.eclipseashes.client.EclipseAshesClient"
+  ]
   },
   "depends": {
     "fabricloader": ">=0.19.5",
