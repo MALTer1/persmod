@@ -1,21 +1,34 @@
 package com.eclipseashes.block;
 
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.SimpleMenuProvider;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ChestMenu;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 
-public class BasicWorkshopBlock extends Block {
+public class BasicWorkshopBlock
+        extends BaseEntityBlock {
 
-    public BasicWorkshopBlock(Properties properties) {
+    public BasicWorkshopBlock(
+            Properties properties
+    ) {
+
         super(properties);
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(
+            BlockPos pos,
+            BlockState state
+    ) {
+
+        return new BasicWorkshopBlockEntity(
+                pos,
+                state
+        );
     }
 
     @Override
@@ -26,16 +39,12 @@ public class BasicWorkshopBlock extends Block {
             Player player,
             BlockHitResult hit
     ) {
-        if (!level.isClientSide()) {
-            player.openMenu(
-                    new SimpleMenuProvider(
-                            (syncId, inventory, menuPlayer) ->
-                                    ChestMenu.threeRows(syncId, inventory),
-                            Component.translatable(
-                                    "container.eclipseashes.basic_workshop"
-                            )
-                    )
-            );
+
+        if (!level.isClientSide()
+                && level.getBlockEntity(pos)
+                instanceof BasicWorkshopBlockEntity workshop) {
+
+            player.openMenu(workshop);
         }
 
         return InteractionResult.SUCCESS;

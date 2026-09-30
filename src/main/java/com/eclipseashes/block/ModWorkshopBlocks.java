@@ -34,9 +34,13 @@ public class ModWorkshopBlocks {
         )
     );
 
-    public static final Block FORGE_SECTION = registerBlock(
+    public static final Block FORGE_SECTION = Registry.register(
+        BuiltInRegistries.BLOCK,
         FORGE_SECTION_KEY,
-        Block.Properties.ofFullCopy(Blocks.IRON_BLOCK)
+        new ForgeSectionBlock(
+                Block.Properties.ofFullCopy(Blocks.IRON_BLOCK)
+                        .setId(FORGE_SECTION_KEY)
+        )
     );
 
     public static final Block METAL_FORGE = Registry.register(

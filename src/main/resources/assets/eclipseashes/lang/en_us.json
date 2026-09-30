@@ -75,6 +75,17 @@
   "item.eclipseashes.eclipse_shovel": "Eclipse Shovel",
   "item.eclipseashes.eclipse_hoe": "Eclipse Hoe",
 
+  "item.eclipseashes.unrefined_crimson_iron": "Unrefined Crimson Iron",
+  "item.eclipseashes.refined_crimson_iron": "Refined Crimson Iron",
+
+  "item.eclipseashes.unrefined_moonsteel": "Unrefined Moonsteel",
+  "item.eclipseashes.refined_moonsteel": "Refined Moonsteel",
+
+  "item.eclipseashes.unrefined_sunsteel": "Unrefined Sunsteel",
+  "item.eclipseashes.refined_sunsteel": "Refined Sunsteel",
+
+  "item.eclipseashes.crimson_pickaxe": "Crimson Pickaxe",
+
   "container.eclipseashes.basic_workshop": "Basic Workshop",
   "block.eclipseashes.forge_section": "Forge Section",
   "block.eclipseashes.metal_forge": "Metal Forge"

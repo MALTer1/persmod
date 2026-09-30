@@ -6,6 +6,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
@@ -20,7 +22,23 @@ public class MetalForgeBlock extends BaseEntityBlock {
             BlockPos pos,
             BlockState state
     ) {
-        return new MetalForgeBlockEntity(pos, state);
+        return new MetalForgeBlockEntity(
+                pos,
+                state
+        );
+    }
+
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+            Level level,
+            BlockState state,
+            BlockEntityType<T> type
+    ) {
+        return createTickerHelper(
+                type,
+                ModBlockEntities.METAL_FORGE,
+                MetalForgeBlockEntity::tick
+        );
     }
 
     @Override
@@ -31,8 +49,10 @@ public class MetalForgeBlock extends BaseEntityBlock {
             Player player,
             BlockHitResult hit
     ) {
+
         if (!level.isClientSide()
-                && level.getBlockEntity(pos) instanceof MetalForgeBlockEntity forge) {
+                && level.getBlockEntity(pos)
+                instanceof MetalForgeBlockEntity forge) {
 
             player.openMenu(forge);
         }

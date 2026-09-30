@@ -7,11 +7,12 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 
+
 public class ModItem {
 
     public static final Item CRIMSON_IRON = register("crimson_iron");
     public static final Item RAW_CRIMSON_IRON = register("raw_crimson_iron");
-        
+
     public static final Item MOONSTEEL = register("moonsteel");
     public static final Item RAW_MOONSTEEL = register("raw_moonsteel");
 
@@ -30,6 +31,24 @@ public class ModItem {
     public static final Item ECLIPSE = register("eclipse");
     public static final Item RAW_ECLIPSE = register("raw_eclipse");
 
+    public static final Item UNREFINED_CRIMSON_IRON =
+        register("unrefined_crimson_iron");
+
+    public static final Item REFINED_CRIMSON_IRON =
+            register("refined_crimson_iron");
+
+    public static final Item UNREFINED_MOONSTEEL =
+            register("unrefined_moonsteel");
+
+    public static final Item REFINED_MOONSTEEL =
+            register("refined_moonsteel");
+
+    public static final Item UNREFINED_SUNSTEEL =
+            register("unrefined_sunsteel");
+
+    public static final Item REFINED_SUNSTEEL =
+            register("refined_sunsteel");
+
     private static Item register(String name) {
         ResourceKey<Item> key = ResourceKey.create(
                 Registries.ITEM,
@@ -44,6 +63,7 @@ public class ModItem {
                 )
         );
     }
+
 
     public static void initialize() {
         // Loading this class registers the items.
