@@ -142,11 +142,17 @@ public class WorkshopManager {
         return countBlock(level, sector, block);
     }
 
+    /**
+     * Forge Sections count as Forge Floor for the overall workshop total.
+     * They are still reported separately as Section Blocks and remain
+     * excluded from individual sector contents because they are boundaries.
+     */
     public static int getForgeFloorCount(
             Level level,
             Set<BlockPos> workshop
     ) {
-        return countBlock(level, workshop, ModWorkshopBlocks.FORGE_FLOOR);
+        return countBlock(level, workshop, ModWorkshopBlocks.FORGE_FLOOR)
+                + countBlock(level, workshop, ModWorkshopBlocks.FORGE_SECTION);
     }
 
     public static int getForgeSectionCount(
