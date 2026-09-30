@@ -3,18 +3,11 @@ package com.eclipseashes.client;
 import com.eclipseashes.block.BasicWorkshopMenu;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 public class BasicWorkshopScreen
         extends AbstractContainerScreen<BasicWorkshopMenu> {
-
-    private static final Identifier BACKGROUND =
-            Identifier.withDefaultNamespace(
-                    "textures/gui/container/dispenser.png"
-            );
 
     public BasicWorkshopScreen(
             BasicWorkshopMenu menu,
@@ -37,46 +30,113 @@ public class BasicWorkshopScreen
             int mouseY,
             float delta
     ) {
-        graphics.blit(
-                RenderPipelines.GUI_TEXTURED,
-                BACKGROUND,
+        // Temporary clean workshop background.
+        graphics.fill(
                 this.leftPos,
                 this.topPos,
-                0.0F,
-                0.0F,
-                this.imageWidth,
-                this.imageHeight,
-                256,
-                256
+                this.leftPos + this.imageWidth,
+                this.topPos + this.imageHeight,
+                0xFFBDBDBD
         );
 
-        int x = this.leftPos + 10;
-        int y = this.topPos + 10;
+        // Outer border.
+        graphics.fill(
+                this.leftPos,
+                this.topPos,
+                this.leftPos + this.imageWidth,
+                this.topPos + 2,
+                0xFF333333
+        );
+        graphics.fill(
+                this.leftPos,
+                this.topPos + this.imageHeight - 2,
+                this.leftPos + this.imageWidth,
+                this.topPos + this.imageHeight,
+                0xFF333333
+        );
+        graphics.fill(
+                this.leftPos,
+                this.topPos,
+                this.leftPos + 2,
+                this.topPos + this.imageHeight,
+                0xFF333333
+        );
+        graphics.fill(
+                this.leftPos + this.imageWidth - 2,
+                this.topPos,
+                this.leftPos + this.imageWidth,
+                this.topPos + this.imageHeight,
+                0xFF333333
+        );
+    }
 
-        graphics.text(this.font, menu.getWorkshopName(), x, y, 0xFFFFFFFF);
+    @Override
+    protected void extractLabels(
+            GuiGraphicsExtractor graphics,
+            int mouseX,
+            int mouseY
+    ) {
+        int x = 10;
+        int y = 8;
+
+        // Title.
+        graphics.text(
+                this.font,
+                menu.getWorkshopName(),
+                x,
+                y,
+                0xFF202020
+        );
+
         y += 18;
 
-        graphics.text(this.font, "Forge Floors: " + menu.getFloorCount(), x, y, 0xFFFFFFFF);
-        y += 13;
+        // Overall workshop information.
+        graphics.text(
+                this.font,
+                "Forge Floors: " + menu.getFloorCount(),
+                x,
+                y,
+                0xFF202020
+        );
+        y += 12;
 
-        graphics.text(this.font, "Sectors: " + menu.getSectorCount(), x, y, 0xFFFFFFFF);
-        y += 13;
+        graphics.text(
+                this.font,
+                "Sections: " + menu.getSectionCount(),
+                x,
+                y,
+                0xFF202020
+        );
+        y += 12;
 
-        graphics.text(this.font, "Metal Forges: " + menu.getForgeCount(), x, y, 0xFFFFFFFF);
-        y += 13;
+        graphics.text(
+                this.font,
+                "Metal Forges: " + menu.getForgeCount(),
+                x,
+                y,
+                0xFF202020
+        );
+        y += 12;
 
-        graphics.text(this.font, "Section Blocks: " + menu.getSectionCount(), x, y, 0xFFFFFFFF);
-        y += 18;
+        graphics.text(
+                this.font,
+                "Sectors: " + menu.getSectorCount(),
+                x,
+                y,
+                0xFF202020
+        );
+        y += 16;
 
+        // Workshop quality.
         graphics.text(
                 this.font,
                 "Workshop Quality: " + menu.getQuality() + " / 100",
                 x,
                 y,
-                0xFFFFFFFF
+                0xFF202020
         );
 
-        y += 16;
+        y += 12;
 
         int barWidth = 210;
         int barHeight = 7;
@@ -103,7 +163,15 @@ public class BasicWorkshopScreen
 
         y += 16;
 
-        graphics.text(this.font, "Sectors", x, y, 0xFFFFFFFF);
+        // Sector list.
+        graphics.text(
+                this.font,
+                "Sectors",
+                x,
+                y,
+                0xFF202020
+        );
+
         y += 13;
 
         int sectorCount = Math.min(menu.getSectorCount(), 16);
@@ -113,11 +181,11 @@ public class BasicWorkshopScreen
             int row = i / 2;
 
             int sectorX = column == 0 ? x : x + 108;
-            int sectorY = y + row * 14;
+            int sectorY = y + row * 12;
 
             String text =
-                    "Sector " + (i + 1)
-                            + ": F" + menu.getSectorFloorCount(i)
+                    "S" + (i + 1)
+                            + "  F" + menu.getSectorFloorCount(i)
                             + " M" + menu.getSectorForgeCount(i)
                             + " Q" + menu.getSectorQuality(i);
 
@@ -126,7 +194,7 @@ public class BasicWorkshopScreen
                     text,
                     sectorX,
                     sectorY,
-                    0xFFFFFFFF
+                    0xFF202020
             );
         }
     }
