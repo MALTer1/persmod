@@ -178,80 +178,60 @@ public class MetalForgeScreen extends AbstractContainerScreen<MetalForgeMenu> {
             GuiGraphicsExtractor graphics
     ) {
 
-        int x =
-                this.leftPos + 20;
+        int x = this.leftPos + 20;
+        int y = this.topPos + 70;
+        int segmentWidth = 20;
+        int segmentHeight = 8;
+        int gap = 3;
 
-        int y =
-                this.topPos + 72;
+        int lava = menu.getLavaAmount();
+        int max = menu.getMaxLava();
 
-        int width = 90;
+        float percent = max <= 0 ? 0.0F : (float) lava / max;
+        percent = Math.max(0.0F, Math.min(1.0F, percent));
 
-        int height = 8;
+        // Four development-stage levels:
+        // 0-25% little, 25-50% medium, 50-75% high, 75-100% full.
+        for (int i = 0; i < 4; i++) {
+            int segmentX = x + i * (segmentWidth + gap);
+            float segmentStart = i / 4.0F;
+            float segmentEnd = (i + 1) / 4.0F;
 
-        int lava =
-                menu.getLavaAmount();
+            int fillWidth = 0;
 
-        int max =
-                menu.getMaxLava();
-
-        float percent =
-                max <= 0
-                        ? 0.0F
-                        : (float) lava / max;
-
-        percent =
-                Math.max(
-                        0.0F,
-                        Math.min(
-                                1.0F,
-                                percent
-                        )
-                );
-
-        int filled =
-                (int) (width * percent);
-
-        // Outer border
-        graphics.fill(
-                x - 1,
-                y - 1,
-                x + width + 1,
-                y + height + 1,
-                0xFF111111
-        );
-
-        // Empty bar
-        graphics.fill(
-                x,
-                y,
-                x + width,
-                y + height,
-                0xFF3A1818
-        );
-
-        // Lava
-        if (filled > 0) {
+            if (percent >= segmentEnd) {
+                fillWidth = segmentWidth;
+            } else if (percent > segmentStart) {
+                fillWidth = (int) (segmentWidth *
+                        ((percent - segmentStart) / (segmentEnd - segmentStart)));
+            }
 
             graphics.fill(
-                    x,
+                    segmentX,
                     y,
-                    x + filled,
-                    y + height,
-                    0xFFE05220
+                    segmentX + segmentWidth,
+                    y + segmentHeight,
+                    0xFF321616
             );
+
+            if (fillWidth > 0) {
+                graphics.fill(
+                        segmentX,
+                        y,
+                        segmentX + fillWidth,
+                        y + segmentHeight,
+                        0xFFE05220
+                );
+            }
         }
 
-        // Second small highlight
-        if (filled > 2) {
-
-            graphics.fill(
-                    x + 1,
-                    y + 1,
-                    x + filled - 1,
-                    y + 2,
-                    0xFFFF8A3D
-            );
-        }
+        graphics.text(
+                this.font,
+                lava + " / " + max + " mB",
+                x + 92,
+                y,
+                0xFFFFFFFF
+        );
     }
 
     // =====================================================
