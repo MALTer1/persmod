@@ -109,6 +109,22 @@ public class BasicWorkshopScreen
         );
         y += 12;
 
+        graphics.text(
+                this.font,
+                "Sectors: " + menu.getSectorCount(),
+                x,
+                y,
+                0xFF202020
+        );
+        y += 12;
+
+        graphics.text(
+                this.font,
+                "Groups: " + menu.getGroupCount(),
+                x,
+                y,
+                0xFF202020
+        );
         y += 16;
 
         // Workshop quality.
