@@ -246,34 +246,20 @@ public class MetalForgeBlockEntity
 
     private Item getResult(Item item) {
 
+        // First crude forge stage: raw material -> unrefined material.
         if (item == ModItem.RAW_CRIMSON_IRON) {
-            return ModItem.CRIMSON_IRON;
+            return ModItem.UNREFINED_CRIMSON_IRON;
         }
 
         if (item == ModItem.RAW_MOONSTEEL) {
-            return ModItem.MOONSTEEL;
+            return ModItem.UNREFINED_MOONSTEEL;
         }
 
         if (item == ModItem.RAW_SUNSTEEL) {
-            return ModItem.SUNSTEEL;
+            return ModItem.UNREFINED_SUNSTEEL;
         }
 
-        if (item == ModItem.RAW_DRAGONITE) {
-            return ModItem.DRAGONITE;
-        }
-
-        if (item == ModItem.RAW_VOID_CRYSTAL) {
-            return ModItem.VOID_CRYSTAL;
-        }
-
-        if (item == ModItem.RAW_CELESTIAL_ALLOY) {
-            return ModItem.CELESTIAL_ALLOY;
-        }
-
-        if (item == ModItem.RAW_ECLIPSE) {
-            return ModItem.ECLIPSE;
-        }
-
+        // These materials do not have their next processing stage yet.
         return null;
     }
 
