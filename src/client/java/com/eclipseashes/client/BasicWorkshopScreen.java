@@ -102,15 +102,6 @@ public class BasicWorkshopScreen
 
         graphics.text(
                 this.font,
-                "Sections: " + menu.getSectionCount(),
-                x,
-                y,
-                0xFF202020
-        );
-        y += 12;
-
-        graphics.text(
-                this.font,
                 "Metal Forges: " + menu.getForgeCount(),
                 x,
                 y,
@@ -118,13 +109,6 @@ public class BasicWorkshopScreen
         );
         y += 12;
 
-        graphics.text(
-                this.font,
-                "Sectors: " + menu.getSectorCount(),
-                x,
-                y,
-                0xFF202020
-        );
         y += 16;
 
         // Workshop quality.
