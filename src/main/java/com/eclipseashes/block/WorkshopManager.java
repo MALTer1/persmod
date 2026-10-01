@@ -197,6 +197,89 @@ public class WorkshopManager {
         return countSectorBlock(level, sector, ModWorkshopBlocks.BASIC_WORKSHOP);
     }
 
+    /**
+     * Finds functional groups inside a sector. A group starts from an anchor
+     * station and gathers nearby compatible stations. Forge Floors and Forge
+     * Sections are infrastructure, not group members.
+     */
+    public static List<Set<BlockPos>> findGroups(
+            Level level,
+            Set<BlockPos> sector
+    ) {
+        List<Set<BlockPos>> groups = new ArrayList<>();
+        Set<BlockPos> unassigned = new HashSet<>();
+
+        for (BlockPos pos : sector) {
+            if (getGroupType(level.getBlockState(pos).getBlock()) != null) {
+                unassigned.add(pos);
+            }
+        }
+
+        while (!unassigned.isEmpty()) {
+            BlockPos anchor = unassigned.iterator().next();
+            String groupType = getGroupType(level.getBlockState(anchor).getBlock());
+
+            Set<BlockPos> group = new HashSet<>();
+
+            for (BlockPos pos : new HashSet<>(unassigned)) {
+                String type = getGroupType(level.getBlockState(pos).getBlock());
+
+                if (!groupType.equals(type)) {
+                    continue;
+                }
+
+                if (withinGroupDistance(anchor, pos)) {
+                    group.add(pos);
+                }
+            }
+
+            if (group.isEmpty()) {
+                group.add(anchor);
+            }
+
+            unassigned.removeAll(group);
+            groups.add(group);
+        }
+
+        return groups;
+    }
+
+    public static List<Set<BlockPos>> findWorkshopGroups(
+            Level level,
+            Set<BlockPos> workshop
+    ) {
+        List<Set<BlockPos>> groups = new ArrayList<>();
+
+        for (Set<BlockPos> sector : findSectors(level, workshop)) {
+            groups.addAll(findGroups(level, sector));
+        }
+
+        return groups;
+    }
+
+    private static String getGroupType(Block block) {
+        if (block == ModWorkshopBlocks.METAL_FORGE) {
+            return "forge";
+        }
+
+        if (block == ModWorkshopBlocks.BASIC_WORKSHOP) {
+            return "workshop";
+        }
+
+        return null;
+    }
+
+    private static boolean withinGroupDistance(
+            BlockPos anchor,
+            BlockPos pos
+    ) {
+        int dx = pos.getX() - anchor.getX();
+        int dy = pos.getY() - anchor.getY();
+        int dz = pos.getZ() - anchor.getZ();
+
+        return dx * dx + dy * dy + dz * dz <= 36;
+    }
+
     public static int getWorkshopQuality(
             Level level,
             Set<BlockPos> workshop
