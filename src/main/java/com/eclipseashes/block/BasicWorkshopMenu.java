@@ -17,6 +17,7 @@ public class BasicWorkshopMenu extends AbstractContainerMenu {
     private final DataSlot forgeData = DataSlot.standalone();
     private final DataSlot qualityData = DataSlot.standalone();
     private final DataSlot sectorData = DataSlot.standalone();
+    private final DataSlot groupData = DataSlot.standalone();
 
     private final DataSlot[] sectorFloorData = new DataSlot[MAX_DISPLAY_SECTORS];
     private final DataSlot[] sectorForgeData = new DataSlot[MAX_DISPLAY_SECTORS];
@@ -39,6 +40,7 @@ public class BasicWorkshopMenu extends AbstractContainerMenu {
         addDataSlot(forgeData);
         addDataSlot(qualityData);
         addDataSlot(sectorData);
+        addDataSlot(groupData);
 
         for (int i = 0; i < MAX_DISPLAY_SECTORS; i++) {
             sectorFloorData[i] = DataSlot.standalone();
@@ -61,6 +63,7 @@ public class BasicWorkshopMenu extends AbstractContainerMenu {
         forgeData.set(workshop.getMetalForgeCount());
         qualityData.set(workshop.getWorkshopQuality());
         sectorData.set(workshop.getSectorCount());
+        groupData.set(workshop.getGroupCount());
 
         int sectorCount = Math.min(workshop.getSectorCount(), MAX_DISPLAY_SECTORS);
 
@@ -88,6 +91,7 @@ public class BasicWorkshopMenu extends AbstractContainerMenu {
     public int getForgeCount() { return forgeData.get(); }
     public int getQuality() { return qualityData.get(); }
     public int getSectorCount() { return sectorData.get(); }
+    public int getGroupCount() { return groupData.get(); }
 
     public int getSectorFloorCount(int sector) {
         if (sector < 0 || sector >= MAX_DISPLAY_SECTORS) return 0;

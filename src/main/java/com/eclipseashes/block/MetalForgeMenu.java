@@ -190,13 +190,6 @@ public class MetalForgeMenu extends AbstractContainerMenu {
         // -----------------------------
 
         addDataSlot(lavaData);
-        addDataSlot(progressData);
-
-        if (forge != null) {
-            progressData.set(
-                    forge.getProcessingProgress()
-            );
-        }
 
         if (forge != null) {
             lavaData.set(

@@ -56,6 +56,11 @@ public class BasicWorkshopBlockEntity extends BlockEntity implements MenuProvide
         return WorkshopManager.getMetalForgeCount(level, getWorkshop());
     }
 
+    public int getGroupCount() {
+        if (level == null) return 0;
+        return WorkshopManager.findWorkshopGroups(level, getWorkshop()).size();
+    }
+
     public int getWorkshopQuality() {
         if (level == null) return 0;
         return WorkshopManager.getWorkshopQuality(level, getWorkshop());
