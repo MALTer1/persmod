@@ -124,7 +124,7 @@ public class MetalForgeScreen extends AbstractContainerScreen<MetalForgeMenu> {
                 this.font,
                 "Lava",
                 this.leftPos + 20,
-                this.topPos + 58,
+                this.topPos + 54,
                 0xFFFFFFFF
         );
 
@@ -132,7 +132,7 @@ public class MetalForgeScreen extends AbstractContainerScreen<MetalForgeMenu> {
                 this.font,
                 "Process",
                 this.leftPos + 20,
-                this.topPos + 96,
+                this.topPos + 98,
                 0xFFFFFFFF
         );
 
@@ -211,7 +211,7 @@ public class MetalForgeScreen extends AbstractContainerScreen<MetalForgeMenu> {
     ) {
 
         int x = this.leftPos + 20;
-        int y = this.topPos + 70;
+        int y = this.topPos + 88;
         int segmentWidth = 20;
         int segmentHeight = 8;
         int gap = 3;
@@ -278,7 +278,7 @@ public class MetalForgeScreen extends AbstractContainerScreen<MetalForgeMenu> {
                 this.leftPos + 20;
 
         int y =
-                this.topPos + 88;
+                this.topPos + 104;
 
         int width = 90;
 
