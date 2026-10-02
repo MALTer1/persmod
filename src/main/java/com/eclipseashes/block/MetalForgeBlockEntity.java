@@ -284,6 +284,21 @@ public class MetalForgeBlockEntity
             return ModItem.SUNSTEEL;
         }
 
+        if (item == ModItem.RAW_DRAGONITE) return ModItem.UNREFINED_DRAGONITE;
+        if (item == ModItem.RAW_VOID_CRYSTAL) return ModItem.UNREFINED_VOID_CRYSTAL;
+        if (item == ModItem.RAW_CELESTIAL_ALLOY) return ModItem.UNREFINED_CELESTIAL_ALLOY;
+        if (item == ModItem.RAW_ECLIPSE) return ModItem.UNREFINED_ECLIPSE;
+
+        if (item == ModItem.UNREFINED_DRAGONITE) return ModItem.REFINED_DRAGONITE;
+        if (item == ModItem.UNREFINED_VOID_CRYSTAL) return ModItem.REFINED_VOID_CRYSTAL;
+        if (item == ModItem.UNREFINED_CELESTIAL_ALLOY) return ModItem.REFINED_CELESTIAL_ALLOY;
+        if (item == ModItem.UNREFINED_ECLIPSE) return ModItem.REFINED_ECLIPSE;
+
+        if (item == ModItem.REFINED_DRAGONITE) return ModItem.DRAGONITE;
+        if (item == ModItem.REFINED_VOID_CRYSTAL) return ModItem.VOID_CRYSTAL;
+        if (item == ModItem.REFINED_CELESTIAL_ALLOY) return ModItem.CELESTIAL_ALLOY;
+        if (item == ModItem.REFINED_ECLIPSE) return ModItem.ECLIPSE;
+
         return null;
     }
 
