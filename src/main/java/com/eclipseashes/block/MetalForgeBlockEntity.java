@@ -259,7 +259,31 @@ public class MetalForgeBlockEntity
             return ModItem.UNREFINED_SUNSTEEL;
         }
 
-        // These materials do not have their next processing stage yet.
+        if (item == ModItem.UNREFINED_CRIMSON_IRON) {
+            return ModItem.REFINED_CRIMSON_IRON;
+        }
+
+        if (item == ModItem.UNREFINED_MOONSTEEL) {
+            return ModItem.REFINED_MOONSTEEL;
+        }
+
+        if (item == ModItem.UNREFINED_SUNSTEEL) {
+            return ModItem.REFINED_SUNSTEEL;
+        }
+
+        // Refined material becomes the finished ingot.
+        if (item == ModItem.REFINED_CRIMSON_IRON) {
+            return ModItem.CRIMSON_IRON;
+        }
+
+        if (item == ModItem.REFINED_MOONSTEEL) {
+            return ModItem.MOONSTEEL;
+        }
+
+        if (item == ModItem.REFINED_SUNSTEEL) {
+            return ModItem.SUNSTEEL;
+        }
+
         return null;
     }
 
