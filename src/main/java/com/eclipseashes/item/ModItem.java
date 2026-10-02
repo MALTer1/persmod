@@ -49,6 +49,26 @@ public class ModItem {
     public static final Item REFINED_SUNSTEEL =
             register("refined_sunsteel");
 
+    public static final Item UNREFINED_DRAGONITE =
+            register("unrefined_dragonite");
+    public static final Item REFINED_DRAGONITE =
+            register("refined_dragonite");
+
+    public static final Item UNREFINED_VOID_CRYSTAL =
+            register("unrefined_void_crystal");
+    public static final Item REFINED_VOID_CRYSTAL =
+            register("refined_void_crystal");
+
+    public static final Item UNREFINED_CELESTIAL_ALLOY =
+            register("unrefined_celestial_alloy");
+    public static final Item REFINED_CELESTIAL_ALLOY =
+            register("refined_celestial_alloy");
+
+    public static final Item UNREFINED_ECLIPSE =
+            register("unrefined_eclipse");
+    public static final Item REFINED_ECLIPSE =
+            register("refined_eclipse");
+
     private static Item register(String name) {
         ResourceKey<Item> key = ResourceKey.create(
                 Registries.ITEM,
