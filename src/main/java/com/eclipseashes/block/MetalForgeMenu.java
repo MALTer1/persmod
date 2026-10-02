@@ -25,10 +25,6 @@ public class MetalForgeMenu extends AbstractContainerMenu {
     private static final int CONTAINER_END =
             CONTAINER_START + CONTAINER_SLOTS;
 
-    private static final int INVENTORY_START = CONTAINER_END;
-    private static final int INVENTORY_END =
-            INVENTORY_START + Inventory.INVENTORY_SIZE;
-
     private final Container container;
 
     private final MetalForgeBlockEntity forge;
@@ -248,16 +244,16 @@ public class MetalForgeMenu extends AbstractContainerMenu {
         ItemStack copy = source.copy();
 
         // -----------------------------
-        // Forge -> player inventory
+        // Forge -> hotbar
         // -----------------------------
 
         if (slotIndex < CONTAINER_END) {
 
             if (!moveItemStackTo(
                     source,
-                    INVENTORY_START,
-                    INVENTORY_END,
-                    true
+                    CONTAINER_END,
+                    CONTAINER_END + 9,
+                    false
             )) {
                 return ItemStack.EMPTY;
             }
