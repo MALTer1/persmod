@@ -55,6 +55,18 @@ public class ModCreativeTab {
                         output.accept(ModItem.UNREFINED_SUNSTEEL);
                         output.accept(ModItem.REFINED_SUNSTEEL);
 
+                        output.accept(ModItem.UNREFINED_DRAGONITE);
+                        output.accept(ModItem.REFINED_DRAGONITE);
+
+                        output.accept(ModItem.UNREFINED_VOID_CRYSTAL);
+                        output.accept(ModItem.REFINED_VOID_CRYSTAL);
+
+                        output.accept(ModItem.UNREFINED_CELESTIAL_ALLOY);
+                        output.accept(ModItem.REFINED_CELESTIAL_ALLOY);
+
+                        output.accept(ModItem.UNREFINED_ECLIPSE);
+                        output.accept(ModItem.REFINED_ECLIPSE);
+
                         // Finished materials
                         output.accept(ModItem.CRIMSON_IRON);
                         output.accept(ModItem.MOONSTEEL);
