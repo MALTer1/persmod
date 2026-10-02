@@ -84,6 +84,18 @@
   "item.eclipseashes.unrefined_sunsteel": "Unrefined Sunsteel",
   "item.eclipseashes.refined_sunsteel": "Refined Sunsteel",
 
+  "item.eclipseashes.unrefined_dragonite": "Unrefined Dragonite",
+  "item.eclipseashes.refined_dragonite": "Refined Dragonite",
+
+  "item.eclipseashes.unrefined_void_crystal": "Unrefined Void Crystal",
+  "item.eclipseashes.refined_void_crystal": "Refined Void Crystal",
+
+  "item.eclipseashes.unrefined_celestial_alloy": "Unrefined Celestial Alloy",
+  "item.eclipseashes.refined_celestial_alloy": "Refined Celestial Alloy",
+
+  "item.eclipseashes.unrefined_eclipse": "Unrefined Eclipse",
+  "item.eclipseashes.refined_eclipse": "Refined Eclipse",
+
   "item.eclipseashes.crimson_pickaxe": "Crimson Pickaxe",
 
   "container.eclipseashes.basic_workshop": "Basic Workshop",
