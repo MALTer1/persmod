@@ -105,6 +105,38 @@ public class MetalForgeScreen extends AbstractContainerScreen<MetalForgeMenu> {
         );
 
         // -------------------------------------------------
+        // Hotbar
+        // -------------------------------------------------
+
+        for (int i = 0; i < 9; i++) {
+            drawSlotBackground(
+                    graphics,
+                    this.leftPos + 8 + i * 18,
+                    this.topPos + 140
+            );
+        }
+
+        // -------------------------------------------------
+        // Labels
+        // -------------------------------------------------
+
+        graphics.text(
+                this.font,
+                "Lava",
+                this.leftPos + 20,
+                this.topPos + 58,
+                0xFFFFFFFF
+        );
+
+        graphics.text(
+                this.font,
+                "Process",
+                this.leftPos + 20,
+                this.topPos + 96,
+                0xFFFFFFFF
+        );
+
+        // -------------------------------------------------
         // Lava display
         // -------------------------------------------------
 
