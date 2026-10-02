@@ -126,8 +126,8 @@ public class MetalForgeMenu extends AbstractContainerMenu {
                 new Slot(
                         container,
                         MetalForgeBlockEntity.LAVA_INPUT_SLOT,
-                        134,
-                        17
+                        44,
+                        70
                 ) {
                     @Override
                     public boolean mayPlace(ItemStack stack) {
@@ -144,8 +144,8 @@ public class MetalForgeMenu extends AbstractContainerMenu {
                 new Slot(
                         container,
                         MetalForgeBlockEntity.LAVA_OUTPUT_SLOT,
-                        134,
-                        53
+                        116,
+                        70
                 ) {
                     @Override
                     public boolean mayPlace(ItemStack stack) {
@@ -176,14 +176,19 @@ public class MetalForgeMenu extends AbstractContainerMenu {
     );
 
         // -----------------------------
-        // Player inventory
+        // Hotbar only. The main player inventory stays hidden for now.
         // -----------------------------
 
-        addStandardInventorySlots(
-                inventory,
-                8,
-                84
-        );
+        for (int i = 0; i < 9; i++) {
+            addSlot(
+                    new Slot(
+                            inventory,
+                            i,
+                            8 + i * 18,
+                            140
+                    )
+            );
+        }
 
         // -----------------------------
         // Lava synchronization
