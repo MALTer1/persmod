@@ -51,6 +51,39 @@ public class ModMenuTypes {
             );
 
 
+
+
+    public static final ResourceKey<MenuType<?>> PART_MAKER_KEY =
+            ResourceKey.create(BuiltInRegistries.MENU.key(), EclipseAshes.id("part_maker"));
+
+    public static final MenuType<PartMakerMenu> PART_MAKER =
+            Registry.register(
+                    BuiltInRegistries.MENU,
+                    PART_MAKER_KEY,
+                    new MenuType<>(PartMakerMenu::new, FeatureFlagSet.of())
+            );
+
+    public static final ResourceKey<MenuType<?>> ASSEMBLY_STATION_KEY =
+            ResourceKey.create(BuiltInRegistries.MENU.key(), EclipseAshes.id("assembly_station"));
+
+    public static final MenuType<AssemblyStationMenu> ASSEMBLY_STATION =
+            Registry.register(
+                    BuiltInRegistries.MENU,
+                    ASSEMBLY_STATION_KEY,
+                    new MenuType<>(AssemblyStationMenu::new, FeatureFlagSet.of())
+            );
+
+    public static final ResourceKey<MenuType<?>> MAINTENANCE_STATION_KEY =
+            ResourceKey.create(BuiltInRegistries.MENU.key(), EclipseAshes.id("maintenance_station"));
+
+    public static final MenuType<MaintenanceStationMenu> MAINTENANCE_STATION =
+            Registry.register(
+                    BuiltInRegistries.MENU,
+                    MAINTENANCE_STATION_KEY,
+                    new MenuType<>(MaintenanceStationMenu::new, FeatureFlagSet.of())
+            );
+
+
     // -----------------------------
     // Initialization
     // -----------------------------
