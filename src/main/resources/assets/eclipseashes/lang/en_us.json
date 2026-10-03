@@ -74,5 +74,8 @@
   "item.eclipseashes.unrefined_celestial_alloy": "Unrefined Celestial Alloy",
   "item.eclipseashes.refined_celestial_alloy": "Refined Celestial Alloy",
   "item.eclipseashes.unrefined_eclipse": "Unrefined Eclipse",
-  "item.eclipseashes.refined_eclipse": "Refined Eclipse"
+  "item.eclipseashes.refined_eclipse": "Refined Eclipse",
+  "block.eclipseashes.part_maker": "Part Maker",
+  "block.eclipseashes.assembly_station": "Assembly Station",
+  "block.eclipseashes.maintenance_station": "Maintenance Station"
 }
