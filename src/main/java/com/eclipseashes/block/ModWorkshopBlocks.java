@@ -17,6 +17,9 @@ public class ModWorkshopBlocks {
     public static final ResourceKey<Block> FORGE_SECTION_KEY = blockKey("forge_section");
     public static final ResourceKey<Block> METAL_FORGE_KEY = blockKey("metal_forge");
     public static final ResourceKey<Block> ADVANCED_FORGE_KEY = blockKey("advanced_forge");
+    public static final ResourceKey<Block> PART_MAKER_KEY = blockKey("part_maker");
+    public static final ResourceKey<Block> ASSEMBLY_STATION_KEY = blockKey("assembly_station");
+    public static final ResourceKey<Block> MAINTENANCE_STATION_KEY = blockKey("maintenance_station");
 
     public static final Block FORGE_FLOOR = registerBlock(
             FORGE_FLOOR_KEY,
@@ -59,12 +62,42 @@ public class ModWorkshopBlocks {
             )
     );
 
+    public static final Block PART_MAKER = Registry.register(
+            BuiltInRegistries.BLOCK,
+            PART_MAKER_KEY,
+            new PartMakerBlock(
+                    Block.Properties.ofFullCopy(Blocks.IRON_BLOCK)
+                            .setId(PART_MAKER_KEY)
+            )
+    );
+
+    public static final Block ASSEMBLY_STATION = Registry.register(
+            BuiltInRegistries.BLOCK,
+            ASSEMBLY_STATION_KEY,
+            new AssemblyStationBlock(
+                    Block.Properties.ofFullCopy(Blocks.IRON_BLOCK)
+                            .setId(ASSEMBLY_STATION_KEY)
+            )
+    );
+
+    public static final Block MAINTENANCE_STATION = Registry.register(
+            BuiltInRegistries.BLOCK,
+            MAINTENANCE_STATION_KEY,
+            new MaintenanceStationBlock(
+                    Block.Properties.ofFullCopy(Blocks.IRON_BLOCK)
+                            .setId(MAINTENANCE_STATION_KEY)
+            )
+    );
+
     static {
         registerBlockItem(FORGE_FLOOR, "forge_floor");
         registerBlockItem(BASIC_WORKSHOP, "basic_workshop");
         registerBlockItem(FORGE_SECTION, "forge_section");
         registerBlockItem(METAL_FORGE, "metal_forge");
         registerBlockItem(ADVANCED_FORGE, "advanced_forge");
+        registerBlockItem(PART_MAKER, "part_maker");
+        registerBlockItem(ASSEMBLY_STATION, "assembly_station");
+        registerBlockItem(MAINTENANCE_STATION, "maintenance_station");
     }
 
     private static ResourceKey<Block> blockKey(String name) {
