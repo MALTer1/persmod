@@ -10,10 +10,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class ModBlockEntities {
 
-    // -----------------------------
-    // Metal Forge
-    // -----------------------------
-
     public static final ResourceKey<BlockEntityType<?>> METAL_FORGE_KEY =
             ResourceKey.create(
                     Registries.BLOCK_ENTITY_TYPE,
@@ -27,15 +23,11 @@ public class ModBlockEntities {
                     FabricBlockEntityTypeBuilder
                             .<MetalForgeBlockEntity>create(
                                     MetalForgeBlockEntity::new,
-                                    ModWorkshopBlocks.METAL_FORGE
+                                    ModWorkshopBlocks.METAL_FORGE,
+                                    ModWorkshopBlocks.ADVANCED_FORGE
                             )
                             .build()
             );
-
-
-    // -----------------------------
-    // Basic Workshop
-    // -----------------------------
 
     public static final ResourceKey<BlockEntityType<?>> BASIC_WORKSHOP_KEY =
             ResourceKey.create(
@@ -54,11 +46,6 @@ public class ModBlockEntities {
                             )
                             .build()
             );
-
-
-    // -----------------------------
-    // Initialization
-    // -----------------------------
 
     public static void initialize() {
         // Loading this class registers the block entities.
