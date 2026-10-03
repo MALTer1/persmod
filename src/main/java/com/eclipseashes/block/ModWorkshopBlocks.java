@@ -9,16 +9,14 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import com.eclipseashes.block.MetalForgeBlock;
 
 public class ModWorkshopBlocks {
 
     public static final ResourceKey<Block> FORGE_FLOOR_KEY = blockKey("forge_floor");
     public static final ResourceKey<Block> BASIC_WORKSHOP_KEY = blockKey("basic_workshop");
-
     public static final ResourceKey<Block> FORGE_SECTION_KEY = blockKey("forge_section");
     public static final ResourceKey<Block> METAL_FORGE_KEY = blockKey("metal_forge");
+    public static final ResourceKey<Block> ADVANCED_FORGE_KEY = blockKey("advanced_forge");
 
     public static final Block FORGE_FLOOR = registerBlock(
             FORGE_FLOOR_KEY,
@@ -26,37 +24,47 @@ public class ModWorkshopBlocks {
     );
 
     public static final Block BASIC_WORKSHOP = Registry.register(
-        BuiltInRegistries.BLOCK,
-        BASIC_WORKSHOP_KEY,
-        new BasicWorkshopBlock(
-                Block.Properties.ofFullCopy(Blocks.IRON_BLOCK)
-                        .setId(BASIC_WORKSHOP_KEY)
-        )
+            BuiltInRegistries.BLOCK,
+            BASIC_WORKSHOP_KEY,
+            new BasicWorkshopBlock(
+                    Block.Properties.ofFullCopy(Blocks.IRON_BLOCK)
+                            .setId(BASIC_WORKSHOP_KEY)
+            )
     );
 
     public static final Block FORGE_SECTION = Registry.register(
-        BuiltInRegistries.BLOCK,
-        FORGE_SECTION_KEY,
-        new ForgeSectionBlock(
-                Block.Properties.ofFullCopy(Blocks.IRON_BLOCK)
-                        .setId(FORGE_SECTION_KEY)
-        )
+            BuiltInRegistries.BLOCK,
+            FORGE_SECTION_KEY,
+            new ForgeSectionBlock(
+                    Block.Properties.ofFullCopy(Blocks.IRON_BLOCK)
+                            .setId(FORGE_SECTION_KEY)
+            )
     );
 
     public static final Block METAL_FORGE = Registry.register(
-        BuiltInRegistries.BLOCK,
-        METAL_FORGE_KEY,
-        new MetalForgeBlock(
-                Block.Properties.ofFullCopy(Blocks.IRON_BLOCK)
-                        .setId(METAL_FORGE_KEY)
-        )
-);
+            BuiltInRegistries.BLOCK,
+            METAL_FORGE_KEY,
+            new MetalForgeBlock(
+                    Block.Properties.ofFullCopy(Blocks.IRON_BLOCK)
+                            .setId(METAL_FORGE_KEY)
+            )
+    );
+
+    public static final Block ADVANCED_FORGE = Registry.register(
+            BuiltInRegistries.BLOCK,
+            ADVANCED_FORGE_KEY,
+            new AdvancedForgeBlock(
+                    Block.Properties.ofFullCopy(Blocks.IRON_BLOCK)
+                            .setId(ADVANCED_FORGE_KEY)
+            )
+    );
 
     static {
         registerBlockItem(FORGE_FLOOR, "forge_floor");
         registerBlockItem(BASIC_WORKSHOP, "basic_workshop");
         registerBlockItem(FORGE_SECTION, "forge_section");
         registerBlockItem(METAL_FORGE, "metal_forge");
+        registerBlockItem(ADVANCED_FORGE, "advanced_forge");
     }
 
     private static ResourceKey<Block> blockKey(String name) {
