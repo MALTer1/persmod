@@ -22,6 +22,25 @@ public class WorkshopManager {
                 || block == ModWorkshopBlocks.MAINTENANCE_STATION;
     }
 
+    public static boolean isStationInWorkshop(Level level, BlockPos stationPos) {
+        for (BlockPos neighbor : neighbors(stationPos)) {
+            Block block = level.getBlockState(neighbor).getBlock();
+
+            if (block == ModWorkshopBlocks.FORGE_FLOOR
+                    || block == ModWorkshopBlocks.FORGE_SECTION
+                    || block == ModWorkshopBlocks.METAL_FORGE
+                    || block == ModWorkshopBlocks.ADVANCED_FORGE
+                    || block == ModWorkshopBlocks.BASIC_WORKSHOP
+                    || block == ModWorkshopBlocks.PART_MAKER
+                    || block == ModWorkshopBlocks.ASSEMBLY_STATION
+                    || block == ModWorkshopBlocks.MAINTENANCE_STATION) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static Set<BlockPos> findWorkshop(Level level, BlockPos start) {
         Set<BlockPos> result = new HashSet<>();
         Queue<BlockPos> queue = new ArrayDeque<>();
