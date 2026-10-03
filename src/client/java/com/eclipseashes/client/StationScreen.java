@@ -8,12 +8,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
-public class StationScreen extends AbstractContainerScreen<StationMenu> {
+public class StationScreen<M extends StationMenu> extends AbstractContainerScreen<M> {
 
     private static final Identifier BACKGROUND =
             Identifier.withDefaultNamespace("textures/gui/container/dispenser.png");
 
-    public StationScreen(StationMenu menu, Inventory inventory, Component title) {
+    public StationScreen(M menu, Inventory inventory, Component title) {
         super(menu, inventory, title, 176, 120);
     }
 
