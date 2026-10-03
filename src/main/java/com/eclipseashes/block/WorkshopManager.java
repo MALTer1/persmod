@@ -16,7 +16,10 @@ public class WorkshopManager {
         return block == ModWorkshopBlocks.FORGE_FLOOR
                 || block == ModWorkshopBlocks.FORGE_SECTION
                 || block == ModWorkshopBlocks.METAL_FORGE
-                || block == ModWorkshopBlocks.BASIC_WORKSHOP;
+                || block == ModWorkshopBlocks.BASIC_WORKSHOP
+                || block == ModWorkshopBlocks.PART_MAKER
+                || block == ModWorkshopBlocks.ASSEMBLY_STATION
+                || block == ModWorkshopBlocks.MAINTENANCE_STATION;
     }
 
     public static Set<BlockPos> findWorkshop(Level level, BlockPos start) {
@@ -264,6 +267,18 @@ public class WorkshopManager {
 
         if (block == ModWorkshopBlocks.BASIC_WORKSHOP) {
             return "workshop";
+        }
+
+        if (block == ModWorkshopBlocks.PART_MAKER) {
+            return "part_maker";
+        }
+
+        if (block == ModWorkshopBlocks.ASSEMBLY_STATION) {
+            return "assembly";
+        }
+
+        if (block == ModWorkshopBlocks.MAINTENANCE_STATION) {
+            return "maintenance";
         }
 
         return null;
