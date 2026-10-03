@@ -24,9 +24,8 @@ public class PartMakerBlock extends Block {
     ) {
         if (!level.isClientSide()) {
             if (!WorkshopManager.isStationInWorkshop(level, pos)) {
-                player.displayClientMessage(
-                        Component.literal("Part Maker must be placed in a workshop."),
-                        true
+                player.sendSystemMessage(
+                        Component.literal("Part Maker must be placed in a workshop.")
                 );
                 return InteractionResult.SUCCESS;
             }
