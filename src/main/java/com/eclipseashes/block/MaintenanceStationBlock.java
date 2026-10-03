@@ -24,9 +24,8 @@ public class MaintenanceStationBlock extends Block {
     ) {
         if (!level.isClientSide()) {
             if (!WorkshopManager.isStationInWorkshop(level, pos)) {
-                player.displayClientMessage(
-                        Component.literal("Maintenance Station must be placed in a workshop."),
-                        true
+                player.sendSystemMessage(
+                        Component.literal("Maintenance Station must be placed in a workshop.")
                 );
                 return InteractionResult.SUCCESS;
             }
