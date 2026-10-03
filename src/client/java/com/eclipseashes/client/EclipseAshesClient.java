@@ -19,5 +19,17 @@ public class EclipseAshesClient implements ClientModInitializer {
             ModMenuTypes.BASIC_WORKSHOP,
             BasicWorkshopScreen::new
         );
+        MenuScreens.register(
+                ModMenuTypes.PART_MAKER,
+                PartMakerScreen::new
+        );
+        MenuScreens.register(
+                ModMenuTypes.ASSEMBLY_STATION,
+                AssemblyStationScreen::new
+        );
+        MenuScreens.register(
+                ModMenuTypes.MAINTENANCE_STATION,
+                MaintenanceStationScreen::new
+        );
     }
 }
