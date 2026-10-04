@@ -18,19 +18,27 @@ import net.minecraft.world.item.component.CustomData;
 public class PartMakerMenu extends StationMenu {
 
     public static final int CATEGORY = 0;
-    public static final int LENGTH = 1;
-    public static final int SHAPE = 2;
-    public static final int WIDTH = 3;
-    public static final int MATERIAL = 4;
+    public static final int FAMILY = 1;
+    public static final int LENGTH = 2;
+    public static final int SHAPE = 3;
+    public static final int WIDTH = 4;
     public static final int CREATE = 5;
 
-    private static final int OUTPUT_SLOT = 0;
+    private static final int INPUT_SLOT = 0;
+    private static final int OUTPUT_SLOT = 1;
 
     private static final String[] CATEGORIES = {
             "Basic Part",
             "Head",
             "Handle",
             "Connector"
+    };
+
+    private static final String[] FAMILIES = {
+            "Structural",
+            "Utility",
+            "Decorative",
+            "Mechanical"
     };
 
     private static final String[] LENGTHS = {
@@ -66,40 +74,32 @@ public class PartMakerMenu extends StationMenu {
             ModItem.ECLIPSE
     };
 
-    private static final String[] MATERIAL_NAMES = {
-            "Wood",
-            "Copper",
-            "Iron",
-            "Gold",
-            "Diamond",
-            "Netherite",
-            "Crimson Iron",
-            "Moonsteel",
-            "Sunsteel",
-            "Dragonite",
-            "Void Crystal",
-            "Celestial Alloy",
-            "Eclipse"
-    };
-
+    private final Container input = new SimpleContainer(1);
     private final Container output = new SimpleContainer(1);
     private final Inventory playerInventory;
 
     private final DataSlot categoryData = DataSlot.standalone();
+    private final DataSlot familyData = DataSlot.standalone();
     private final DataSlot lengthData = DataSlot.standalone();
     private final DataSlot shapeData = DataSlot.standalone();
     private final DataSlot widthData = DataSlot.standalone();
-    private final DataSlot materialData = DataSlot.standalone();
 
     public PartMakerMenu(int containerId, Inventory inventory) {
         super(ModMenuTypes.PART_MAKER, containerId);
         this.playerInventory = inventory;
 
         addDataSlot(categoryData);
+        addDataSlot(familyData);
         addDataSlot(lengthData);
         addDataSlot(shapeData);
         addDataSlot(widthData);
-        addDataSlot(materialData);
+
+        addSlot(new Slot(input, INPUT_SLOT, 116, 35) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return isMaterial(stack);
+            }
+        });
 
         addSlot(new Slot(output, OUTPUT_SLOT, 144, 35) {
             @Override
@@ -122,10 +122,10 @@ public class PartMakerMenu extends StationMenu {
     public boolean clickMenuButton(Player player, int id) {
         switch (id) {
             case CATEGORY -> cycle(categoryData, CATEGORIES.length);
+            case FAMILY -> cycle(familyData, FAMILIES.length);
             case LENGTH -> cycle(lengthData, LENGTHS.length);
             case SHAPE -> cycle(shapeData, SHAPES.length);
             case WIDTH -> cycle(widthData, WIDTHS.length);
-            case MATERIAL -> cycle(materialData, MATERIAL_ITEMS.length);
             case CREATE -> createMold(player);
             default -> {
                 return false;
@@ -145,27 +145,29 @@ public class PartMakerMenu extends StationMenu {
             return;
         }
 
-        Item material = MATERIAL_ITEMS[materialData.get()];
-        int inventorySlot = findMaterial(player, material);
+        ItemStack materialStack = input.getItem(INPUT_SLOT);
 
-        if (inventorySlot < 0) {
+        if (!isMaterial(materialStack)) {
             player.sendSystemMessage(
-                    Component.literal("You need " + MATERIAL_NAMES[materialData.get()] + " to make this mold.")
+                    Component.literal("Put a usable material in the material slot first.")
             );
             return;
         }
 
-        player.getInventory().removeItem(inventorySlot, 1);
+        String materialName = materialStack.getHoverName().getString();
+
+        input.removeItem(INPUT_SLOT, 1);
 
         ItemStack mold = new ItemStack(ModItem.MOLD);
 
         CompoundTag tag = new CompoundTag();
         tag.putString("eclipse_ashes_mold", "1");
         tag.putString("category", CATEGORIES[categoryData.get()]);
+        tag.putString("family", FAMILIES[familyData.get()]);
         tag.putString("length", LENGTHS[lengthData.get()]);
         tag.putString("shape", SHAPES[shapeData.get()]);
         tag.putString("width", WIDTHS[widthData.get()]);
-        tag.putString("material", MATERIAL_NAMES[materialData.get()]);
+        tag.putString("material", materialName);
 
         CustomData.set(
                 DataComponents.CUSTOM_DATA,
@@ -176,13 +178,9 @@ public class PartMakerMenu extends StationMenu {
         mold.set(
                 DataComponents.CUSTOM_NAME,
                 Component.literal(
-                        MATERIAL_NAMES[materialData.get()]
+                        materialName
                                 + " "
-                                + LENGTHS[lengthData.get()]
-                                + " "
-                                + SHAPES[shapeData.get()]
-                                + " "
-                                + WIDTHS[widthData.get()]
+                                + FAMILIES[familyData.get()]
                                 + " "
                                 + CATEGORIES[categoryData.get()]
                                 + " Mold"
@@ -193,18 +191,26 @@ public class PartMakerMenu extends StationMenu {
         broadcastChanges();
     }
 
-    private int findMaterial(Player player, Item item) {
-        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-            if (player.getInventory().getItem(i).is(item)) {
-                return i;
+    private boolean isMaterial(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return false;
+        }
+
+        for (Item item : MATERIAL_ITEMS) {
+            if (stack.is(item)) {
+                return true;
             }
         }
 
-        return -1;
+        return false;
     }
 
     public String getCategoryName() {
         return CATEGORIES[categoryData.get()];
+    }
+
+    public String getFamilyName() {
+        return FAMILIES[familyData.get()];
     }
 
     public String getLengthName() {
@@ -219,10 +225,6 @@ public class PartMakerMenu extends StationMenu {
         return WIDTHS[widthData.get()];
     }
 
-    public String getMaterialName() {
-        return MATERIAL_NAMES[materialData.get()];
-    }
-
     @Override
     public boolean stillValid(Player player) {
         return player.isAlive();
@@ -230,12 +232,31 @@ public class PartMakerMenu extends StationMenu {
 
     @Override
     public ItemStack quickMoveStack(Player player, int slotIndex) {
-        if (slotIndex == 0) {
+        if (slotIndex == OUTPUT_SLOT) {
             ItemStack stack = output.removeItemNoUpdate(OUTPUT_SLOT);
 
             if (!stack.isEmpty()) {
                 player.getInventory().placeItemBackInInventory(stack);
                 return stack;
+            }
+        }
+
+        if (slotIndex >= 2 && slotIndex < 11) {
+            Slot slot = this.slots.get(slotIndex);
+            ItemStack stack = slot.getItem();
+
+            if (!stack.isEmpty() && isMaterial(stack)) {
+                ItemStack copy = stack.copy();
+
+                if (moveItemStackTo(stack, INPUT_SLOT, OUTPUT_SLOT, false)) {
+                    if (stack.isEmpty()) {
+                        slot.setByPlayer(ItemStack.EMPTY);
+                    } else {
+                        slot.setChanged();
+                    }
+
+                    return copy;
+                }
             }
         }
 
