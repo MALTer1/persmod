@@ -7,7 +7,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 
-
 public class ModItem {
 
     public static final Item CRIMSON_IRON = register("crimson_iron");
@@ -31,43 +30,23 @@ public class ModItem {
     public static final Item ECLIPSE = register("eclipse");
     public static final Item RAW_ECLIPSE = register("raw_eclipse");
 
-    public static final Item UNREFINED_CRIMSON_IRON =
-        register("unrefined_crimson_iron");
+    public static final Item UNREFINED_CRIMSON_IRON = register("unrefined_crimson_iron");
+    public static final Item REFINED_CRIMSON_IRON = register("refined_crimson_iron");
+    public static final Item UNREFINED_MOONSTEEL = register("unrefined_moonsteel");
+    public static final Item REFINED_MOONSTEEL = register("refined_moonsteel");
+    public static final Item UNREFINED_SUNSTEEL = register("unrefined_sunsteel");
+    public static final Item REFINED_SUNSTEEL = register("refined_sunsteel");
+    public static final Item UNREFINED_DRAGONITE = register("unrefined_dragonite");
+    public static final Item REFINED_DRAGONITE = register("refined_dragonite");
+    public static final Item UNREFINED_VOID_CRYSTAL = register("unrefined_void_crystal");
+    public static final Item REFINED_VOID_CRYSTAL = register("refined_void_crystal");
+    public static final Item UNREFINED_CELESTIAL_ALLOY = register("unrefined_celestial_alloy");
+    public static final Item REFINED_CELESTIAL_ALLOY = register("refined_celestial_alloy");
+    public static final Item UNREFINED_ECLIPSE = register("unrefined_eclipse");
+    public static final Item REFINED_ECLIPSE = register("refined_eclipse");
 
-    public static final Item REFINED_CRIMSON_IRON =
-            register("refined_crimson_iron");
-
-    public static final Item UNREFINED_MOONSTEEL =
-            register("unrefined_moonsteel");
-
-    public static final Item REFINED_MOONSTEEL =
-            register("refined_moonsteel");
-
-    public static final Item UNREFINED_SUNSTEEL =
-            register("unrefined_sunsteel");
-
-    public static final Item REFINED_SUNSTEEL =
-            register("refined_sunsteel");
-
-    public static final Item UNREFINED_DRAGONITE =
-            register("unrefined_dragonite");
-    public static final Item REFINED_DRAGONITE =
-            register("refined_dragonite");
-
-    public static final Item UNREFINED_VOID_CRYSTAL =
-            register("unrefined_void_crystal");
-    public static final Item REFINED_VOID_CRYSTAL =
-            register("refined_void_crystal");
-
-    public static final Item UNREFINED_CELESTIAL_ALLOY =
-            register("unrefined_celestial_alloy");
-    public static final Item REFINED_CELESTIAL_ALLOY =
-            register("refined_celestial_alloy");
-
-    public static final Item UNREFINED_ECLIPSE =
-            register("unrefined_eclipse");
-    public static final Item REFINED_ECLIPSE =
-            register("refined_eclipse");
+    // One item type stores all mold configuration in its custom data.
+    public static final Item MOLD = register("mold");
 
     private static Item register(String name) {
         ResourceKey<Item> key = ResourceKey.create(
@@ -83,7 +62,6 @@ public class ModItem {
                 )
         );
     }
-
 
     public static void initialize() {
         // Loading this class registers the items.
