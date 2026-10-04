@@ -64,6 +64,7 @@ public class ModCreativeTab {
                         output.accept(ModItem.VOID_CRYSTAL);
                         output.accept(ModItem.CELESTIAL_ALLOY);
                         output.accept(ModItem.ECLIPSE);
+                        output.accept(ModItem.MOLD);
 
                         output.accept(ModBlocks.CRIMSON_IRON_BLOCK);
                         output.accept(ModBlocks.MOONSTEEL_BLOCK);
