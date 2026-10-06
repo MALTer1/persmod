@@ -14,12 +14,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.inventory.DataSlot;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.util.Prediction;
 
 public class PartMakerMenu extends StationMenu {
 
@@ -28,13 +22,21 @@ public class PartMakerMenu extends StationMenu {
     public static final int LENGTH = 2;
     public static final int SHAPE = 3;
     public static final int WIDTH = 4;
-    public static final int CREATE = 5;
+    public static final int CREATE = 60;
+
+    private static final int CATEGORY_OPTION_BASE = 10;
+    private static final int FAMILY_OPTION_BASE = 20;
+    private static final int LENGTH_OPTION_BASE = 30;
+    private static final int SHAPE_OPTION_BASE = 40;
+    private static final int WIDTH_OPTION_BASE = 50;
 
     private static final int INPUT_CONTAINER_SLOT = 0;
     private static final int OUTPUT_CONTAINER_SLOT = 0;
 
     private static final int MENU_INPUT_SLOT = 0;
     private static final int MENU_OUTPUT_SLOT = 1;
+    private static final int PLAYER_INVENTORY_START = 2;
+    private static final int PLAYER_INVENTORY_END = 38;
 
     private static final String[] CATEGORIES = {
             "Basic Part",
@@ -85,7 +87,6 @@ public class PartMakerMenu extends StationMenu {
 
     private final Container input = new SimpleContainer(1);
     private final Container output = new SimpleContainer(1);
-    private final Inventory playerInventory;
 
     private final DataSlot categoryData = DataSlot.standalone();
     private final DataSlot familyData = DataSlot.standalone();
@@ -95,7 +96,6 @@ public class PartMakerMenu extends StationMenu {
 
     public PartMakerMenu(int containerId, Inventory inventory) {
         super(ModMenuTypes.PART_MAKER, containerId);
-        this.playerInventory = inventory;
 
         addDataSlot(categoryData);
         addDataSlot(familyData);
@@ -103,50 +103,84 @@ public class PartMakerMenu extends StationMenu {
         addDataSlot(shapeData);
         addDataSlot(widthData);
 
-        addSlot(new Slot(input, INPUT_CONTAINER_SLOT, 116, 35) {
-        @Override
-        public boolean mayPlace(ItemStack stack) {
-            return isMaterial(stack);
-        }
-    });
+        addSlot(new Slot(input, INPUT_CONTAINER_SLOT, 130, 40) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return isMaterial(stack);
+            }
+        });
 
-    addSlot(new Slot(output, OUTPUT_CONTAINER_SLOT, 144, 35) {
-        @Override
-        public boolean mayPlace(ItemStack stack) {
-            return false;
-        }
-    });
+        addSlot(new Slot(output, OUTPUT_CONTAINER_SLOT, 130, 88) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return false;
+            }
+        });
 
-        for (int i = 0; i < 9; i++) {
+        for (int row = 0; row < 3; row++) {
+            for (int column = 0; column < 9; column++) {
+                addSlot(new Slot(
+                        inventory,
+                        row * 9 + column + 9,
+                        8 + column * 18,
+                        180 + row * 18
+                ));
+            }
+        }
+
+        for (int column = 0; column < 9; column++) {
             addSlot(new Slot(
                     inventory,
-                    i,
-                    8 + i * 18,
-                    140
+                    column,
+                    8 + column * 18,
+                    198
             ));
         }
     }
 
     @Override
     public boolean clickMenuButton(Player player, int id) {
-        switch (id) {
-            case CATEGORY -> cycle(categoryData, CATEGORIES.length);
-            case FAMILY -> cycle(familyData, FAMILIES.length);
-            case LENGTH -> cycle(lengthData, LENGTHS.length);
-            case SHAPE -> cycle(shapeData, SHAPES.length);
-            case WIDTH -> cycle(widthData, WIDTHS.length);
-            case CREATE -> createMold(player);
-            default -> {
-                return false;
-            }
+        if (id == CREATE) {
+            createMold(player);
+            return true;
         }
 
-        return true;
-    }
+        if (id >= CATEGORY_OPTION_BASE
+                && id < CATEGORY_OPTION_BASE + CATEGORIES.length) {
+            categoryData.set(id - CATEGORY_OPTION_BASE);
+            broadcastChanges();
+            return true;
+        }
 
-    private void cycle(DataSlot slot, int size) {
-        slot.set((slot.get() + 1) % size);
-        broadcastChanges();
+        if (id >= FAMILY_OPTION_BASE
+                && id < FAMILY_OPTION_BASE + FAMILIES.length) {
+            familyData.set(id - FAMILY_OPTION_BASE);
+            broadcastChanges();
+            return true;
+        }
+
+        if (id >= LENGTH_OPTION_BASE
+                && id < LENGTH_OPTION_BASE + LENGTHS.length) {
+            lengthData.set(id - LENGTH_OPTION_BASE);
+            broadcastChanges();
+            return true;
+        }
+
+        if (id >= SHAPE_OPTION_BASE
+                && id < SHAPE_OPTION_BASE + SHAPES.length) {
+            shapeData.set(id - SHAPE_OPTION_BASE);
+            broadcastChanges();
+            return true;
+        }
+
+        if (id >= WIDTH_OPTION_BASE
+                && id < WIDTH_OPTION_BASE + WIDTHS.length) {
+            widthData.set(id - WIDTH_OPTION_BASE);
+            broadcastChanges();
+            return true;
+        }
+
+        return false;
     }
 
     private void createMold(Player player) {
@@ -164,7 +198,6 @@ public class PartMakerMenu extends StationMenu {
         }
 
         String materialName = materialStack.getHoverName().getString();
-
         input.removeItem(INPUT_CONTAINER_SLOT, 1);
 
         ItemStack mold = new ItemStack(ModItem.MOLD);
@@ -178,11 +211,7 @@ public class PartMakerMenu extends StationMenu {
         tag.putString("width", WIDTHS[widthData.get()]);
         tag.putString("material", materialName);
 
-        CustomData.set(
-                DataComponents.CUSTOM_DATA,
-                mold,
-                tag
-        );
+        CustomData.set(DataComponents.CUSTOM_DATA, mold, tag);
 
         mold.set(
                 DataComponents.CUSTOM_NAME,
@@ -245,19 +274,25 @@ public class PartMakerMenu extends StationMenu {
             ItemStack stack = output.removeItemNoUpdate(OUTPUT_CONTAINER_SLOT);
 
             if (!stack.isEmpty()) {
-                player.getInventory().placeItemBackInInventory(stack, Prediction.SERVER_ONLY);
+                player.getInventory().placeItemBackInInventory(stack);
+                broadcastChanges();
                 return stack;
             }
         }
 
-        if (slotIndex >= 2 && slotIndex < 11) {
+        if (slotIndex >= PLAYER_INVENTORY_START && slotIndex < PLAYER_INVENTORY_END) {
             Slot slot = this.slots.get(slotIndex);
             ItemStack stack = slot.getItem();
 
             if (!stack.isEmpty() && isMaterial(stack)) {
                 ItemStack copy = stack.copy();
 
-                if (moveItemStackTo(stack, MENU_INPUT_SLOT, MENU_OUTPUT_SLOT, false)) {
+                if (moveItemStackTo(
+                        stack,
+                        MENU_INPUT_SLOT,
+                        MENU_INPUT_SLOT + 1,
+                        false
+                )) {
                     if (stack.isEmpty()) {
                         slot.setByPlayer(ItemStack.EMPTY);
                     } else {
