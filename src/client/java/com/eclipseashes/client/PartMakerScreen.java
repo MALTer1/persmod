@@ -4,6 +4,7 @@ import com.eclipseashes.block.PartMakerMenu;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ServerboundContainerButtonClickPacket;
 import net.minecraft.world.entity.player.Inventory;
 
 public class PartMakerScreen extends StationScreen<PartMakerMenu> {
@@ -55,8 +56,10 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
     }
 
     private void pressMenuButton(int id) {
-        if (minecraft != null && minecraft.gameMode != null) {
-            minecraft.gameMode.handleInventoryButton(menu.containerId, id);
+        if (minecraft != null && minecraft.getConnection() != null) {
+                minecraft.getConnection().send(
+                        new ServerboundContainerButtonClickPacket(menu.containerId, id)
+                );
         }
     }
 

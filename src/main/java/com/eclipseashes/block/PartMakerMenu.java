@@ -14,6 +14,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.DataSlot;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.util.Prediction;
 
 public class PartMakerMenu extends StationMenu {
 
@@ -24,8 +30,11 @@ public class PartMakerMenu extends StationMenu {
     public static final int WIDTH = 4;
     public static final int CREATE = 5;
 
-    private static final int INPUT_SLOT = 0;
-    private static final int OUTPUT_SLOT = 1;
+    private static final int INPUT_CONTAINER_SLOT = 0;
+    private static final int OUTPUT_CONTAINER_SLOT = 0;
+
+    private static final int MENU_INPUT_SLOT = 0;
+    private static final int MENU_OUTPUT_SLOT = 1;
 
     private static final String[] CATEGORIES = {
             "Basic Part",
@@ -94,19 +103,19 @@ public class PartMakerMenu extends StationMenu {
         addDataSlot(shapeData);
         addDataSlot(widthData);
 
-        addSlot(new Slot(input, INPUT_SLOT, 116, 35) {
-            @Override
-            public boolean mayPlace(ItemStack stack) {
-                return isMaterial(stack);
-            }
-        });
+        addSlot(new Slot(input, INPUT_CONTAINER_SLOT, 116, 35) {
+        @Override
+        public boolean mayPlace(ItemStack stack) {
+            return isMaterial(stack);
+        }
+    });
 
-        addSlot(new Slot(output, OUTPUT_SLOT, 144, 35) {
-            @Override
-            public boolean mayPlace(ItemStack stack) {
-                return false;
-            }
-        });
+    addSlot(new Slot(output, OUTPUT_CONTAINER_SLOT, 144, 35) {
+        @Override
+        public boolean mayPlace(ItemStack stack) {
+            return false;
+        }
+    });
 
         for (int i = 0; i < 9; i++) {
             addSlot(new Slot(
@@ -141,11 +150,11 @@ public class PartMakerMenu extends StationMenu {
     }
 
     private void createMold(Player player) {
-        if (!output.getItem(OUTPUT_SLOT).isEmpty()) {
+        if (!output.getItem(OUTPUT_CONTAINER_SLOT).isEmpty()) {
             return;
         }
 
-        ItemStack materialStack = input.getItem(INPUT_SLOT);
+        ItemStack materialStack = input.getItem(INPUT_CONTAINER_SLOT);
 
         if (!isMaterial(materialStack)) {
             player.sendSystemMessage(
@@ -156,7 +165,7 @@ public class PartMakerMenu extends StationMenu {
 
         String materialName = materialStack.getHoverName().getString();
 
-        input.removeItem(INPUT_SLOT, 1);
+        input.removeItem(INPUT_CONTAINER_SLOT, 1);
 
         ItemStack mold = new ItemStack(ModItem.MOLD);
 
@@ -187,7 +196,7 @@ public class PartMakerMenu extends StationMenu {
                 )
         );
 
-        output.setItem(OUTPUT_SLOT, mold);
+        output.setItem(OUTPUT_CONTAINER_SLOT, mold);
         broadcastChanges();
     }
 
@@ -232,11 +241,11 @@ public class PartMakerMenu extends StationMenu {
 
     @Override
     public ItemStack quickMoveStack(Player player, int slotIndex) {
-        if (slotIndex == OUTPUT_SLOT) {
-            ItemStack stack = output.removeItemNoUpdate(OUTPUT_SLOT);
+        if (slotIndex == MENU_OUTPUT_SLOT) {
+            ItemStack stack = output.removeItemNoUpdate(OUTPUT_CONTAINER_SLOT);
 
             if (!stack.isEmpty()) {
-                player.getInventory().placeItemBackInInventory(stack);
+                player.getInventory().placeItemBackInInventory(stack, Prediction.SERVER_ONLY);
                 return stack;
             }
         }
@@ -248,7 +257,7 @@ public class PartMakerMenu extends StationMenu {
             if (!stack.isEmpty() && isMaterial(stack)) {
                 ItemStack copy = stack.copy();
 
-                if (moveItemStackTo(stack, INPUT_SLOT, OUTPUT_SLOT, false)) {
+                if (moveItemStackTo(stack, MENU_INPUT_SLOT, MENU_OUTPUT_SLOT, false)) {
                     if (stack.isEmpty()) {
                         slot.setByPlayer(ItemStack.EMPTY);
                     } else {
