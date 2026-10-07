@@ -103,14 +103,14 @@ public class PartMakerMenu extends StationMenu {
         addDataSlot(shapeData);
         addDataSlot(widthData);
 
-        addSlot(new Slot(input, INPUT_CONTAINER_SLOT, 130, 40) {
+        addSlot(new Slot(input, INPUT_CONTAINER_SLOT, 142, 22) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return isMaterial(stack);
             }
         });
 
-        addSlot(new Slot(output, OUTPUT_CONTAINER_SLOT, 130, 88) {
+        addSlot(new Slot(output, OUTPUT_CONTAINER_SLOT, 142, 50) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return false;
