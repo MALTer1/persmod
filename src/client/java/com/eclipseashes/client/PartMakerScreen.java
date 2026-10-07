@@ -44,8 +44,7 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
     private int openDropdown = -1;
 
     public PartMakerScreen(PartMakerMenu menu, Inventory inventory, Component title) {
-        super(menu, inventory, title);
-        this.imageHeight = PANEL_HEIGHT;
+        super(menu, inventory, title, PANEL_WIDTH, PANEL_HEIGHT);
     }
 
     @Override

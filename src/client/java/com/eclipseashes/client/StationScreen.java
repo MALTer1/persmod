@@ -14,7 +14,17 @@ public class StationScreen<M extends StationMenu> extends AbstractContainerScree
             Identifier.withDefaultNamespace("textures/gui/container/dispenser.png");
 
     public StationScreen(M menu, Inventory inventory, Component title) {
-        super(menu, inventory, title, 176, 120);
+        this(menu, inventory, title, 176, 120);
+    }
+
+    protected StationScreen(
+            M menu,
+            Inventory inventory,
+            Component title,
+            int width,
+            int height
+    ) {
+        super(menu, inventory, title, width, height);
     }
 
     @Override
