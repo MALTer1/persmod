@@ -197,8 +197,18 @@ public class PartMakerMenu extends StationMenu {
             return;
         }
 
+        if (categoryData.get() < 0
+                || familyData.get() < 0
+                || lengthData.get() < 0
+                || shapeData.get() < 0
+                || widthData.get() < 0) {
+            player.sendSystemMessage(
+                    Component.literal("Select all mold options before creating a mold.")
+            );
+            return;
+        }
+
         String materialName = materialStack.getHoverName().getString();
-        input.removeItem(INPUT_CONTAINER_SLOT, 1);
 
         ItemStack mold = new ItemStack(ModItem.MOLD);
 
@@ -225,6 +235,7 @@ public class PartMakerMenu extends StationMenu {
                 )
         );
 
+        input.removeItem(INPUT_CONTAINER_SLOT, 1);
         output.setItem(OUTPUT_CONTAINER_SLOT, mold);
         broadcastChanges();
     }
