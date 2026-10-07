@@ -265,7 +265,39 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
                 leftPos + 104, topPos + 76, 0xFF202020, false);
 
         graphics.text(this.font, "Inventory",
-                leftPos + 8, topPos + 130, 0xFF202020, false);
+                leftPos + 8, topPos + 126, 0xFF202020, false);
+
+        // Main player inventory: 3 rows.
+        for (int row = 0; row < 3; row++) {
+            for (int column = 0; column < 9; column++) {
+                drawSlotBackground(
+                        graphics,
+                        leftPos + 8 + column * 18,
+                        topPos + 138 + row * 18
+                );
+            }
+        }
+
+        // Player hotbar.
+        for (int column = 0; column < 9; column++) {
+            drawSlotBackground(
+                    graphics,
+                    leftPos + 8 + column * 18,
+                    topPos + 192
+            );
+        }
+    }
+
+    private void drawSlotBackground(
+            GuiGraphicsExtractor graphics,
+            int x,
+            int y
+    ) {
+        graphics.fill(x, y, x + 16, y + 16, 0xFF202020);
+        graphics.fill(x, y, x + 16, y + 1, 0xFF777777);
+        graphics.fill(x, y + 15, x + 16, y + 16, 0xFF111111);
+        graphics.fill(x, y, x + 1, y + 16, 0xFF777777);
+        graphics.fill(x + 15, y, x + 16, y + 16, 0xFF111111);
     }
 
     @Override
