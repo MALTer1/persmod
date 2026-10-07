@@ -9,7 +9,8 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class PartMakerScreen extends StationScreen<PartMakerMenu> {
 
-    private static final int PANEL_HEIGHT = 212;
+    private static final int PANEL_WIDTH = 168;
+    private static final int PANEL_HEIGHT = 166;
 
     private static final String[] CATEGORIES = {
             "Basic Part", "Head", "Handle", "Connector"
@@ -44,6 +45,7 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
 
     public PartMakerScreen(PartMakerMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
+        this.imageHeight = PANEL_HEIGHT;
     }
 
     @Override
@@ -53,32 +55,32 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
         categoryButton = addRenderableWidget(Button.builder(
                 Component.literal("Category: " + menu.getCategoryName() + " v"),
                 button -> toggleDropdown(0)
-        ).bounds(leftPos + 8, topPos + 26, 96, 20).build());
+        ).bounds(leftPos + 4, topPos + 22, 82, 18).build());
 
         familyButton = addRenderableWidget(Button.builder(
                 Component.literal("Family: " + menu.getFamilyName() + " v"),
                 button -> toggleDropdown(1)
-        ).bounds(leftPos + 8, topPos + 50, 96, 20).build());
+        ).bounds(leftPos + 4, topPos + 42, 82, 18).build());
 
         lengthButton = addRenderableWidget(Button.builder(
                 Component.literal("Length: " + menu.getLengthName() + " v"),
                 button -> toggleDropdown(2)
-        ).bounds(leftPos + 8, topPos + 74, 96, 20).build());
+        ).bounds(leftPos + 4, topPos + 62, 82, 18).build());
 
         shapeButton = addRenderableWidget(Button.builder(
                 Component.literal("Shape: " + menu.getShapeName() + " v"),
                 button -> toggleDropdown(3)
-        ).bounds(leftPos + 8, topPos + 98, 96, 20).build());
+        ).bounds(leftPos + 88, topPos + 22, 76, 18).build());
 
         widthButton = addRenderableWidget(Button.builder(
                 Component.literal("Width: " + menu.getWidthName() + " v"),
                 button -> toggleDropdown(4)
-        ).bounds(leftPos + 8, topPos + 120, 96, 20).build());
+        ).bounds(leftPos + 88, topPos + 42, 76, 18).build());
 
         createButton = addRenderableWidget(Button.builder(
                 Component.literal("Create Mold"),
                 button -> pressMenuButton(PartMakerMenu.CREATE)
-        ).bounds(leftPos + 108, topPos + 120, 60, 20).build());
+        ).bounds(leftPos + 88, topPos + 62, 76, 18).build());
 
         categoryOptions = createOptions(CATEGORIES, 0, 10);
         familyOptions = createOptions(FAMILIES, 1, 20);
@@ -91,8 +93,7 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
 
     private Button[] createOptions(String[] options, int dropdownId, int packetBase) {
         Button[] buttons = new Button[options.length + 1];
-        int optionCount = options.length + 1;
-        int y = getDropdownStartY(dropdownId, optionCount);
+        int y = topPos + 4;
 
         buttons[0] = addRenderableWidget(Button.builder(
                 Component.literal("None"),
@@ -100,7 +101,7 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
                     pressMenuButton(packetBase - 1);
                     closeAllDropdowns();
                 }
-        ).bounds(leftPos + 8, topPos + y, 96, 20).build());
+        ).bounds(leftPos + 4, y, 78, 16).build());
 
         for (int i = 0; i < options.length; i++) {
             final int option = i;
@@ -111,31 +112,10 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
                         pressMenuButton(packetBase + option);
                         closeAllDropdowns();
                     }
-            ).bounds(leftPos + 8, topPos + y + (i + 1) * 20, 96, 20).build());
+            ).bounds(leftPos + 4, y + (i + 1) * 16, 78, 16).build());
         }
 
         return buttons;
-    }
-
-    private int getDropdownY(int dropdownId) {
-        return switch (dropdownId) {
-            case 0 -> 26;
-            case 1 -> 50;
-            case 2 -> 74;
-            case 3 -> 98;
-            case 4 -> 122;
-            default -> 26;
-        };
-    }
-
-    private int getDropdownStartY(int dropdownId, int optionCount) {
-        int buttonY = getDropdownY(dropdownId);
-
-        if (dropdownId >= 3) {
-            return buttonY - optionCount * 20;
-        }
-
-        return buttonY + 20;
     }
 
     private void toggleDropdown(int dropdownId) {
@@ -205,26 +185,16 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
     protected void containerTick() {
         super.containerTick();
 
-        if (categoryButton != null) {
-            categoryButton.setMessage(Component.literal(
-                    "Category: " + menu.getCategoryName() + " v"));
-        }
-        if (familyButton != null) {
-            familyButton.setMessage(Component.literal(
-                    "Family: " + menu.getFamilyName() + " v"));
-        }
-        if (lengthButton != null) {
-            lengthButton.setMessage(Component.literal(
-                    "Length: " + menu.getLengthName() + " v"));
-        }
-        if (shapeButton != null) {
-            shapeButton.setMessage(Component.literal(
-                    "Shape: " + menu.getShapeName() + " v"));
-        }
-        if (widthButton != null) {
-            widthButton.setMessage(Component.literal(
-                    "Width: " + menu.getWidthName() + " v"));
-        }
+        categoryButton.setMessage(Component.literal(
+                "Category: " + menu.getCategoryName() + " v"));
+        familyButton.setMessage(Component.literal(
+                "Family: " + menu.getFamilyName() + " v"));
+        lengthButton.setMessage(Component.literal(
+                "Length: " + menu.getLengthName() + " v"));
+        shapeButton.setMessage(Component.literal(
+                "Shape: " + menu.getShapeName() + " v"));
+        widthButton.setMessage(Component.literal(
+                "Width: " + menu.getWidthName() + " v"));
     }
 
     @Override
@@ -240,40 +210,43 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
                 0xFFD0D0D0
         );
 
+        // Controls.
         graphics.fill(
-                leftPos + 4, topPos + 20,
-                leftPos + 172, topPos + 136,
+                leftPos + 2, topPos + 18,
+                leftPos + 166, topPos + 82,
                 0xFFB8B8B8
         );
 
+        // Material/output area.
         graphics.fill(
-                leftPos + 108, topPos + 20,
-                leftPos + 168, topPos + 112,
+                leftPos + 88, topPos + 82,
+                leftPos + 166, topPos + 82,
                 0xFF9E9E9E
         );
 
+        // Inventory area.
         graphics.fill(
-                leftPos + 4, topPos + 136,
-                leftPos + 172, topPos + 208,
+                leftPos + 2, topPos + 82,
+                leftPos + 166, topPos + 164,
                 0xFFB8B8B8
         );
 
         graphics.text(this.font, "Material",
-                leftPos + 112, topPos + 28, 0xFF202020, false);
+                leftPos + 92, topPos + 24, 0xFF202020, false);
 
         graphics.text(this.font, "Mold Output",
-                leftPos + 104, topPos + 76, 0xFF202020, false);
+                leftPos + 92, topPos + 50, 0xFF202020, false);
 
         graphics.text(this.font, "Inventory",
-                leftPos + 8, topPos + 126, 0xFF202020, false);
+                leftPos + 4, topPos + 82, 0xFF202020, false);
 
         // Main player inventory: 3 rows.
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 9; column++) {
                 drawSlotBackground(
                         graphics,
-                        leftPos + 8 + column * 18,
-                        topPos + 138 + row * 18
+                        leftPos + 3 + column * 18,
+                        topPos + 92 + row * 18
                 );
             }
         }
@@ -282,8 +255,8 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
         for (int column = 0; column < 9; column++) {
             drawSlotBackground(
                     graphics,
-                    leftPos + 8 + column * 18,
-                    topPos + 192
+                    leftPos + 3 + column * 18,
+                    topPos + 146
             );
         }
     }
@@ -306,6 +279,6 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
             int mouseX,
             int mouseY
     ) {
-        graphics.text(this.font, this.title, 8, 8, 0xFF202020, false);
+        graphics.text(this.font, this.title, 4, 8, 0xFF202020, false);
     }
 }
