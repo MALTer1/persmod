@@ -92,7 +92,8 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
 
     private Button[] createOptions(String[] options, int dropdownId, int packetBase) {
         Button[] buttons = new Button[options.length + 1];
-        int y = getDropdownY(dropdownId) + 20;
+        int optionCount = options.length + 1;
+        int y = getDropdownStartY(dropdownId, optionCount);
 
         buttons[0] = addRenderableWidget(Button.builder(
                 Component.literal("None"),
@@ -126,6 +127,16 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
             case 4 -> 122;
             default -> 26;
         };
+    }
+
+    private int getDropdownStartY(int dropdownId, int optionCount) {
+        int buttonY = getDropdownY(dropdownId);
+
+        if (dropdownId >= 3) {
+            return buttonY - optionCount * 20;
+        }
+
+        return buttonY + 20;
     }
 
     private void toggleDropdown(int dropdownId) {
