@@ -14,6 +14,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.util.Prediction;
 
 public class PartMakerMenu extends StationMenu {
 
@@ -274,7 +275,7 @@ public class PartMakerMenu extends StationMenu {
             ItemStack stack = output.removeItemNoUpdate(OUTPUT_CONTAINER_SLOT);
 
             if (!stack.isEmpty()) {
-                player.getInventory().placeItemBackInInventory(stack);
+                player.getInventory().placeItemBackInInventory(stack, Prediction.SERVER_ONLY);
                 broadcastChanges();
                 return stack;
             }

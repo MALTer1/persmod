@@ -59,7 +59,6 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
 
     public PartMakerScreen(PartMakerMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
-        this.imageHeight = PANEL_HEIGHT;
     }
 
     @Override
