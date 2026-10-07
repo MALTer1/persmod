@@ -9,7 +9,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class PartMakerScreen extends StationScreen<PartMakerMenu> {
 
-    private static final int PANEL_HEIGHT = 222;
+    private static final int PANEL_HEIGHT = 212;
 
     private static final String[] CATEGORIES = {
             "Basic Part", "Head", "Handle", "Connector"
@@ -73,12 +73,12 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
         widthButton = addRenderableWidget(Button.builder(
                 Component.literal("Width: " + menu.getWidthName() + " v"),
                 button -> toggleDropdown(4)
-        ).bounds(leftPos + 8, topPos + 122, 96, 20).build());
+        ).bounds(leftPos + 8, topPos + 120, 96, 20).build());
 
         createButton = addRenderableWidget(Button.builder(
                 Component.literal("Create Mold"),
                 button -> pressMenuButton(PartMakerMenu.CREATE)
-        ).bounds(leftPos + 108, topPos + 122, 60, 20).build());
+        ).bounds(leftPos + 108, topPos + 120, 60, 20).build());
 
         categoryOptions = createOptions(CATEGORIES, 0, 10);
         familyOptions = createOptions(FAMILIES, 1, 20);
@@ -91,7 +91,8 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
 
     private Button[] createOptions(String[] options, int dropdownId, int packetBase) {
         Button[] buttons = new Button[options.length + 1];
-        int y = getDropdownY(dropdownId) + 20;
+        int optionCount = options.length + 1;
+        int y = getDropdownStartY(dropdownId, optionCount);
 
         buttons[0] = addRenderableWidget(Button.builder(
                 Component.literal("None"),
@@ -125,6 +126,16 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
             case 4 -> 122;
             default -> 26;
         };
+    }
+
+    private int getDropdownStartY(int dropdownId, int optionCount) {
+        int buttonY = getDropdownY(dropdownId);
+
+        if (dropdownId >= 3) {
+            return buttonY - optionCount * 20;
+        }
+
+        return buttonY + 20;
     }
 
     private void toggleDropdown(int dropdownId) {
@@ -242,8 +253,8 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
         );
 
         graphics.fill(
-                leftPos + 4, topPos + 140,
-                leftPos + 172, topPos + 216,
+                leftPos + 4, topPos + 136,
+                leftPos + 172, topPos + 208,
                 0xFFB8B8B8
         );
 
@@ -254,7 +265,7 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
                 leftPos + 104, topPos + 76, 0xFF202020, false);
 
         graphics.text(this.font, "Inventory",
-                leftPos + 8, topPos + 142, 0xFF202020, false);
+                leftPos + 8, topPos + 130, 0xFF202020, false);
     }
 
     @Override
