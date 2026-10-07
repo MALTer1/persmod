@@ -145,35 +145,35 @@ public class PartMakerMenu extends StationMenu {
             return true;
         }
 
-        if (id >= CATEGORY_OPTION_BASE
+        if (id >= CATEGORY_OPTION_BASE - 1
                 && id < CATEGORY_OPTION_BASE + CATEGORIES.length) {
             categoryData.set(id - CATEGORY_OPTION_BASE);
             broadcastChanges();
             return true;
         }
 
-        if (id >= FAMILY_OPTION_BASE
+        if (id >= FAMILY_OPTION_BASE - 1
                 && id < FAMILY_OPTION_BASE + FAMILIES.length) {
             familyData.set(id - FAMILY_OPTION_BASE);
             broadcastChanges();
             return true;
         }
 
-        if (id >= LENGTH_OPTION_BASE
+        if (id >= LENGTH_OPTION_BASE - 1
                 && id < LENGTH_OPTION_BASE + LENGTHS.length) {
             lengthData.set(id - LENGTH_OPTION_BASE);
             broadcastChanges();
             return true;
         }
 
-        if (id >= SHAPE_OPTION_BASE
+        if (id >= SHAPE_OPTION_BASE - 1
                 && id < SHAPE_OPTION_BASE + SHAPES.length) {
             shapeData.set(id - SHAPE_OPTION_BASE);
             broadcastChanges();
             return true;
         }
 
-        if (id >= WIDTH_OPTION_BASE
+        if (id >= WIDTH_OPTION_BASE - 1
                 && id < WIDTH_OPTION_BASE + WIDTHS.length) {
             widthData.set(id - WIDTH_OPTION_BASE);
             broadcastChanges();
@@ -244,23 +244,23 @@ public class PartMakerMenu extends StationMenu {
     }
 
     public String getCategoryName() {
-        return CATEGORIES[categoryData.get()];
+        return categoryData.get() < 0 ? "None" : CATEGORIES[categoryData.get()];
     }
 
     public String getFamilyName() {
-        return FAMILIES[familyData.get()];
+        return familyData.get() < 0 ? "None" : FAMILIES[familyData.get()];
     }
 
     public String getLengthName() {
-        return LENGTHS[lengthData.get()];
+        return lengthData.get() < 0 ? "None" : LENGTHS[lengthData.get()];
     }
 
     public String getShapeName() {
-        return SHAPES[shapeData.get()];
+        return shapeData.get() < 0 ? "None" : SHAPES[shapeData.get()];
     }
 
     public String getWidthName() {
-        return WIDTHS[widthData.get()];
+        return widthData.get() < 0 ? "None" : WIDTHS[widthData.get()];
     }
 
     @Override
