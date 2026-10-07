@@ -91,19 +91,27 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
     }
 
     private Button[] createOptions(String[] options, int dropdownId, int packetBase) {
-        Button[] buttons = new Button[options.length];
+        Button[] buttons = new Button[options.length + 1];
         int y = getDropdownY(dropdownId) + 20;
+
+        buttons[0] = addRenderableWidget(Button.builder(
+                Component.literal("None"),
+                button -> {
+                    pressMenuButton(packetBase - 1);
+                    closeAllDropdowns();
+                }
+        ).bounds(leftPos + 8, topPos + y, 96, 20).build());
 
         for (int i = 0; i < options.length; i++) {
             final int option = i;
 
-            buttons[i] = addRenderableWidget(Button.builder(
+            buttons[i + 1] = addRenderableWidget(Button.builder(
                     Component.literal(options[i]),
                     button -> {
                         pressMenuButton(packetBase + option);
                         closeAllDropdowns();
                     }
-            ).bounds(leftPos + 8, topPos + y + i * 20, 96, 20).build());
+            ).bounds(leftPos + 8, topPos + y + (i + 1) * 20, 96, 20).build());
         }
 
         return buttons;
