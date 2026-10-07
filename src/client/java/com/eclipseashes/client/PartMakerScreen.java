@@ -12,34 +12,19 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
     private static final int PANEL_HEIGHT = 222;
 
     private static final String[] CATEGORIES = {
-            "Basic Part",
-            "Head",
-            "Handle",
-            "Connector"
+            "Basic Part", "Head", "Handle", "Connector"
     };
-
     private static final String[] FAMILIES = {
-            "Structural",
-            "Utility",
-            "Decorative",
-            "Mechanical"
+            "Structural", "Utility", "Decorative", "Mechanical"
     };
-
     private static final String[] LENGTHS = {
-            "Short",
-            "Standard",
-            "Long"
+            "Short", "Standard", "Long"
     };
-
     private static final String[] SHAPES = {
-            "Straight",
-            "Curved"
+            "Straight", "Curved"
     };
-
     private static final String[] WIDTHS = {
-            "Narrow",
-            "Standard",
-            "Wide"
+            "Narrow", "Standard", "Wide"
     };
 
     private Button categoryButton;
@@ -106,7 +91,6 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
 
     private Button[] createOptions(String[] options, int dropdownId, int packetBase) {
         Button[] buttons = new Button[options.length];
-
         int y = getDropdownY(dropdownId) + 20;
 
         for (int i = 0; i < options.length; i++) {
@@ -144,12 +128,21 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
         closeAllDropdowns();
         openDropdown = dropdownId;
 
-        Button[] options = getOptions(dropdownId);
+        setBaseButtonsActive(false);
 
-        for (Button option : options) {
+        for (Button option : getOptions(dropdownId)) {
             option.visible = true;
             option.active = true;
         }
+    }
+
+    private void setBaseButtonsActive(boolean active) {
+        if (categoryButton != null) categoryButton.active = active;
+        if (familyButton != null) familyButton.active = active;
+        if (lengthButton != null) lengthButton.active = active;
+        if (shapeButton != null) shapeButton.active = active;
+        if (widthButton != null) widthButton.active = active;
+        if (createButton != null) createButton.active = active;
     }
 
     private Button[] getOptions(int dropdownId) {
@@ -165,26 +158,13 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
 
     private void closeAllDropdowns() {
         openDropdown = -1;
+        setBaseButtonsActive(true);
 
-        if (categoryOptions != null) {
-            setOptionsHidden(categoryOptions);
-        }
-
-        if (familyOptions != null) {
-            setOptionsHidden(familyOptions);
-        }
-
-        if (lengthOptions != null) {
-            setOptionsHidden(lengthOptions);
-        }
-
-        if (shapeOptions != null) {
-            setOptionsHidden(shapeOptions);
-        }
-
-        if (widthOptions != null) {
-            setOptionsHidden(widthOptions);
-        }
+        if (categoryOptions != null) setOptionsHidden(categoryOptions);
+        if (familyOptions != null) setOptionsHidden(familyOptions);
+        if (lengthOptions != null) setOptionsHidden(lengthOptions);
+        if (shapeOptions != null) setOptionsHidden(shapeOptions);
+        if (widthOptions != null) setOptionsHidden(widthOptions);
     }
 
     private void setOptionsHidden(Button[] options) {
@@ -197,10 +177,7 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
     private void pressMenuButton(int id) {
         if (minecraft != null && minecraft.getConnection() != null) {
             minecraft.getConnection().send(
-                    new ServerboundContainerButtonClickPacket(
-                            menu.containerId,
-                            id
-                    )
+                    new ServerboundContainerButtonClickPacket(menu.containerId, id)
             );
         }
     }
@@ -210,33 +187,24 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
         super.containerTick();
 
         if (categoryButton != null) {
-            categoryButton.setMessage(
-                    Component.literal("Category: " + menu.getCategoryName() + " v")
-            );
+            categoryButton.setMessage(Component.literal(
+                    "Category: " + menu.getCategoryName() + " v"));
         }
-
         if (familyButton != null) {
-            familyButton.setMessage(
-                    Component.literal("Family: " + menu.getFamilyName() + " v")
-            );
+            familyButton.setMessage(Component.literal(
+                    "Family: " + menu.getFamilyName() + " v"));
         }
-
         if (lengthButton != null) {
-            lengthButton.setMessage(
-                    Component.literal("Length: " + menu.getLengthName() + " v")
-            );
+            lengthButton.setMessage(Component.literal(
+                    "Length: " + menu.getLengthName() + " v"));
         }
-
         if (shapeButton != null) {
-            shapeButton.setMessage(
-                    Component.literal("Shape: " + menu.getShapeName() + " v")
-            );
+            shapeButton.setMessage(Component.literal(
+                    "Shape: " + menu.getShapeName() + " v"));
         }
-
         if (widthButton != null) {
-            widthButton.setMessage(
-                    Component.literal("Width: " + menu.getWidthName() + " v")
-            );
+            widthButton.setMessage(Component.literal(
+                    "Width: " + menu.getWidthName() + " v"));
         }
     }
 
@@ -248,63 +216,37 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
             float delta
     ) {
         graphics.fill(
-                leftPos,
-                topPos,
-                leftPos + imageWidth,
-                topPos + imageHeight,
+                leftPos, topPos,
+                leftPos + imageWidth, topPos + imageHeight,
                 0xFFD0D0D0
         );
 
         graphics.fill(
-                leftPos + 4,
-                topPos + 20,
-                leftPos + 172,
-                topPos + 160,
+                leftPos + 4, topPos + 20,
+                leftPos + 172, topPos + 136,
                 0xFFB8B8B8
         );
 
         graphics.fill(
-                leftPos + 108,
-                topPos + 20,
-                leftPos + 168,
-                topPos + 112,
+                leftPos + 108, topPos + 20,
+                leftPos + 168, topPos + 112,
                 0xFF9E9E9E
         );
 
         graphics.fill(
-                leftPos + 4,
-                topPos + 166,
-                leftPos + 172,
-                topPos + 216,
+                leftPos + 4, topPos + 140,
+                leftPos + 172, topPos + 216,
                 0xFFB8B8B8
         );
 
-        graphics.text(
-                this.font,
-                "Material",
-                leftPos + 112,
-                topPos + 28,
-                0xFF202020,
-                false
-        );
+        graphics.text(this.font, "Material",
+                leftPos + 112, topPos + 28, 0xFF202020, false);
 
-        graphics.text(
-                this.font,
-                "Mold Output",
-                leftPos + 104,
-                topPos + 76,
-                0xFF202020,
-                false
-        );
+        graphics.text(this.font, "Mold Output",
+                leftPos + 104, topPos + 76, 0xFF202020, false);
 
-        graphics.text(
-                this.font,
-                "Inventory",
-                leftPos + 8,
-                topPos + 168,
-                0xFF202020,
-                false
-        );
+        graphics.text(this.font, "Inventory",
+                leftPos + 8, topPos + 142, 0xFF202020, false);
     }
 
     @Override
@@ -313,13 +255,6 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
             int mouseX,
             int mouseY
     ) {
-        graphics.text(
-                this.font,
-                this.title,
-                8,
-                8,
-                0xFF202020,
-                false
-        );
+        graphics.text(this.font, this.title, 8, 8, 0xFF202020, false);
     }
 }

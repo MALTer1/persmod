@@ -124,7 +124,7 @@ public class PartMakerMenu extends StationMenu {
                         inventory,
                         row * 9 + column + 9,
                         8 + column * 18,
-                        180 + row * 18
+                        148 + row * 18
                 ));
             }
         }
@@ -134,7 +134,7 @@ public class PartMakerMenu extends StationMenu {
                     inventory,
                     column,
                     8 + column * 18,
-                    198
+                    202
             ));
         }
     }
