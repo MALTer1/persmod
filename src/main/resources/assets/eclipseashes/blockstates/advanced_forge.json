@@ -1,17 +1,17 @@
 {
     "variants": {
-        "horizontal_facing=north": {
+        "facing=north": {
             "model": "eclipseashes:block/advanced_forge",
             "y": 180
         },
-        "horizontal_facing=east": {
+        "facing=east": {
             "model": "eclipseashes:block/advanced_forge",
             "y": 270
         },
-        "horizontal_facing=south": {
+        "facing=south": {
             "model": "eclipseashes:block/advanced_forge"
         },
-        "horizontal_facing=west": {
+        "facing=west": {
             "model": "eclipseashes:block/advanced_forge",
             "y": 90
         }
