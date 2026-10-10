@@ -14,7 +14,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
-import net.minecraft.util.Prediction;
 
 public class PartMakerMenu extends StationMenu {
     public static final int CATEGORY = 0, FAMILY = 1, LENGTH = 2, SHAPE = 3, WIDTH = 4, CREATE = 60;
@@ -138,9 +137,12 @@ public class PartMakerMenu extends StationMenu {
             Slot outputSlot = this.slots.get(MENU_OUTPUT_SLOT);
             ItemStack stack = outputSlot.getItem();
             if (!stack.isEmpty()) {
-                player.getInventory().placeItemBackInInventory(stack);
-                broadcastChanges();
-                return stack;
+                ItemStack copy = stack.copy();
+                if (moveItemStackTo(stack, PLAYER_INVENTORY_START, PLAYER_INVENTORY_END, true)) {
+                    if (stack.isEmpty()) outputSlot.setByPlayer(ItemStack.EMPTY);
+                    else outputSlot.setChanged();
+                    return copy;
+                }
             }
             return ItemStack.EMPTY;
         }
