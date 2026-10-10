@@ -142,20 +142,20 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
     public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
         graphics.fill(leftPos, topPos, leftPos + imageWidth, topPos + imageHeight, 0xFFD0D0D0);
         graphics.fill(leftPos + 2, topPos + 18, leftPos + 174, topPos + 82, 0xFFB8B8B8);
-        graphics.fill(leftPos + 2, topPos + 84, leftPos + 174, topPos + 110, 0xFF9E9E9E);
-        graphics.fill(leftPos + 2, topPos + 110, leftPos + 174, topPos + 196, 0xFFB8B8B8);
+        graphics.fill(leftPos + 2, topPos + 84, leftPos + 174, topPos + 120, 0xFF9E9E9E);
+        graphics.fill(leftPos + 2, topPos + 120, leftPos + 174, topPos + 196, 0xFFB8B8B8);
 
         graphics.text(this.font, "Material", leftPos + 90, topPos + 88, 0xFF202020, false);
-        graphics.text(this.font, "Mold Output", leftPos + 90, topPos + 100, 0xFF202020, false);
-        graphics.text(this.font, "Inventory", leftPos + 4, topPos + 112, 0xFF202020, false);
+        graphics.text(this.font, "Mold Output", leftPos + 90, topPos + 106, 0xFF202020, false);
+        graphics.text(this.font, "Inventory", leftPos + 4, topPos + 122, 0xFF202020, false);
 
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 9; column++) {
-                drawSlotBackground(graphics, leftPos + 7 + column * 18, topPos + 120 + row * 18);
+                drawSlotBackground(graphics, leftPos + 7 + column * 18, topPos + 130 + row * 18);
             }
         }
         for (int column = 0; column < 9; column++) {
-            drawSlotBackground(graphics, leftPos + 7 + column * 18, topPos + 174);
+            drawSlotBackground(graphics, leftPos + 7 + column * 18, topPos + 184);
         }
     }
 
