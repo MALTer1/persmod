@@ -23,7 +23,7 @@ public final class MetalworkingRecipes {
 
         ItemStack mold = player.getInventory().getItem(moldSlot);
         CompoundTag moldData = customData(mold);
-        String material = moldData.getString("material");
+        String material = stringTag(moldData, "material");
         Item metal = findMetal(material);
         if (metal == null) {
             message(player, "This mold's material is not supported by the current casting recipes.");
@@ -37,8 +37,8 @@ public final class MetalworkingRecipes {
         }
 
         ItemStack cast = new ItemStack(ModItem.CAST_METAL);
-        CustomData.set(DataComponents.CUSTOM_DATA, cast, CustomData.of(moldData.copy()));
-        cast.set(DataComponents.CUSTOM_NAME, Component.literal(material + " Cast " + moldData.getString("category")));
+        CustomData.set(DataComponents.CUSTOM_DATA, cast, moldData.copy());
+        cast.set(DataComponents.CUSTOM_NAME, Component.literal(material + " Cast " + stringTag(moldData, "category")));
         consume(player, metalSlot, 1);
         give(player, cast);
         message(player, "Cast complete. Take the cast piece to the Modded Anvil.");
@@ -58,8 +58,8 @@ public final class MetalworkingRecipes {
 
         ItemStack cast = player.getInventory().getItem(castSlot);
         CompoundTag data = customData(cast);
-        String category = data.getString("category");
-        String material = data.getString("material");
+        String category = stringTag(data, "category");
+        String material = stringTag(data, "material");
         Item outputItem;
         String partName;
         switch (category) {
@@ -74,7 +74,7 @@ public final class MetalworkingRecipes {
         }
 
         ItemStack part = new ItemStack(outputItem);
-        CustomData.set(DataComponents.CUSTOM_DATA, part, CustomData.of(data.copy()));
+        CustomData.set(DataComponents.CUSTOM_DATA, part, data.copy());
         part.set(DataComponents.CUSTOM_NAME, Component.literal(material + " " + partName));
         consume(player, castSlot, 1);
         give(player, part);
@@ -91,9 +91,9 @@ public final class MetalworkingRecipes {
             return true;
         }
 
-        String bladeMaterial = customData(player.getInventory().getItem(bladeSlot)).getString("material");
-        String handleMaterial = customData(player.getInventory().getItem(handleSlot)).getString("material");
-        String guardMaterial = customData(player.getInventory().getItem(guardSlot)).getString("material");
+        String bladeMaterial = stringTag(customData(player.getInventory().getItem(bladeSlot)), "material");
+        String handleMaterial = stringTag(customData(player.getInventory().getItem(handleSlot)), "material");
+        String guardMaterial = stringTag(customData(player.getInventory().getItem(guardSlot)), "material");
         if (!bladeMaterial.equals(handleMaterial) || !bladeMaterial.equals(guardMaterial)) {
             message(player, "The Blade, Handle, and Guard must use the same metal.");
             return true;
@@ -102,7 +102,7 @@ public final class MetalworkingRecipes {
         ItemStack weapon = new ItemStack(ModItem.UNFINISHED_WEAPON);
         CompoundTag data = new CompoundTag();
         data.putString("material", bladeMaterial);
-        CustomData.set(DataComponents.CUSTOM_DATA, weapon, CustomData.of(data));
+        CustomData.set(DataComponents.CUSTOM_DATA, weapon, data);
         weapon.set(DataComponents.CUSTOM_NAME, Component.literal("Unfinished " + bladeMaterial + " Sword"));
         consume(player, bladeSlot, 1);
         consume(player, handleSlot, 1);
@@ -124,13 +124,13 @@ public final class MetalworkingRecipes {
             return true;
         }
 
-        String material = customData(player.getInventory().getItem(weaponSlot)).getString("material");
+        String material = stringTag(customData(player.getInventory().getItem(weaponSlot)), "material");
         ItemStack sword = new ItemStack(Items.IRON_SWORD);
         sword.set(DataComponents.CUSTOM_NAME, Component.literal("Forged " + material + " Sword"));
         CompoundTag data = new CompoundTag();
         data.putString("material", material);
         data.putString("eclipseashes_finished_weapon", "1");
-        CustomData.set(DataComponents.CUSTOM_DATA, sword, CustomData.of(data));
+        CustomData.set(DataComponents.CUSTOM_DATA, sword, data);
         consume(player, weaponSlot, 1);
         consume(player, stoneSlot, 1);
         give(player, sword);
@@ -152,6 +152,10 @@ public final class MetalworkingRecipes {
         return null;
     }
 
+    private static String stringTag(CompoundTag tag, String key) {
+        return tag.getString(key).orElse("");
+    }
+
     private static int find(Player player, Item item) {
         for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
             if (player.getInventory().getItem(i).is(item)) return i;
@@ -171,7 +175,8 @@ public final class MetalworkingRecipes {
     }
 
     private static void give(Player player, ItemStack stack) {
-        if (!player.getInventory().add(stack)) player.drop(stack, false);
+        // Recipes consume at least one ingredient, so the freed inventory slot normally accepts the result.
+        if (!player.getInventory().add(stack)) player.getInventory().placeItemBackInInventory(stack);
     }
 
     private static void message(Player player, String text) {
