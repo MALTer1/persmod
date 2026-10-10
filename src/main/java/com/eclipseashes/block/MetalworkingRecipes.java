@@ -10,10 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
 
-/**
- * Server-side recipes for the first playable metalworking loop.
- * Recipes use the player's inventory so items are never trapped in temporary menus.
- */
+/** Server-side recipes for the first playable metalworking loop. */
 public final class MetalworkingRecipes {
     private MetalworkingRecipes() {}
 
@@ -40,9 +37,7 @@ public final class MetalworkingRecipes {
         }
 
         ItemStack cast = new ItemStack(ModItem.CAST_METAL);
-        CompoundTag castData = customData(mold);
-        castData.putString("material", material);
-        CustomData.set(DataComponents.CUSTOM_DATA, cast, castData);
+        CustomData.set(DataComponents.CUSTOM_DATA, cast, CustomData.of(moldData.copy()));
         cast.set(DataComponents.CUSTOM_NAME, Component.literal(material + " Cast " + moldData.getString("category")));
         consume(player, metalSlot, 1);
         give(player, cast);
@@ -107,7 +102,7 @@ public final class MetalworkingRecipes {
         ItemStack weapon = new ItemStack(ModItem.UNFINISHED_WEAPON);
         CompoundTag data = new CompoundTag();
         data.putString("material", bladeMaterial);
-        CustomData.set(DataComponents.CUSTOM_DATA, weapon, data);
+        CustomData.set(DataComponents.CUSTOM_DATA, weapon, CustomData.of(data));
         weapon.set(DataComponents.CUSTOM_NAME, Component.literal("Unfinished " + bladeMaterial + " Sword"));
         consume(player, bladeSlot, 1);
         consume(player, handleSlot, 1);
@@ -129,14 +124,13 @@ public final class MetalworkingRecipes {
             return true;
         }
 
-        ItemStack unfinished = player.getInventory().getItem(weaponSlot);
-        String material = customData(unfinished).getString("material");
+        String material = customData(player.getInventory().getItem(weaponSlot)).getString("material");
         ItemStack sword = new ItemStack(Items.IRON_SWORD);
         sword.set(DataComponents.CUSTOM_NAME, Component.literal("Forged " + material + " Sword"));
         CompoundTag data = new CompoundTag();
         data.putString("material", material);
         data.putString("eclipseashes_finished_weapon", "1");
-        CustomData.set(DataComponents.CUSTOM_DATA, sword, data);
+        CustomData.set(DataComponents.CUSTOM_DATA, sword, CustomData.of(data));
         consume(player, weaponSlot, 1);
         consume(player, stoneSlot, 1);
         give(player, sword);
@@ -145,16 +139,16 @@ public final class MetalworkingRecipes {
     }
 
     private static Item findMetal(String material) {
-        if (material.equals(Items.IRON_INGOT.getName().getString())) return Items.IRON_INGOT;
-        if (material.equals(Items.COPPER_INGOT.getName().getString())) return Items.COPPER_INGOT;
-        if (material.equals(Items.GOLD_INGOT.getName().getString())) return Items.GOLD_INGOT;
-        if (material.equals(ModItem.CRIMSON_IRON.getName().getString())) return ModItem.CRIMSON_IRON;
-        if (material.equals(ModItem.MOONSTEEL.getName().getString())) return ModItem.MOONSTEEL;
-        if (material.equals(ModItem.SUNSTEEL.getName().getString())) return ModItem.SUNSTEEL;
-        if (material.equals(ModItem.DRAGONITE.getName().getString())) return ModItem.DRAGONITE;
-        if (material.equals(ModItem.VOID_CRYSTAL.getName().getString())) return ModItem.VOID_CRYSTAL;
-        if (material.equals(ModItem.CELESTIAL_ALLOY.getName().getString())) return ModItem.CELESTIAL_ALLOY;
-        if (material.equals(ModItem.ECLIPSE.getName().getString())) return ModItem.ECLIPSE;
+        if (material.equals("Iron Ingot")) return Items.IRON_INGOT;
+        if (material.equals("Copper Ingot")) return Items.COPPER_INGOT;
+        if (material.equals("Gold Ingot")) return Items.GOLD_INGOT;
+        if (material.equals("Crimson Iron")) return ModItem.CRIMSON_IRON;
+        if (material.equals("Moonsteel")) return ModItem.MOONSTEEL;
+        if (material.equals("Sunsteel")) return ModItem.SUNSTEEL;
+        if (material.equals("Dragonite")) return ModItem.DRAGONITE;
+        if (material.equals("Void Crystal")) return ModItem.VOID_CRYSTAL;
+        if (material.equals("Celestial Alloy")) return ModItem.CELESTIAL_ALLOY;
+        if (material.equals("Eclipse")) return ModItem.ECLIPSE;
         return null;
     }
 
