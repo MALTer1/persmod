@@ -55,8 +55,8 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
         int x = dropdownId >= 3 ? 90 : 4;
         int y = dropdownId == 0 || dropdownId == 3 ? 22
                 : dropdownId == 1 || dropdownId == 4 ? 42 : 62;
-        // Drop the list below the control that owns it; options overlay the panel intentionally.
-        int optionY = y + 18;
+        // Open each dropdown upward so it does not cover the controls below it.
+        int optionY = y - (options.length + 1) * 16;
         buttons[0] = addRenderableWidget(makeButton("None", x, optionY, 82, 16, () -> {
             pressMenuButton(packetBase - 1);
             closeAllDropdowns();
@@ -144,6 +144,10 @@ public class PartMakerScreen extends StationScreen<PartMakerMenu> {
         graphics.fill(leftPos + 2, topPos + 18, leftPos + 174, topPos + 82, 0xFFB8B8B8);
         graphics.fill(leftPos + 2, topPos + 84, leftPos + 174, topPos + 120, 0xFF9E9E9E);
         graphics.fill(leftPos + 2, topPos + 120, leftPos + 174, topPos + 196, 0xFFB8B8B8);
+
+        // Clearly mark the material and output slots behind the menu's clickable slots.
+        drawSlotBackground(graphics, leftPos + 146, topPos + 84);
+        drawSlotBackground(graphics, leftPos + 146, topPos + 102);
 
         graphics.text(this.font, "Material", leftPos + 90, topPos + 88, 0xFF202020, false);
         graphics.text(this.font, "Mold Output", leftPos + 90, topPos + 106, 0xFF202020, false);
