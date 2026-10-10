@@ -49,21 +49,21 @@ public class PartMakerMenu extends StationMenu {
         addDataSlot(widthData);
 
         // Dedicated material/output strip below the controls.
-        addSlot(new Slot(input, INPUT_CONTAINER_SLOT, 116, 92) {
+        addSlot(new Slot(input, INPUT_CONTAINER_SLOT, 146, 84) {
             @Override public boolean mayPlace(ItemStack stack) { return isMaterial(stack); }
         });
-        addSlot(new Slot(output, OUTPUT_CONTAINER_SLOT, 146, 92) {
+        addSlot(new Slot(output, OUTPUT_CONTAINER_SLOT, 146, 102) {
             @Override public boolean mayPlace(ItemStack stack) { return false; }
         });
 
         // These positions match the backgrounds drawn by PartMakerScreen.
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 9; column++) {
-                addSlot(new Slot(inventory, row * 9 + column + 9, 7 + column * 18, 120 + row * 18));
+                addSlot(new Slot(inventory, row * 9 + column + 9, 7 + column * 18, 130 + row * 18));
             }
         }
         for (int column = 0; column < 9; column++) {
-            addSlot(new Slot(inventory, column, 7 + column * 18, 174));
+            addSlot(new Slot(inventory, column, 7 + column * 18, 184));
         }
     }
 
