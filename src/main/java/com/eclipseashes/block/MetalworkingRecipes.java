@@ -1,6 +1,7 @@
 package com.eclipseashes.block;
 
 import com.eclipseashes.item.ModItem;
+import com.eclipseashes.block.ModBlocks;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -47,10 +48,7 @@ public final class MetalworkingRecipes {
 
     public static boolean shapeCast(Player player) {
         int castSlot = find(player, ModItem.CAST_METAL);
-        if (castSlot < 0) {
-            message(player, "Bring a cast piece to the Modded Anvil.");
-            return true;
-        }
+        if (castSlot < 0) return forgeBlock(player);
         if (find(player, ModItem.BLACKSMITH_HAMMER) < 0) {
             message(player, "You need a Blacksmith Hammer in your inventory to shape metal.");
             return true;
@@ -142,6 +140,8 @@ public final class MetalworkingRecipes {
         if (material.equals("Iron Ingot")) return Items.IRON_INGOT;
         if (material.equals("Copper Ingot")) return Items.COPPER_INGOT;
         if (material.equals("Gold Ingot")) return Items.GOLD_INGOT;
+        if (material.equals("Diamond")) return Items.DIAMOND;
+        if (material.equals("Netherite Ingot")) return Items.NETHERITE_INGOT;
         if (material.equals("Crimson Iron")) return ModItem.CRIMSON_IRON;
         if (material.equals("Moonsteel")) return ModItem.MOONSTEEL;
         if (material.equals("Sunsteel")) return ModItem.SUNSTEEL;
@@ -150,6 +150,41 @@ public final class MetalworkingRecipes {
         if (material.equals("Celestial Alloy")) return ModItem.CELESTIAL_ALLOY;
         if (material.equals("Eclipse")) return ModItem.ECLIPSE;
         return null;
+    }
+
+    private static boolean forgeBlock(Player player) {
+        Item[] ingots = {ModItem.CRIMSON_IRON, ModItem.MOONSTEEL, ModItem.SUNSTEEL, ModItem.DRAGONITE, ModItem.VOID_CRYSTAL, ModItem.CELESTIAL_ALLOY, ModItem.ECLIPSE};
+        Item[] blocks = {ModBlocks.CRIMSON_IRON_BLOCK.asItem(), ModBlocks.MOONSTEEL_BLOCK.asItem(), ModBlocks.SUNSTEEL_BLOCK.asItem(), ModBlocks.DRAGONITE_BLOCK.asItem(), ModBlocks.VOID_CRYSTAL_BLOCK.asItem(), ModBlocks.CELESTIAL_ALLOY_BLOCK.asItem(), ModBlocks.ECLIPSE_BLOCK.asItem()};
+        for (int i = 0; i < ingots.length; i++) {
+            if (count(player, ingots[i]) >= 9) {
+                consumeMatching(player, ingots[i], 9);
+                give(player, new ItemStack(blocks[i]));
+                message(player, "Forged a metal block from nine matching ingots.");
+                return true;
+            }
+        }
+        message(player, "Bring a cast piece and Blacksmith Hammer, or nine matching metal ingots to forge a block.");
+        return true;
+    }
+
+    private static int count(Player player, Item item) {
+        int count = 0;
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            ItemStack stack = player.getInventory().getItem(i);
+            if (stack.is(item)) count += stack.getCount();
+        }
+        return count;
+    }
+
+    private static void consumeMatching(Player player, Item item, int amount) {
+        for (int i = 0; i < player.getInventory().getContainerSize() && amount > 0; i++) {
+            ItemStack stack = player.getInventory().getItem(i);
+            if (!stack.is(item)) continue;
+            int taken = Math.min(amount, stack.getCount());
+            stack.shrink(taken);
+            amount -= taken;
+            if (stack.isEmpty()) player.getInventory().setItem(i, ItemStack.EMPTY);
+        }
     }
 
     private static String stringTag(CompoundTag tag, String key) {
