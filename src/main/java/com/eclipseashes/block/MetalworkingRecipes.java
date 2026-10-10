@@ -153,6 +153,10 @@ public final class MetalworkingRecipes {
     }
 
     private static boolean forgeBlock(Player player) {
+        if (find(player, ModItem.BLACKSMITH_HAMMER) < 0) {
+            message(player, "You need a Blacksmith Hammer to forge metal blocks.");
+            return true;
+        }
         Item[] ingots = {ModItem.CRIMSON_IRON, ModItem.MOONSTEEL, ModItem.SUNSTEEL, ModItem.DRAGONITE, ModItem.VOID_CRYSTAL, ModItem.CELESTIAL_ALLOY, ModItem.ECLIPSE};
         Item[] blocks = {ModBlocks.CRIMSON_IRON_BLOCK.asItem(), ModBlocks.MOONSTEEL_BLOCK.asItem(), ModBlocks.SUNSTEEL_BLOCK.asItem(), ModBlocks.DRAGONITE_BLOCK.asItem(), ModBlocks.VOID_CRYSTAL_BLOCK.asItem(), ModBlocks.CELESTIAL_ALLOY_BLOCK.asItem(), ModBlocks.ECLIPSE_BLOCK.asItem()};
         for (int i = 0; i < ingots.length; i++) {
