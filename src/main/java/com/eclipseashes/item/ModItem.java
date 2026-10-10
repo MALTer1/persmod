@@ -8,25 +8,18 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 
 public class ModItem {
-
     public static final Item CRIMSON_IRON = register("crimson_iron");
     public static final Item RAW_CRIMSON_IRON = register("raw_crimson_iron");
-
     public static final Item MOONSTEEL = register("moonsteel");
     public static final Item RAW_MOONSTEEL = register("raw_moonsteel");
-
     public static final Item SUNSTEEL = register("sunsteel");
     public static final Item RAW_SUNSTEEL = register("raw_sunsteel");
-
     public static final Item DRAGONITE = register("dragonite");
     public static final Item RAW_DRAGONITE = register("raw_dragonite");
-
     public static final Item VOID_CRYSTAL = register("void_crystal");
     public static final Item RAW_VOID_CRYSTAL = register("raw_void_crystal");
-
     public static final Item CELESTIAL_ALLOY = register("celestial_alloy");
     public static final Item RAW_CELESTIAL_ALLOY = register("raw_celestial_alloy");
-
     public static final Item ECLIPSE = register("eclipse");
     public static final Item RAW_ECLIPSE = register("raw_eclipse");
 
@@ -45,22 +38,20 @@ public class ModItem {
     public static final Item UNREFINED_ECLIPSE = register("unrefined_eclipse");
     public static final Item REFINED_ECLIPSE = register("refined_eclipse");
 
-    // One item type stores all mold configuration in its custom data.
+    // Configured mold metadata determines the metal and shape of a cast piece.
     public static final Item MOLD = register("mold");
+    public static final Item CAST_METAL = register("cast_metal");
+    public static final Item BLACKSMITH_HAMMER = register("blacksmith_hammer");
+    public static final Item METAL_PLATE = register("metal_plate");
+    public static final Item FORGED_BLADE = register("forged_blade");
+    public static final Item FORGED_HANDLE = register("forged_handle");
+    public static final Item FORGED_GUARD = register("forged_guard");
+    public static final Item UNFINISHED_WEAPON = register("unfinished_weapon");
+    public static final Item SHARPENING_STONE = register("sharpening_stone");
 
     private static Item register(String name) {
-        ResourceKey<Item> key = ResourceKey.create(
-                Registries.ITEM,
-                EclipseAshes.id(name)
-        );
-
-        return Registry.register(
-                BuiltInRegistries.ITEM,
-                key,
-                new Item(
-                        new Item.Properties().setId(key)
-                )
-        );
+        ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, EclipseAshes.id(name));
+        return Registry.register(BuiltInRegistries.ITEM, key, new Item(new Item.Properties().setId(key)));
     }
 
     public static void initialize() {

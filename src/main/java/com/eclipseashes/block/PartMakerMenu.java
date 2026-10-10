@@ -27,9 +27,9 @@ public class PartMakerMenu extends StationMenu {
     private static final String[] SHAPES = {"Straight", "Curved"};
     private static final String[] WIDTHS = {"Narrow", "Standard", "Wide"};
     private static final Item[] MATERIAL_ITEMS = {
-        Items.OAK_PLANKS, Items.COPPER_INGOT, Items.IRON_INGOT, Items.GOLD_INGOT,
-        Items.DIAMOND, Items.NETHERITE_INGOT, ModItem.CRIMSON_IRON, ModItem.MOONSTEEL,
-        ModItem.SUNSTEEL, ModItem.DRAGONITE, ModItem.VOID_CRYSTAL, ModItem.CELESTIAL_ALLOY, ModItem.ECLIPSE
+        Items.COPPER_INGOT, Items.IRON_INGOT, Items.GOLD_INGOT, Items.DIAMOND,
+        Items.NETHERITE_INGOT, ModItem.CRIMSON_IRON, ModItem.MOONSTEEL, ModItem.SUNSTEEL,
+        ModItem.DRAGONITE, ModItem.VOID_CRYSTAL, ModItem.CELESTIAL_ALLOY, ModItem.ECLIPSE
     };
 
     private final Container input = new SimpleContainer(1);
@@ -48,7 +48,6 @@ public class PartMakerMenu extends StationMenu {
         addDataSlot(shapeData);
         addDataSlot(widthData);
 
-        // Dedicated material/output strip below the controls.
         addSlot(new Slot(input, INPUT_CONTAINER_SLOT, 146, 84) {
             @Override public boolean mayPlace(ItemStack stack) { return isMaterial(stack); }
         });
@@ -56,7 +55,6 @@ public class PartMakerMenu extends StationMenu {
             @Override public boolean mayPlace(ItemStack stack) { return false; }
         });
 
-        // These positions match the backgrounds drawn by PartMakerScreen.
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 9; column++) {
                 addSlot(new Slot(inventory, row * 9 + column + 9, 7 + column * 18, 130 + row * 18));
@@ -92,7 +90,7 @@ public class PartMakerMenu extends StationMenu {
         if (!output.getItem(OUTPUT_CONTAINER_SLOT).isEmpty()) return;
         ItemStack materialStack = input.getItem(INPUT_CONTAINER_SLOT);
         if (!isMaterial(materialStack)) {
-            player.sendSystemMessage(Component.literal("Put a usable material in the material slot first."));
+            player.sendSystemMessage(Component.literal("Put a usable metal or gem material in the material slot first."));
             return;
         }
         if (categoryData.get() < 0 || familyData.get() < 0 || lengthData.get() < 0 || shapeData.get() < 0 || widthData.get() < 0) {
