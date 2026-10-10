@@ -16,78 +16,24 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
 
 public class PartMakerMenu extends StationMenu {
+    public static final int CATEGORY = 0, FAMILY = 1, LENGTH = 2, SHAPE = 3, WIDTH = 4, CREATE = 60;
+    private static final int CATEGORY_OPTION_BASE = 10, FAMILY_OPTION_BASE = 20, LENGTH_OPTION_BASE = 30, SHAPE_OPTION_BASE = 40, WIDTH_OPTION_BASE = 50;
+    private static final int INPUT_CONTAINER_SLOT = 0, OUTPUT_CONTAINER_SLOT = 0;
+    private static final int MENU_INPUT_SLOT = 0, MENU_OUTPUT_SLOT = 1, PLAYER_INVENTORY_START = 2, PLAYER_INVENTORY_END = 38;
 
-    public static final int CATEGORY = 0;
-    public static final int FAMILY = 1;
-    public static final int LENGTH = 2;
-    public static final int SHAPE = 3;
-    public static final int WIDTH = 4;
-    public static final int CREATE = 60;
-
-    private static final int CATEGORY_OPTION_BASE = 10;
-    private static final int FAMILY_OPTION_BASE = 20;
-    private static final int LENGTH_OPTION_BASE = 30;
-    private static final int SHAPE_OPTION_BASE = 40;
-    private static final int WIDTH_OPTION_BASE = 50;
-
-    private static final int INPUT_CONTAINER_SLOT = 0;
-    private static final int OUTPUT_CONTAINER_SLOT = 0;
-
-    private static final int MENU_INPUT_SLOT = 0;
-    private static final int MENU_OUTPUT_SLOT = 1;
-    private static final int PLAYER_INVENTORY_START = 2;
-    private static final int PLAYER_INVENTORY_END = 38;
-
-    private static final String[] CATEGORIES = {
-            "Basic Part",
-            "Head",
-            "Handle",
-            "Connector"
-    };
-
-    private static final String[] FAMILIES = {
-            "Structural",
-            "Utility",
-            "Decorative",
-            "Mechanical"
-    };
-
-    private static final String[] LENGTHS = {
-            "Short",
-            "Standard",
-            "Long"
-    };
-
-    private static final String[] SHAPES = {
-            "Straight",
-            "Curved"
-    };
-
-    private static final String[] WIDTHS = {
-            "Narrow",
-            "Standard",
-            "Wide"
-    };
-
+    private static final String[] CATEGORIES = {"Basic Part", "Head", "Handle", "Connector"};
+    private static final String[] FAMILIES = {"Structural", "Utility", "Decorative", "Mechanical"};
+    private static final String[] LENGTHS = {"Short", "Standard", "Long"};
+    private static final String[] SHAPES = {"Straight", "Curved"};
+    private static final String[] WIDTHS = {"Narrow", "Standard", "Wide"};
     private static final Item[] MATERIAL_ITEMS = {
-            Items.OAK_PLANKS,
-            Items.COPPER_INGOT,
-            Items.IRON_INGOT,
-            Items.GOLD_INGOT,
-            Items.DIAMOND,
-            Items.NETHERITE_INGOT,
-            ModItem.CRIMSON_IRON,
-            ModItem.MOONSTEEL,
-            ModItem.SUNSTEEL,
-            ModItem.DRAGONITE,
-            ModItem.VOID_CRYSTAL,
-            ModItem.CELESTIAL_ALLOY,
-            ModItem.ECLIPSE
+        Items.OAK_PLANKS, Items.COPPER_INGOT, Items.IRON_INGOT, Items.GOLD_INGOT,
+        Items.DIAMOND, Items.NETHERITE_INGOT, ModItem.CRIMSON_IRON, ModItem.MOONSTEEL,
+        ModItem.SUNSTEEL, ModItem.DRAGONITE, ModItem.VOID_CRYSTAL, ModItem.CELESTIAL_ALLOY, ModItem.ECLIPSE
     };
 
     private final Container input = new SimpleContainer(1);
     private final Container output = new SimpleContainer(1);
-
     private final DataSlot categoryData = DataSlot.standalone();
     private final DataSlot familyData = DataSlot.standalone();
     private final DataSlot lengthData = DataSlot.standalone();
@@ -96,122 +42,66 @@ public class PartMakerMenu extends StationMenu {
 
     public PartMakerMenu(int containerId, Inventory inventory) {
         super(ModMenuTypes.PART_MAKER, containerId);
-
         addDataSlot(categoryData);
         addDataSlot(familyData);
         addDataSlot(lengthData);
         addDataSlot(shapeData);
         addDataSlot(widthData);
 
-        addSlot(new Slot(input, INPUT_CONTAINER_SLOT, 142, 22) {
-            @Override
-            public boolean mayPlace(ItemStack stack) {
-                return isMaterial(stack);
-            }
+        // Dedicated material/output strip below the controls.
+        addSlot(new Slot(input, INPUT_CONTAINER_SLOT, 116, 92) {
+            @Override public boolean mayPlace(ItemStack stack) { return isMaterial(stack); }
+        });
+        addSlot(new Slot(output, OUTPUT_CONTAINER_SLOT, 146, 92) {
+            @Override public boolean mayPlace(ItemStack stack) { return false; }
         });
 
-        addSlot(new Slot(output, OUTPUT_CONTAINER_SLOT, 142, 50) {
-            @Override
-            public boolean mayPlace(ItemStack stack) {
-                return false;
-            }
-        });
-
+        // These positions match the backgrounds drawn by PartMakerScreen.
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 9; column++) {
-                addSlot(new Slot(
-                        inventory,
-                        row * 9 + column + 9,
-                        8 + column * 18,
-                        138 + row * 18
-                ));
+                addSlot(new Slot(inventory, row * 9 + column + 9, 7 + column * 18, 120 + row * 18));
             }
         }
-
         for (int column = 0; column < 9; column++) {
-            addSlot(new Slot(
-                    inventory,
-                    column,
-                    8 + column * 18,
-                    192
-            ));
+            addSlot(new Slot(inventory, column, 7 + column * 18, 174));
         }
     }
 
     @Override
     public boolean clickMenuButton(Player player, int id) {
-        if (id == CREATE) {
-            createMold(player);
-            return true;
+        if (id == CREATE) { createMold(player); return true; }
+        if (id >= CATEGORY_OPTION_BASE - 1 && id < CATEGORY_OPTION_BASE + CATEGORIES.length) {
+            categoryData.set(id - CATEGORY_OPTION_BASE); broadcastChanges(); return true;
         }
-
-        if (id >= CATEGORY_OPTION_BASE - 1
-                && id < CATEGORY_OPTION_BASE + CATEGORIES.length) {
-            categoryData.set(id - CATEGORY_OPTION_BASE);
-            broadcastChanges();
-            return true;
+        if (id >= FAMILY_OPTION_BASE - 1 && id < FAMILY_OPTION_BASE + FAMILIES.length) {
+            familyData.set(id - FAMILY_OPTION_BASE); broadcastChanges(); return true;
         }
-
-        if (id >= FAMILY_OPTION_BASE - 1
-                && id < FAMILY_OPTION_BASE + FAMILIES.length) {
-            familyData.set(id - FAMILY_OPTION_BASE);
-            broadcastChanges();
-            return true;
+        if (id >= LENGTH_OPTION_BASE - 1 && id < LENGTH_OPTION_BASE + LENGTHS.length) {
+            lengthData.set(id - LENGTH_OPTION_BASE); broadcastChanges(); return true;
         }
-
-        if (id >= LENGTH_OPTION_BASE - 1
-                && id < LENGTH_OPTION_BASE + LENGTHS.length) {
-            lengthData.set(id - LENGTH_OPTION_BASE);
-            broadcastChanges();
-            return true;
+        if (id >= SHAPE_OPTION_BASE - 1 && id < SHAPE_OPTION_BASE + SHAPES.length) {
+            shapeData.set(id - SHAPE_OPTION_BASE); broadcastChanges(); return true;
         }
-
-        if (id >= SHAPE_OPTION_BASE - 1
-                && id < SHAPE_OPTION_BASE + SHAPES.length) {
-            shapeData.set(id - SHAPE_OPTION_BASE);
-            broadcastChanges();
-            return true;
+        if (id >= WIDTH_OPTION_BASE - 1 && id < WIDTH_OPTION_BASE + WIDTHS.length) {
+            widthData.set(id - WIDTH_OPTION_BASE); broadcastChanges(); return true;
         }
-
-        if (id >= WIDTH_OPTION_BASE - 1
-                && id < WIDTH_OPTION_BASE + WIDTHS.length) {
-            widthData.set(id - WIDTH_OPTION_BASE);
-            broadcastChanges();
-            return true;
-        }
-
         return false;
     }
 
     private void createMold(Player player) {
-        if (!output.getItem(OUTPUT_CONTAINER_SLOT).isEmpty()) {
-            return;
-        }
-
+        if (!output.getItem(OUTPUT_CONTAINER_SLOT).isEmpty()) return;
         ItemStack materialStack = input.getItem(INPUT_CONTAINER_SLOT);
-
         if (!isMaterial(materialStack)) {
-            player.sendSystemMessage(
-                    Component.literal("Put a usable material in the material slot first.")
-            );
+            player.sendSystemMessage(Component.literal("Put a usable material in the material slot first."));
             return;
         }
-
-        if (categoryData.get() < 0
-                || familyData.get() < 0
-                || lengthData.get() < 0
-                || shapeData.get() < 0
-                || widthData.get() < 0) {
-            player.sendSystemMessage(
-                    Component.literal("Select all mold options before creating a mold.")
-            );
+        if (categoryData.get() < 0 || familyData.get() < 0 || lengthData.get() < 0 || shapeData.get() < 0 || widthData.get() < 0) {
+            player.sendSystemMessage(Component.literal("Select all mold options before creating a mold."));
             return;
         }
 
         String materialName = materialStack.getHoverName().getString();
-
         ItemStack mold = new ItemStack(ModItem.MOLD);
-
         CompoundTag tag = new CompoundTag();
         tag.putString("eclipse_ashes_mold", "1");
         tag.putString("category", CATEGORIES[categoryData.get()]);
@@ -220,101 +110,56 @@ public class PartMakerMenu extends StationMenu {
         tag.putString("shape", SHAPES[shapeData.get()]);
         tag.putString("width", WIDTHS[widthData.get()]);
         tag.putString("material", materialName);
-
         CustomData.set(DataComponents.CUSTOM_DATA, mold, tag);
-
-        mold.set(
-                DataComponents.CUSTOM_NAME,
-                Component.literal(
-                        materialName
-                                + " "
-                                + FAMILIES[familyData.get()]
-                                + " "
-                                + CATEGORIES[categoryData.get()]
-                                + " Mold"
-                )
-        );
-
+        mold.set(DataComponents.CUSTOM_NAME, Component.literal(materialName + " " + FAMILIES[familyData.get()] + " " + CATEGORIES[categoryData.get()] + " Mold"));
         input.removeItem(INPUT_CONTAINER_SLOT, 1);
         output.setItem(OUTPUT_CONTAINER_SLOT, mold);
         broadcastChanges();
     }
 
     private boolean isMaterial(ItemStack stack) {
-        if (stack.isEmpty()) {
-            return false;
-        }
-
-        for (Item item : MATERIAL_ITEMS) {
-            if (stack.is(item)) {
-                return true;
-            }
-        }
-
+        if (stack.isEmpty()) return false;
+        for (Item item : MATERIAL_ITEMS) if (stack.is(item)) return true;
         return false;
     }
 
-    public String getCategoryName() {
-        return categoryData.get() < 0 ? "None" : CATEGORIES[categoryData.get()];
-    }
+    public String getCategoryName() { return categoryData.get() < 0 ? "None" : CATEGORIES[categoryData.get()]; }
+    public String getFamilyName() { return familyData.get() < 0 ? "None" : FAMILIES[familyData.get()]; }
+    public String getLengthName() { return lengthData.get() < 0 ? "None" : LENGTHS[lengthData.get()]; }
+    public String getShapeName() { return shapeData.get() < 0 ? "None" : SHAPES[shapeData.get()]; }
+    public String getWidthName() { return widthData.get() < 0 ? "None" : WIDTHS[widthData.get()]; }
 
-    public String getFamilyName() {
-        return familyData.get() < 0 ? "None" : FAMILIES[familyData.get()];
-    }
-
-    public String getLengthName() {
-        return lengthData.get() < 0 ? "None" : LENGTHS[lengthData.get()];
-    }
-
-    public String getShapeName() {
-        return shapeData.get() < 0 ? "None" : SHAPES[shapeData.get()];
-    }
-
-    public String getWidthName() {
-        return widthData.get() < 0 ? "None" : WIDTHS[widthData.get()];
-    }
-
-    @Override
-    public boolean stillValid(Player player) {
-        return player.isAlive();
-    }
+    @Override public boolean stillValid(Player player) { return player.isAlive(); }
 
     @Override
     public ItemStack quickMoveStack(Player player, int slotIndex) {
         if (slotIndex == MENU_OUTPUT_SLOT) {
-            ItemStack stack = output.removeItemNoUpdate(OUTPUT_CONTAINER_SLOT);
-
+            Slot outputSlot = this.slots.get(MENU_OUTPUT_SLOT);
+            ItemStack stack = outputSlot.getItem();
             if (!stack.isEmpty()) {
-                player.getInventory().placeItemBackInInventory(stack);
-                broadcastChanges();
-                return stack;
+                ItemStack copy = stack.copy();
+                if (moveItemStackTo(stack, PLAYER_INVENTORY_START, PLAYER_INVENTORY_END, true)) {
+                    outputSlot.setByPlayer(stack.isEmpty() ? ItemStack.EMPTY : stack);
+                    outputSlot.setChanged();
+                    broadcastChanges();
+                    return copy;
+                }
             }
+            return ItemStack.EMPTY;
         }
 
         if (slotIndex >= PLAYER_INVENTORY_START && slotIndex < PLAYER_INVENTORY_END) {
             Slot slot = this.slots.get(slotIndex);
             ItemStack stack = slot.getItem();
-
             if (!stack.isEmpty() && isMaterial(stack)) {
                 ItemStack copy = stack.copy();
-
-                if (moveItemStackTo(
-                        stack,
-                        MENU_INPUT_SLOT,
-                        MENU_INPUT_SLOT + 1,
-                        false
-                )) {
-                    if (stack.isEmpty()) {
-                        slot.setByPlayer(ItemStack.EMPTY);
-                    } else {
-                        slot.setChanged();
-                    }
-
+                if (moveItemStackTo(stack, MENU_INPUT_SLOT, MENU_INPUT_SLOT + 1, false)) {
+                    if (stack.isEmpty()) slot.setByPlayer(ItemStack.EMPTY);
+                    else slot.setChanged();
                     return copy;
                 }
             }
         }
-
         return ItemStack.EMPTY;
     }
 }
