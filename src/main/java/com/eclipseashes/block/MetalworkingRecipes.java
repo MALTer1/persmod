@@ -210,8 +210,8 @@ public final class MetalworkingRecipes {
     }
 
     private static void give(Player player, ItemStack stack) {
-        // Recipes consume at least one ingredient, so the freed inventory slot normally accepts the result.
-        if (!player.getInventory().add(stack)) player.getInventory().placeItemBackInInventory(stack);
+        // Each recipe consumes ingredients first, freeing inventory space for its result.
+        player.getInventory().add(stack);
     }
 
     private static void message(Player player, String text) {
