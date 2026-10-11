@@ -116,6 +116,11 @@ public final class MetalworkingRecipes {
             message(player, "You need a Sharpening Stone to finish the weapon.");
             return true;
         }
+        int waterSlot = find(player, Items.WATER_BUCKET);
+        if (waterSlot < 0) {
+            message(player, "You need a Water Bucket to quench the weapon before sharpening.");
+            return true;
+        }
 
         String material = stringTag(customData(player.getInventory().getItem(weaponSlot)), "material");
         ItemStack sword = new ItemStack(Items.IRON_SWORD);
@@ -126,6 +131,8 @@ public final class MetalworkingRecipes {
         CustomData.set(DataComponents.CUSTOM_DATA, sword, data);
         consume(player, weaponSlot, 1);
         consume(player, stoneSlot, 1);
+        consume(player, waterSlot, 1);
+        give(player, new ItemStack(Items.BUCKET));
         give(player, sword);
         message(player, "Quenching and sharpening complete. Your sword is ready to use.");
         return true;
