@@ -146,12 +146,12 @@ public final class MetalworkingRecipes {
             return true;
         }
         Item[] ingots = {
-                Items.IRON_INGOT, Items.COPPER_INGOT, Items.GOLD_INGOT, Items.DIAMOND, Items.NETHERITE_INGOT,
+                Items.IRON_INGOT, Items.GOLD_INGOT, Items.DIAMOND, Items.NETHERITE_INGOT,
                 ModItem.CRIMSON_IRON, ModItem.MOONSTEEL, ModItem.SUNSTEEL, ModItem.DRAGONITE,
                 ModItem.VOID_CRYSTAL, ModItem.CELESTIAL_ALLOY, ModItem.ECLIPSE
         };
         Item[] blocks = {
-                Blocks.IRON_BLOCK.asItem(), Blocks.COPPER_BLOCK.asItem(), Blocks.GOLD_BLOCK.asItem(), Blocks.DIAMOND_BLOCK.asItem(), Blocks.NETHERITE_BLOCK.asItem(),
+                Blocks.IRON_BLOCK.asItem(), Blocks.GOLD_BLOCK.asItem(), Blocks.DIAMOND_BLOCK.asItem(), Blocks.NETHERITE_BLOCK.asItem(),
                 ModBlocks.CRIMSON_IRON_BLOCK.asItem(), ModBlocks.MOONSTEEL_BLOCK.asItem(),
                 ModBlocks.SUNSTEEL_BLOCK.asItem(), ModBlocks.DRAGONITE_BLOCK.asItem(),
                 ModBlocks.VOID_CRYSTAL_BLOCK.asItem(), ModBlocks.CELESTIAL_ALLOY_BLOCK.asItem(),
