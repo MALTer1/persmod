@@ -1,6 +1,7 @@
 package com.eclipseashes.block;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -12,7 +13,13 @@ public class ModdedAnvilBlock extends Block {
 
     @Override
     protected InteractionResult useWithoutItem(net.minecraft.world.level.block.state.BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        if (!level.isClientSide()) MetalworkingRecipes.shapeCast(player);
+        if (!level.isClientSide()) {
+            if (!WorkshopManager.isStationInWorkshop(level, pos)) {
+                player.sendSystemMessage(Component.literal("Modded Anvil must be placed in a workshop."));
+                return InteractionResult.SUCCESS;
+            }
+            MetalworkingRecipes.shapeCast(player);
+        }
         return InteractionResult.SUCCESS;
     }
 }
