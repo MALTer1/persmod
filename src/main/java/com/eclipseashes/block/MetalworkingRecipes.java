@@ -9,6 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.item.component.CustomData;
 
 /** Server-side recipes for the first playable metalworking loop. */
@@ -150,7 +151,7 @@ public final class MetalworkingRecipes {
                 ModItem.VOID_CRYSTAL, ModItem.CELESTIAL_ALLOY, ModItem.ECLIPSE
         };
         Item[] blocks = {
-                Items.IRON_BLOCK, Items.COPPER_BLOCK, Items.GOLD_BLOCK, Items.DIAMOND_BLOCK, Items.NETHERITE_BLOCK,
+                Blocks.IRON_BLOCK.asItem(), Blocks.COPPER_BLOCK.asItem(), Blocks.GOLD_BLOCK.asItem(), Blocks.DIAMOND_BLOCK.asItem(), Blocks.NETHERITE_BLOCK.asItem(),
                 ModBlocks.CRIMSON_IRON_BLOCK.asItem(), ModBlocks.MOONSTEEL_BLOCK.asItem(),
                 ModBlocks.SUNSTEEL_BLOCK.asItem(), ModBlocks.DRAGONITE_BLOCK.asItem(),
                 ModBlocks.VOID_CRYSTAL_BLOCK.asItem(), ModBlocks.CELESTIAL_ALLOY_BLOCK.asItem(),
