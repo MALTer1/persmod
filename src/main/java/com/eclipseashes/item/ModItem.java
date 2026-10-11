@@ -41,6 +41,7 @@ public class ModItem {
     // Configured mold metadata determines the metal and shape of a cast piece.
     public static final Item MOLD = register("mold");
     public static final Item CAST_METAL = register("cast_metal");
+    public static final Item HEATED_METAL = register("heated_metal");
     public static final Item BLACKSMITH_HAMMER = register("blacksmith_hammer");
     public static final Item METAL_PLATE = register("metal_plate");
     public static final Item FORGED_BLADE = register("forged_blade");
