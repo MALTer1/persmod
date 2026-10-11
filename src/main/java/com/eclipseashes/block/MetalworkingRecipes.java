@@ -28,6 +28,12 @@ public final class MetalworkingRecipes {
         ItemStack mold = player.getInventory().getItem(moldSlot);
         CompoundTag moldData = customData(mold);
         String material = stringTag(moldData, "material");
+        String category = stringTag(moldData, "category");
+        if (!"1".equals(stringTag(moldData, "eclipse_ashes_mold"))
+                || material.isBlank() || category.isBlank()) {
+            message(player, "This Mold is not configured. Recreate it at the Part Maker.");
+            return true;
+        }
         int metalSlot = findHeatedMetal(player, material);
         if (metalSlot < 0) {
             message(player, "Heat one " + material + " in the Metal Forge first, then bring the Heated Metal here.");
@@ -89,7 +95,7 @@ public final class MetalworkingRecipes {
         String bladeMaterial = stringTag(customData(player.getInventory().getItem(bladeSlot)), "material");
         String handleMaterial = stringTag(customData(player.getInventory().getItem(handleSlot)), "material");
         String guardMaterial = stringTag(customData(player.getInventory().getItem(guardSlot)), "material");
-        if (!bladeMaterial.equals(handleMaterial) || !bladeMaterial.equals(guardMaterial)) {
+        if (bladeMaterial.isBlank() || !bladeMaterial.equals(handleMaterial) || !bladeMaterial.equals(guardMaterial)) {
             message(player, "The Blade, Handle, and Guard must use the same metal.");
             return true;
         }
@@ -125,6 +131,10 @@ public final class MetalworkingRecipes {
         }
 
         String material = stringTag(customData(player.getInventory().getItem(weaponSlot)), "material");
+        if (material.isBlank()) {
+            message(player, "This unfinished weapon has no material data and cannot be finished.");
+            return true;
+        }
         ItemStack sword = new ItemStack(Items.IRON_SWORD);
         sword.set(DataComponents.CUSTOM_NAME, Component.literal("Forged " + material + " Sword"));
         CompoundTag data = new CompoundTag();
