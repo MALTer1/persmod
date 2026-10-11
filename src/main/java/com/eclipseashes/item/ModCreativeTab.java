@@ -59,6 +59,7 @@ public class ModCreativeTab {
                 output.accept(ModItem.ECLIPSE);
                 output.accept(ModItem.MOLD);
                 output.accept(ModItem.CAST_METAL);
+                output.accept(ModItem.HEATED_METAL);
                 output.accept(ModItem.BLACKSMITH_HAMMER);
                 output.accept(ModItem.METAL_PLATE);
                 output.accept(ModItem.FORGED_BLADE);
