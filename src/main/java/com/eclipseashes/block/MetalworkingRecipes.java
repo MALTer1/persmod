@@ -221,8 +221,10 @@ public final class MetalworkingRecipes {
     }
 
     private static void give(Player player, ItemStack stack) {
-        // Each recipe consumes ingredients first, freeing inventory space for its result.
-        player.getInventory().add(stack);
+        // Preserve crafted results even when the player's inventory is full.
+        if (!player.getInventory().add(stack) && !stack.isEmpty()) {
+            player.drop(stack, false);
+        }
     }
 
     private static void message(Player player, String text) {
