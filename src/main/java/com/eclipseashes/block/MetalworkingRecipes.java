@@ -25,15 +25,9 @@ public final class MetalworkingRecipes {
         ItemStack mold = player.getInventory().getItem(moldSlot);
         CompoundTag moldData = customData(mold);
         String material = stringTag(moldData, "material");
-        Item metal = findMetal(material);
-        if (metal == null) {
-            message(player, "This mold's material is not supported by the current casting recipes.");
-            return true;
-        }
-
-        int metalSlot = find(player, metal);
+        int metalSlot = findHeatedMetal(player, material);
         if (metalSlot < 0) {
-            message(player, "You need one " + material + " ingot to fill this mold.");
+            message(player, "Heat one " + material + " in the Metal Forge first, then bring the Heated Metal here.");
             return true;
         }
 
@@ -136,20 +130,13 @@ public final class MetalworkingRecipes {
         return true;
     }
 
-    private static Item findMetal(String material) {
-        if (material.equals("Iron Ingot")) return Items.IRON_INGOT;
-        if (material.equals("Copper Ingot")) return Items.COPPER_INGOT;
-        if (material.equals("Gold Ingot")) return Items.GOLD_INGOT;
-        if (material.equals("Diamond")) return Items.DIAMOND;
-        if (material.equals("Netherite Ingot")) return Items.NETHERITE_INGOT;
-        if (material.equals("Crimson Iron")) return ModItem.CRIMSON_IRON;
-        if (material.equals("Moonsteel")) return ModItem.MOONSTEEL;
-        if (material.equals("Sunsteel")) return ModItem.SUNSTEEL;
-        if (material.equals("Dragonite")) return ModItem.DRAGONITE;
-        if (material.equals("Void Crystal")) return ModItem.VOID_CRYSTAL;
-        if (material.equals("Celestial Alloy")) return ModItem.CELESTIAL_ALLOY;
-        if (material.equals("Eclipse")) return ModItem.ECLIPSE;
-        return null;
+    private static int findHeatedMetal(Player player, String material) {
+        for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
+            ItemStack stack = player.getInventory().getItem(slot);
+            if (!stack.is(ModItem.HEATED_METAL)) continue;
+            if (stringTag(customData(stack), "material").equals(material)) return slot;
+        }
+        return -1;
     }
 
     private static boolean forgeBlock(Player player) {
