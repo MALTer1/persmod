@@ -2,6 +2,7 @@ package com.eclipseashes.block;
 
 import com.eclipseashes.item.ModItem;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
@@ -13,6 +14,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -246,6 +249,15 @@ public class MetalForgeBlockEntity
 
     private Item getResult(Item item) {
 
+        // Vanilla metal ores and raw metals are processed in the modded forge.
+        if (item == Items.RAW_IRON || item == Items.IRON_ORE || item == Items.DEEPSLATE_IRON_ORE) return Items.IRON_INGOT;
+        if (item == Items.RAW_COPPER || item == Items.COPPER_ORE || item == Items.DEEPSLATE_COPPER_ORE) return Items.COPPER_INGOT;
+        if (item == Items.RAW_GOLD || item == Items.GOLD_ORE || item == Items.DEEPSLATE_GOLD_ORE || item == Items.NETHER_GOLD_ORE) return Items.GOLD_INGOT;
+
+        // Finished vanilla ingots/gems become material-tagged hot metal for casting.
+        if (item == Items.IRON_INGOT || item == Items.COPPER_INGOT || item == Items.GOLD_INGOT
+                || item == Items.NETHERITE_INGOT || item == Items.DIAMOND) return ModItem.HEATED_METAL;
+
         // First crude forge stage: raw material -> unrefined material.
         if (item == ModItem.RAW_CRIMSON_IRON) {
             return ModItem.UNREFINED_CRIMSON_IRON;
@@ -270,6 +282,11 @@ public class MetalForgeBlockEntity
         if (item == ModItem.UNREFINED_SUNSTEEL) {
             return ModItem.REFINED_SUNSTEEL;
         }
+
+        // Finished modded ingots become material-tagged hot metal for casting.
+        if (item == ModItem.CRIMSON_IRON || item == ModItem.MOONSTEEL || item == ModItem.SUNSTEEL
+                || item == ModItem.DRAGONITE || item == ModItem.VOID_CRYSTAL
+                || item == ModItem.CELESTIAL_ALLOY || item == ModItem.ECLIPSE) return ModItem.HEATED_METAL;
 
         // Refined material becomes the finished ingot.
         if (item == ModItem.REFINED_CRIMSON_IRON) {
@@ -320,18 +337,18 @@ public class MetalForgeBlockEntity
         return -1;
     }
 
-    private boolean canOutput(Item result) {
-
-        ItemStack output =
-                items.get(PROCESS_OUTPUT_SLOT);
-
-        if (output.isEmpty()) {
-            return true;
+    private boolean canOutput(Item result, ItemStack input) {
+        ItemStack output = items.get(PROCESS_OUTPUT_SLOT);
+        if (output.isEmpty()) return true;
+        if (!output.is(result) || output.getCount() >= output.getMaxStackSize()) return false;
+        if (result == ModItem.HEATED_METAL) {
+            String incomingMaterial = input.getHoverName().getString();
+            CompoundTag outputData = output.get(DataComponents.CUSTOM_DATA) == null
+                    ? new CompoundTag()
+                    : output.get(DataComponents.CUSTOM_DATA).copyTag();
+            return outputData.getString("material").orElse("").equals(incomingMaterial);
         }
-
-        return output.is(result)
-                && output.getCount()
-                < output.getMaxStackSize();
+        return true;
     }
 
     public static void tick(
@@ -371,7 +388,7 @@ public class MetalForgeBlockEntity
         }
 
         // Don't start if output cannot accept the result.
-        if (!forge.canOutput(result)) {
+        if (!forge.canOutput(result, input)) {
             return;
         }
 
@@ -392,14 +409,17 @@ public class MetalForgeBlockEntity
                     forge.items.get(PROCESS_OUTPUT_SLOT);
 
             if (output.isEmpty()) {
-
-                forge.items.set(
-                        PROCESS_OUTPUT_SLOT,
-                        new ItemStack(result)
-                );
-
+                ItemStack resultStack = new ItemStack(result);
+                if (result == ModItem.HEATED_METAL) {
+                    String material = input.getHoverName().getString();
+                    CompoundTag data = new CompoundTag();
+                    data.putString("material", material);
+                    CustomData.set(DataComponents.CUSTOM_DATA, resultStack, data);
+                    resultStack.set(DataComponents.CUSTOM_NAME,
+                            Component.literal("Heated " + material));
+                }
+                forge.items.set(PROCESS_OUTPUT_SLOT, resultStack);
             } else {
-
                 output.grow(1);
             }
 
