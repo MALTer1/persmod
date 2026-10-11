@@ -337,12 +337,20 @@ public class MetalForgeBlockEntity
         return -1;
     }
 
+    private static String materialName(ItemStack stack) {
+        String name = stack.getHoverName().getString();
+        if (name.endsWith(" Ingot")) {
+            return name.substring(0, name.length() - " Ingot".length());
+        }
+        return name;
+    }
+
     private boolean canOutput(Item result, ItemStack input) {
         ItemStack output = items.get(PROCESS_OUTPUT_SLOT);
         if (output.isEmpty()) return true;
         if (!output.is(result) || output.getCount() >= output.getMaxStackSize()) return false;
         if (result == ModItem.HEATED_METAL) {
-            String incomingMaterial = input.getHoverName().getString();
+            String incomingMaterial = materialName(input);
             CompoundTag outputData = output.get(DataComponents.CUSTOM_DATA) == null
                     ? new CompoundTag()
                     : output.get(DataComponents.CUSTOM_DATA).copyTag();
@@ -398,6 +406,9 @@ public class MetalForgeBlockEntity
 
             forge.processingProgress = 0;
 
+            // Capture the material name before shrinking the input stack.
+            String processedMaterial = materialName(input);
+
             // Consume one material.
             input.shrink(1);
 
@@ -411,7 +422,7 @@ public class MetalForgeBlockEntity
             if (output.isEmpty()) {
                 ItemStack resultStack = new ItemStack(result);
                 if (result == ModItem.HEATED_METAL) {
-                    String material = input.getHoverName().getString();
+                    String material = processedMaterial;
                     CompoundTag data = new CompoundTag();
                     data.putString("material", material);
                     CustomData.set(DataComponents.CUSTOM_DATA, resultStack, data);
