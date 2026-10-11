@@ -42,6 +42,13 @@ public class PartMakerMenu extends StationMenu {
 
     public PartMakerMenu(int containerId, Inventory inventory) {
         super(ModMenuTypes.PART_MAKER, containerId);
+        // No option is selected until the player explicitly chooses it.
+        categoryData.set(-1);
+        familyData.set(-1);
+        lengthData.set(-1);
+        shapeData.set(-1);
+        widthData.set(-1);
+
         addDataSlot(categoryData);
         addDataSlot(familyData);
         addDataSlot(lengthData);
@@ -99,6 +106,9 @@ public class PartMakerMenu extends StationMenu {
         }
 
         String materialName = materialStack.getHoverName().getString();
+        if (materialName.endsWith(" Ingot")) {
+            materialName = materialName.substring(0, materialName.length() - " Ingot".length());
+        }
         ItemStack mold = new ItemStack(ModItem.MOLD);
         CompoundTag tag = new CompoundTag();
         tag.putString("eclipse_ashes_mold", "1");
