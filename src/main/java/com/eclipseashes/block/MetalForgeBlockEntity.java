@@ -112,33 +112,25 @@ public class MetalForgeBlockEntity
     ) {
 
         // Lava bucket input
-        if (slot == LAVA_INPUT_SLOT
-                && stack.is(Items.LAVA_BUCKET)) {
-
-            if (canAcceptLavaBucket()) {
-
-                items.set(
-                        LAVA_INPUT_SLOT,
-                        ItemStack.EMPTY
-                );
-
-                lavaAmount += LAVA_PER_BUCKET;
-
-                ItemStack output =
-                        items.get(LAVA_OUTPUT_SLOT);
-
-                if (output.isEmpty()) {
-                    items.set(
-                            LAVA_OUTPUT_SLOT,
-                            new ItemStack(Items.BUCKET)
-                    );
-                } else {
-                    output.grow(1);
-                }
-
-                setChanged();
+        if (slot == LAVA_INPUT_SLOT && stack.is(Items.LAVA_BUCKET)) {
+            // Never leave a lava bucket stuck in the input slot when the tank
+            // or empty-bucket output is full.
+            if (!canAcceptLavaBucket()) {
                 return;
             }
+
+            items.set(LAVA_INPUT_SLOT, ItemStack.EMPTY);
+            lavaAmount += LAVA_PER_BUCKET;
+
+            ItemStack output = items.get(LAVA_OUTPUT_SLOT);
+            if (output.isEmpty()) {
+                items.set(LAVA_OUTPUT_SLOT, new ItemStack(Items.BUCKET));
+            } else {
+                output.grow(1);
+            }
+
+            setChanged();
+            return;
         }
 
         // Never allow manual insertion into outputs.
