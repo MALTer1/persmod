@@ -127,7 +127,9 @@ public class MetalForgeMenu extends AbstractContainerMenu {
                 ) {
                     @Override
                     public boolean mayPlace(ItemStack stack) {
-                        return stack.is(Items.LAVA_BUCKET);
+                        return stack.is(Items.LAVA_BUCKET)
+                                && (MetalForgeMenu.this.forge == null
+                                || MetalForgeMenu.this.forge.canAcceptLavaBucket());
                     }
                 }
         );
