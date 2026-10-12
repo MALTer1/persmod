@@ -170,7 +170,7 @@ public final class MetalworkingRecipes {
                 ModItem.VOID_CRYSTAL, ModItem.CELESTIAL_ALLOY, ModItem.ECLIPSE
         };
         Item[] blocks = {
-                Blocks.IRON_BLOCK.asItem(), BuiltInRegistries.ITEM.get(Identifier.fromNamespaceAndPath("minecraft", "copper_block")), Blocks.GOLD_BLOCK.asItem(), Blocks.DIAMOND_BLOCK.asItem(), Blocks.NETHERITE_BLOCK.asItem(),
+                Blocks.IRON_BLOCK.asItem(), Blocks.COPPER_BLOCK.asItem(), Blocks.GOLD_BLOCK.asItem(), Blocks.DIAMOND_BLOCK.asItem(), Blocks.NETHERITE_BLOCK.asItem(),
                 ModBlocks.CRIMSON_IRON_BLOCK.asItem(), ModBlocks.MOONSTEEL_BLOCK.asItem(),
                 ModBlocks.SUNSTEEL_BLOCK.asItem(), ModBlocks.DRAGONITE_BLOCK.asItem(),
                 ModBlocks.VOID_CRYSTAL_BLOCK.asItem(), ModBlocks.CELESTIAL_ALLOY_BLOCK.asItem(),
@@ -233,7 +233,7 @@ public final class MetalworkingRecipes {
     private static void give(Player player, ItemStack stack) {
         // Preserve crafted results even when the player's inventory is full.
         if (!player.getInventory().add(stack) && !stack.isEmpty()) {
-            player.drop(stack, false);
+            player.level().addFreshEntity(new net.minecraft.world.entity.item.ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), stack));
         }
     }
 
