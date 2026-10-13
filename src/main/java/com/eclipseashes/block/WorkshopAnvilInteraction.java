@@ -146,7 +146,8 @@ public final class WorkshopAnvilInteraction {
     private static ItemDisplay findDisplay(Level level, BlockPos pos, String side) {
         String tag = tagFor(pos, side);
         AABB area = new AABB(pos).inflate(0.65, 1.35, 0.65);
-        return level.getEntitiesOfClass(ItemDisplay.class, area, entity -> entity.getCustomName() != null\n                        && entity.getCustomName().getString().equals(tag))
+        return level.getEntitiesOfClass(ItemDisplay.class, area, entity -> entity.getCustomName() != null
+                        && entity.getCustomName().getString().equals(tag))
                 .stream().findFirst().orElse(null);
     }
 
