@@ -18,7 +18,6 @@ public class WorkshopManager {
                 || block == ModWorkshopBlocks.METAL_FORGE
                 || block == ModWorkshopBlocks.ADVANCED_FORGE
                 || block == ModWorkshopBlocks.CASTING_STATION
-                || block == ModWorkshopBlocks.MODDED_ANVIL
                 || block == ModWorkshopBlocks.BASIC_WORKSHOP
                 || block == ModWorkshopBlocks.PART_MAKER
                 || block == ModWorkshopBlocks.ASSEMBLY_STATION
@@ -34,7 +33,6 @@ public class WorkshopManager {
                     || block == ModWorkshopBlocks.METAL_FORGE
                     || block == ModWorkshopBlocks.ADVANCED_FORGE
                     || block == ModWorkshopBlocks.CASTING_STATION
-                    || block == ModWorkshopBlocks.MODDED_ANVIL
                     || block == ModWorkshopBlocks.BASIC_WORKSHOP
                     || block == ModWorkshopBlocks.PART_MAKER
                     || block == ModWorkshopBlocks.ASSEMBLY_STATION
