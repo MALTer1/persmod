@@ -1,5 +1,6 @@
 package com.eclipseashes.block;
 
+import com.eclipseashes.item.ModItem;
 import com.mojang.math.Transformation;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.core.BlockPos;
@@ -8,19 +9,15 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Display.ItemDisplay;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.Display;
-import net.minecraft.world.entity.item.ItemDisplay;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
-import com.eclipseashes.item.ModItem;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
@@ -46,16 +43,12 @@ public final class WorkshopAnvilInteraction {
             if (!metalInput && !moldInput && !hammerInput) return InteractionResult.PASS;
             if (level.isClientSide()) return InteractionResult.SUCCESS;
 
-            String metalTag = tagFor(pos, "metal");
-            String moldTag = tagFor(pos, "mold");
-
             if (metalInput) {
                 if (findDisplay(level, pos, "metal") != null) {
                     message(player, "The left side of the anvil already has heated metal.");
                     return InteractionResult.SUCCESS;
                 }
-                ItemStack input = held.copyWithCount(1);
-                if (spawnDisplay(level, pos, input, metalTag, true)) {
+                if (spawnDisplay(level, pos, held.copyWithCount(1), tagFor(pos, "metal"), true)) {
                     held.shrink(1);
                     message(player, "Heated metal placed on the left side of the anvil.");
                 }
@@ -74,7 +67,7 @@ public final class WorkshopAnvilInteraction {
                     message(player, "This mold is not configured. Make a new one at the Part Maker.");
                     return InteractionResult.SUCCESS;
                 }
-                if (spawnDisplay(level, pos, held.copyWithCount(1), moldTag, false)) {
+                if (spawnDisplay(level, pos, held.copyWithCount(1), tagFor(pos, "mold"), false)) {
                     held.shrink(1);
                     message(player, "Mold placed on the right side of the anvil.");
                 }
@@ -88,10 +81,8 @@ public final class WorkshopAnvilInteraction {
                 return InteractionResult.SUCCESS;
             }
 
-            ItemStack heated = metalDisplay.getItemStack();
-            ItemStack mold = moldDisplay.getItemStack();
-            CompoundTag metalData = customData(heated);
-            CompoundTag moldData = customData(mold);
+            CompoundTag metalData = customData(metalDisplay.getItemStack());
+            CompoundTag moldData = customData(moldDisplay.getItemStack());
             String actualMaterial = stringTag(metalData, "material");
             String requiredMaterial = stringTag(moldData, "material");
             if (actualMaterial.isBlank() || !actualMaterial.equals(requiredMaterial)) {
@@ -135,10 +126,7 @@ public final class WorkshopAnvilInteraction {
         ItemDisplay display = new ItemDisplay(EntityType.ITEM_DISPLAY, level);
         display.setItemStack(stack);
         display.addTag(tag);
-        double x = pos.getX() + (left ? 0.30 : 0.70);
-        double y = pos.getY() + 1.02;
-        double z = pos.getZ() + 0.50;
-        display.setPos(x, y, z);
+        display.setPos(pos.getX() + (left ? 0.30 : 0.70), pos.getY() + 1.02, pos.getZ() + 0.50);
         display.setTransformation(new Transformation(
                 new Vector3f(0.0f, 0.0f, 0.0f),
                 new Quaternionf().rotationX((float) (Math.PI / 2.0)),
