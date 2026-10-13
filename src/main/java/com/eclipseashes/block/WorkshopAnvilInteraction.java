@@ -4,10 +4,12 @@ import com.eclipseashes.item.ModItem;
 import com.mojang.math.Transformation;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Display.ItemDisplay;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -123,9 +125,14 @@ public final class WorkshopAnvilInteraction {
     }
 
     private static boolean spawnDisplay(Level level, BlockPos pos, ItemStack stack, String tag, boolean left) {
-        ItemDisplay display = new ItemDisplay(EntityType.ITEM_DISPLAY, level);
+        @SuppressWarnings("unchecked")
+        EntityType<? extends ItemDisplay> itemDisplayType = (EntityType<? extends ItemDisplay>) (EntityType<?>)
+                BuiltInRegistries.ENTITY_TYPE.get(Identifier.fromNamespaceAndPath("minecraft", "item_display"))
+                        .orElseThrow().value();
+        ItemDisplay display = new ItemDisplay(itemDisplayType, level);
         display.setItemStack(stack);
-        display.addTag(tag);
+        display.setCustomName(Component.literal(tag));
+        display.setCustomNameVisible(false);
         display.setPos(pos.getX() + (left ? 0.30 : 0.70), pos.getY() + 1.02, pos.getZ() + 0.50);
         display.setTransformation(new Transformation(
                 new Vector3f(0.0f, 0.0f, 0.0f),
@@ -139,7 +146,7 @@ public final class WorkshopAnvilInteraction {
     private static ItemDisplay findDisplay(Level level, BlockPos pos, String side) {
         String tag = tagFor(pos, side);
         AABB area = new AABB(pos).inflate(0.65, 1.35, 0.65);
-        return level.getEntitiesOfClass(ItemDisplay.class, area, entity -> entity.getTags().contains(tag))
+        return level.getEntitiesOfClass(ItemDisplay.class, area, entity -> entity.getCustomName() != null\n                        && entity.getCustomName().getString().equals(tag))
                 .stream().findFirst().orElse(null);
     }
 
