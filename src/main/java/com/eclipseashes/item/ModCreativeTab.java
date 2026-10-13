@@ -112,7 +112,6 @@ public class ModCreativeTab {
                 output.accept(ModWorkshopBlocks.ADVANCED_FORGE);
                 output.accept(ModWorkshopBlocks.PART_MAKER);
                 output.accept(ModWorkshopBlocks.CASTING_STATION);
-                output.accept(ModWorkshopBlocks.MODDED_ANVIL);
                 output.accept(ModWorkshopBlocks.ASSEMBLY_STATION);
                 output.accept(ModWorkshopBlocks.MAINTENANCE_STATION);
             }).build();
