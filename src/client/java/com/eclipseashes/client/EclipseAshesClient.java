@@ -3,6 +3,7 @@ package com.eclipseashes.client;
 import com.eclipseashes.block.ModMenuTypes;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.chat.Component;
@@ -40,7 +41,7 @@ public class EclipseAshesClient implements ClientModInitializer {
 
             Button guideButton = Button.builder(
                     Component.literal("EA"),
-                    button -> client.setScreen(new EclipseAshesGuideScreen(screen, false))
+                    button -> client.gui.setScreen(new EclipseAshesGuideScreen(screen, false))
             ).bounds(
                     Math.max(4, scaledWidth - 28),
                     4,
@@ -48,7 +49,7 @@ public class EclipseAshesClient implements ClientModInitializer {
                     18
             ).build();
 
-            screen.addRenderableWidget(guideButton);
+            Screens.getWidgets(screen).add(guideButton);
         });
     }
 }
