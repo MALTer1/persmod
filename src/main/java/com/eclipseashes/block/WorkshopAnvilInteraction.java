@@ -2,6 +2,7 @@ package com.eclipseashes.block;
 
 import com.eclipseashes.item.ModItem;
 import com.mojang.math.Transformation;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -37,9 +38,25 @@ public final class WorkshopAnvilInteraction {
             BlockPos pos = hit.getBlockPos();
             if (!isAnvil(level, pos)) return InteractionResult.PASS;
 
-            // Check the held item before workshop validation so a failed workshop
-            // check is visible to the player instead of looking like a dead interaction.
             ItemStack held = player.getItemInHand(hand);
+
+            // Empty-hand right-click retrieves a placed ingredient without
+            // opening the vanilla anvil screen. Check for a display first so
+            // ordinary anvil use remains unchanged when the anvil is empty.
+            if (held.isEmpty()) {
+                boolean hasMetal = findDisplay(level, pos, "metal") != null;
+                boolean hasMold = findDisplay(level, pos, "mold") != null;
+                if (!hasMetal && !hasMold) return InteractionResult.PASS;
+                if (level.isClientSide()) return InteractionResult.SUCCESS;
+
+                if (takeDisplay(level, player, pos, "metal")) {
+                    message(player, "Heated metal removed from the anvil.");
+                } else if (takeDisplay(level, player, pos, "mold")) {
+                    message(player, "Mold removed from the anvil.");
+                }
+                return InteractionResult.SUCCESS;
+            }
+
             boolean metalInput = held.is(ModItem.HEATED_METAL);
             boolean moldInput = held.is(ModItem.MOLD);
             boolean hammerInput = held.is(ModItem.BLACKSMITH_HAMMER);
@@ -123,11 +140,51 @@ public final class WorkshopAnvilInteraction {
             message(player, partName + " shaped successfully from " + requiredMaterial + ".");
             return InteractionResult.SUCCESS;
         });
+
+        // If the anvil is broken while ingredients are displayed, remove the
+        // invisible helper entities and drop their actual item stacks nearby.
+        PlayerBlockBreakEvents.AFTER.register((level, player, pos, state, blockEntity) -> {
+            if (level.isClientSide() || !isAnvilBlock(state.getBlock())) return;
+            dropDisplay(level, pos, "metal");
+            dropDisplay(level, pos, "mold");
+        });
     }
 
     private static boolean isAnvil(Level level, BlockPos pos) {
-        var block = level.getBlockState(pos).getBlock();
+        return isAnvilBlock(level.getBlockState(pos).getBlock());
+    }
+
+    private static boolean isAnvilBlock(net.minecraft.world.level.block.Block block) {
         return block == Blocks.ANVIL || block == Blocks.CHIPPED_ANVIL || block == Blocks.DAMAGED_ANVIL;
+    }
+
+    private static boolean takeDisplay(Level level, Player player, BlockPos pos, String side) {
+        ItemDisplay display = findDisplay(level, pos, side);
+        if (display == null) return false;
+
+        ItemStack stack = display.getItemStack().copy();
+        display.discard();
+        if (!player.getInventory().add(stack) && !stack.isEmpty()) {
+            level.addFreshEntity(new ItemEntity(level, player.getX(), player.getY(), player.getZ(), stack));
+        }
+        return true;
+    }
+
+    private static void dropDisplay(Level level, BlockPos pos, String side) {
+        ItemDisplay display = findDisplay(level, pos, side);
+        if (display == null) return;
+
+        ItemStack stack = display.getItemStack().copy();
+        display.discard();
+        if (!stack.isEmpty()) {
+            level.addFreshEntity(new ItemEntity(
+                    level,
+                    pos.getX() + 0.5,
+                    pos.getY() + 1.0,
+                    pos.getZ() + 0.5,
+                    stack
+            ));
+        }
     }
 
     private static boolean spawnDisplay(Level level, BlockPos pos, ItemStack stack, String tag, boolean left) {
