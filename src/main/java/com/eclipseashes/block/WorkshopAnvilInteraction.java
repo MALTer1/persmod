@@ -36,14 +36,20 @@ public final class WorkshopAnvilInteraction {
         UseBlockCallback.EVENT.register((player, level, hand, hit) -> {
             BlockPos pos = hit.getBlockPos();
             if (!isAnvil(level, pos)) return InteractionResult.PASS;
-            if (!WorkshopManager.isStationInWorkshop(level, pos)) return InteractionResult.PASS;
 
+            // Check the held item before workshop validation so a failed workshop
+            // check is visible to the player instead of looking like a dead interaction.
             ItemStack held = player.getItemInHand(hand);
             boolean metalInput = held.is(ModItem.HEATED_METAL);
             boolean moldInput = held.is(ModItem.MOLD);
             boolean hammerInput = held.is(ModItem.BLACKSMITH_HAMMER);
             if (!metalInput && !moldInput && !hammerInput) return InteractionResult.PASS;
             if (level.isClientSide()) return InteractionResult.SUCCESS;
+
+            if (!WorkshopManager.isStationInWorkshop(level, pos)) {
+                message(player, "Anvil detected, but it is not connected to a Forge Floor, Forge Section, or workshop station.");
+                return InteractionResult.SUCCESS;
+            }
 
             if (metalInput) {
                 if (findDisplay(level, pos, "metal") != null) {
