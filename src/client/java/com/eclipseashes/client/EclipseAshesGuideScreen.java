@@ -29,14 +29,14 @@ public final class EclipseAshesGuideScreen extends Screen {
         if (this.browseAll) {
             this.addRenderableWidget(Button.builder(
                     Component.literal("Current Screen"),
-                    button -> Minecraft.getInstance().setScreen(
+                    button -> Minecraft.getInstance().gui.setScreen(
                             new EclipseAshesGuideScreen(this.parent, false)
                     )
             ).bounds(center - 104, buttonY, 100, 20).build());
         } else {
             this.addRenderableWidget(Button.builder(
                     Component.literal("Browse All"),
-                    button -> Minecraft.getInstance().setScreen(
+                    button -> Minecraft.getInstance().gui.setScreen(
                             new EclipseAshesGuideScreen(this.parent, true)
                     )
             ).bounds(center - 104, buttonY, 100, 20).build());
@@ -167,12 +167,13 @@ public final class EclipseAshesGuideScreen extends Screen {
 
     private boolean hasDeveloperAccess() {
         Minecraft client = Minecraft.getInstance();
-        return client.player != null
-                && (client.player.isCreative() || client.player.hasPermissions(2));
+        // In 26.3 the client-side LocalPlayer no longer exposes hasPermissions(int).
+        // Creative mode is the supported client-visible developer gate for this first pass.
+        return client.player != null && client.player.isCreative();
     }
 
     @Override
     public void onClose() {
-        Minecraft.getInstance().setScreen(this.parent);
+        Minecraft.getInstance().gui.setScreen(this.parent);
     }
 }
