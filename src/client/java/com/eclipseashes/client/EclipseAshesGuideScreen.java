@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.Block;
  * The item and block catalogues are populated from Minecraft's live registries.
  */
 public final class EclipseAshesGuideScreen extends Screen {
-    private static final int PAGE_SIZE = 12;
+    private static final int PAGE_SIZE = 8;
 
     private final Screen parent;
     private final boolean browseAll;
