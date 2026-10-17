@@ -11,6 +11,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
@@ -171,7 +172,9 @@ public final class EclipseAshesGuideScreen extends Screen {
         if ("items".equals(section)) {
             for (Item item : BuiltInRegistries.ITEM) {
                 Identifier id = BuiltInRegistries.ITEM.getKey(item);
-                if (id != null && "eclipseashes".equals(id.getNamespace())) {
+                // BlockItem instances are represented in the Blocks catalogue to avoid
+                // listing every placed block a second time as an ordinary item.
+                if (id != null && "eclipseashes".equals(id.getNamespace()) && !(item instanceof BlockItem)) {
                     entries.add(prettyName(id.getPath()));
                 }
             }
