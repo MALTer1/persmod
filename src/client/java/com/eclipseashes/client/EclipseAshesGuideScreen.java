@@ -70,7 +70,7 @@ public final class EclipseAshesGuideScreen extends Screen {
                 List<String> entries = catalogueEntries();
                 int start = page * PAGE_SIZE;
                 int end = Math.min(entries.size(), start + PAGE_SIZE);
-                int rowY = 78;
+                int rowY = 82;
                 for (int i = start; i < end; i++) {
                     String entry = entries.get(i);
                     String entryId = entry.toLowerCase(java.util.Locale.ROOT).replace(' ', '_');
@@ -78,8 +78,8 @@ public final class EclipseAshesGuideScreen extends Screen {
                     this.addRenderableWidget(Button.builder(Component.literal(entry), button ->
                             Minecraft.getInstance().setScreen(
                                     new EclipseAshesGuideDetailScreen(this, type, entryId)
-                            )).bounds(center - 150, rowY, 300, 14).build());
-                    rowY += 15;
+                            )).bounds(center - 150, rowY, 300, 12).build());
+                    rowY += 13;
                 }
             }
 
