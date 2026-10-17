@@ -18,7 +18,6 @@ public class ModWorkshopBlocks {
     public static final ResourceKey<Block> ADVANCED_FORGE_KEY = blockKey("advanced_forge");
     public static final ResourceKey<Block> PART_MAKER_KEY = blockKey("part_maker");
     public static final ResourceKey<Block> CASTING_STATION_KEY = blockKey("casting_station");
-    public static final ResourceKey<Block> MODDED_ANVIL_KEY = blockKey("modded_anvil");
     public static final ResourceKey<Block> ASSEMBLY_STATION_KEY = blockKey("assembly_station");
     public static final ResourceKey<Block> MAINTENANCE_STATION_KEY = blockKey("maintenance_station");
 
@@ -35,8 +34,6 @@ public class ModWorkshopBlocks {
             new PartMakerBlock(Block.Properties.ofFullCopy(Blocks.IRON_BLOCK).setId(PART_MAKER_KEY)));
     public static final Block CASTING_STATION = Registry.register(BuiltInRegistries.BLOCK, CASTING_STATION_KEY,
             new CastingStationBlock(Block.Properties.ofFullCopy(Blocks.IRON_BLOCK).setId(CASTING_STATION_KEY)));
-    public static final Block MODDED_ANVIL = Registry.register(BuiltInRegistries.BLOCK, MODDED_ANVIL_KEY,
-            new ModdedAnvilBlock(Block.Properties.ofFullCopy(Blocks.ANVIL).setId(MODDED_ANVIL_KEY)));
     public static final Block ASSEMBLY_STATION = Registry.register(BuiltInRegistries.BLOCK, ASSEMBLY_STATION_KEY,
             new AssemblyStationBlock(Block.Properties.ofFullCopy(Blocks.IRON_BLOCK).setId(ASSEMBLY_STATION_KEY)));
     public static final Block MAINTENANCE_STATION = Registry.register(BuiltInRegistries.BLOCK, MAINTENANCE_STATION_KEY,
@@ -50,7 +47,6 @@ public class ModWorkshopBlocks {
         registerBlockItem(ADVANCED_FORGE, "advanced_forge");
         registerBlockItem(PART_MAKER, "part_maker");
         registerBlockItem(CASTING_STATION, "casting_station");
-        registerBlockItem(MODDED_ANVIL, "modded_anvil");
         registerBlockItem(ASSEMBLY_STATION, "assembly_station");
         registerBlockItem(MAINTENANCE_STATION, "maintenance_station");
     }

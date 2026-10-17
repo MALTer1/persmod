@@ -18,7 +18,6 @@ public class WorkshopManager {
                 || block == ModWorkshopBlocks.METAL_FORGE
                 || block == ModWorkshopBlocks.ADVANCED_FORGE
                 || block == ModWorkshopBlocks.CASTING_STATION
-                || block == ModWorkshopBlocks.MODDED_ANVIL
                 || block == ModWorkshopBlocks.BASIC_WORKSHOP
                 || block == ModWorkshopBlocks.PART_MAKER
                 || block == ModWorkshopBlocks.ASSEMBLY_STATION
@@ -26,19 +25,39 @@ public class WorkshopManager {
     }
 
     public static boolean isStationInWorkshop(Level level, BlockPos stationPos) {
-        for (BlockPos neighbor : neighbors(stationPos)) {
-            Block block = level.getBlockState(neighbor).getBlock();
+        // First, accept stations placed directly on Forge Floor or Forge Section.
+        Block blockBelow = level.getBlockState(stationPos.below()).getBlock();
+        if (blockBelow == ModWorkshopBlocks.FORGE_FLOOR
+                || blockBelow == ModWorkshopBlocks.FORGE_SECTION) {
+            return true;
+        }
 
-            if (block == ModWorkshopBlocks.FORGE_FLOOR
-                    || block == ModWorkshopBlocks.FORGE_SECTION
-                    || block == ModWorkshopBlocks.METAL_FORGE
-                    || block == ModWorkshopBlocks.ADVANCED_FORGE
-                    || block == ModWorkshopBlocks.CASTING_STATION
-                    || block == ModWorkshopBlocks.MODDED_ANVIL
-                    || block == ModWorkshopBlocks.BASIC_WORKSHOP
-                    || block == ModWorkshopBlocks.PART_MAKER
-                    || block == ModWorkshopBlocks.ASSEMBLY_STATION
-                    || block == ModWorkshopBlocks.MAINTENANCE_STATION) {
+        // Be forgiving at workshop edges: the floor can be immediately beside
+        // the block under the station, even if that exact block is not floor.
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dz = -1; dz <= 1; dz++) {
+                BlockPos floorPos = stationPos.below().offset(dx, 0, dz);
+                Block floorBlock = level.getBlockState(floorPos).getBlock();
+                if (floorBlock == ModWorkshopBlocks.FORGE_FLOOR
+                        || floorBlock == ModWorkshopBlocks.FORGE_SECTION) {
+                    return true;
+                }
+            }
+        }
+
+        // Preserve the existing behavior for stations beside workshop equipment.
+        for (BlockPos neighbor : neighbors(stationPos)) {
+            Block neighborBlock = level.getBlockState(neighbor).getBlock();
+
+            if (neighborBlock == ModWorkshopBlocks.FORGE_FLOOR
+                    || neighborBlock == ModWorkshopBlocks.FORGE_SECTION
+                    || neighborBlock == ModWorkshopBlocks.METAL_FORGE
+                    || neighborBlock == ModWorkshopBlocks.ADVANCED_FORGE
+                    || neighborBlock == ModWorkshopBlocks.CASTING_STATION
+                    || neighborBlock == ModWorkshopBlocks.BASIC_WORKSHOP
+                    || neighborBlock == ModWorkshopBlocks.PART_MAKER
+                    || neighborBlock == ModWorkshopBlocks.ASSEMBLY_STATION
+                    || neighborBlock == ModWorkshopBlocks.MAINTENANCE_STATION) {
                 return true;
             }
         }
