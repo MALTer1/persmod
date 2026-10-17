@@ -12,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 /** Detail page opened from the Eclipse Ashes in-game guide. */
 public final class EclipseAshesGuideDetailScreen extends Screen {
