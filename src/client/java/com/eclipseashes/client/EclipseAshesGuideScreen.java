@@ -10,7 +10,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
@@ -157,14 +157,14 @@ public final class EclipseAshesGuideScreen extends Screen {
         List<String> entries = new ArrayList<>();
         if ("items".equals(section)) {
             for (Item item : BuiltInRegistries.ITEM) {
-                ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
+                Identifier id = BuiltInRegistries.ITEM.getKey(item);
                 if (id != null && "eclipseashes".equals(id.getNamespace())) {
                     entries.add(prettyName(id.getPath()));
                 }
             }
         } else if ("blocks".equals(section)) {
             for (Block block : BuiltInRegistries.BLOCK) {
-                ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
+                Identifier id = BuiltInRegistries.BLOCK.getKey(block);
                 if (id != null && "eclipseashes".equals(id.getNamespace())) {
                     entries.add(prettyName(id.getPath()));
                 }
