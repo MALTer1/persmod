@@ -57,14 +57,14 @@ public final class EclipseAshesGuideScreen extends Screen {
                         {"world", "World Generation"},
                         {"story", "Creatures and Story"}
                 };
-                int rowY = 78;
+                int rowY = 82;
                 for (String[] feature : features) {
                     String featureId = feature[0];
                     this.addRenderableWidget(Button.builder(Component.literal(feature[1]), button ->
-                            Minecraft.getInstance().gui.setScreen(
+                            Minecraft.getInstance().setScreen(
                                     new EclipseAshesGuideDetailScreen(this, "feature", featureId)
-                            )).bounds(center - 150, rowY, 300, 14).build());
-                    rowY += 15;
+                            )).bounds(center - 150, rowY, 300, 12).build());
+                    rowY += 13;
                 }
             } else {
                 List<String> entries = catalogueEntries();
@@ -76,7 +76,7 @@ public final class EclipseAshesGuideScreen extends Screen {
                     String entryId = entry.toLowerCase(java.util.Locale.ROOT).replace(' ', '_');
                     String type = "items".equals(section) ? "item" : "block";
                     this.addRenderableWidget(Button.builder(Component.literal(entry), button ->
-                            Minecraft.getInstance().gui.setScreen(
+                            Minecraft.getInstance().setScreen(
                                     new EclipseAshesGuideDetailScreen(this, type, entryId)
                             )).bounds(center - 150, rowY, 300, 14).build());
                     rowY += 15;
@@ -87,22 +87,22 @@ public final class EclipseAshesGuideScreen extends Screen {
             int maxPage = Math.max(0, (entries.size() - 1) / PAGE_SIZE);
             if (page > 0) {
                 this.addRenderableWidget(Button.builder(Component.literal("Previous"), button ->
-                        Minecraft.getInstance().gui.setScreen(
+                        Minecraft.getInstance().setScreen(
                                 new EclipseAshesGuideScreen(parent, true, section, page - 1)
                         )).bounds(center - 104, this.height - 53, 100, 20).build());
             }
             if (page < maxPage) {
                 this.addRenderableWidget(Button.builder(Component.literal("Next"), button ->
-                        Minecraft.getInstance().gui.setScreen(
+                        Minecraft.getInstance().setScreen(
                                 new EclipseAshesGuideScreen(parent, true, section, page + 1)
                         )).bounds(center + 4, this.height - 53, 100, 20).build());
             }
             this.addRenderableWidget(Button.builder(Component.literal("Current Screen"), button ->
-                    Minecraft.getInstance().gui.setScreen(new EclipseAshesGuideScreen(parent, false))
+                    Minecraft.getInstance().setScreen(new EclipseAshesGuideScreen(parent, false))
             ).bounds(center - 104, buttonY, 100, 20).build());
         } else {
             this.addRenderableWidget(Button.builder(Component.literal("Browse All"), button ->
-                    Minecraft.getInstance().gui.setScreen(
+                    Minecraft.getInstance().setScreen(
                             new EclipseAshesGuideScreen(parent, true, "features", 0)
                     )).bounds(center - 104, buttonY, 100, 20).build());
         }
@@ -113,7 +113,7 @@ public final class EclipseAshesGuideScreen extends Screen {
 
     private void addSectionButton(String label, String target, int x) {
         this.addRenderableWidget(Button.builder(Component.literal(label), button ->
-                Minecraft.getInstance().gui.setScreen(
+                Minecraft.getInstance().setScreen(
                         new EclipseAshesGuideScreen(parent, true, target, 0)
                 )).bounds(x, 42, 72, 20).build());
     }
@@ -262,6 +262,6 @@ public final class EclipseAshesGuideScreen extends Screen {
 
     @Override
     public void onClose() {
-        Minecraft.getInstance().gui.setScreen(this.parent);
+        Minecraft.getInstance().setScreen(this.parent);
     }
 }
