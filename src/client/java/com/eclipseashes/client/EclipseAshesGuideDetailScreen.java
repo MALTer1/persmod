@@ -12,7 +12,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 /** Detail page opened from the Eclipse Ashes in-game guide. */
 public final class EclipseAshesGuideDetailScreen extends Screen {
@@ -72,7 +71,7 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
     }
 
     private void drawFeature(GuiGraphicsExtractor graphics, int x, int y, int width) {
-        graphics.item(new ItemStack(Items.BOOK), x + 8, y + 8);
+        // Feature entries are text-only; avoid constructing an ItemStack for a generic topic.
         String heading = featureName(id);
         graphics.text(this.font, heading, x + 36, y + 12, 0xFFFFD98A);
         int cursorY = y + 42;
