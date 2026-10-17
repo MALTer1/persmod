@@ -7,12 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 /** Detail page opened from the Eclipse Ashes in-game guide. */
 public final class EclipseAshesGuideDetailScreen extends Screen {
@@ -54,14 +49,16 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
             return;
         }
 
-        ItemStack stack = itemStackFor(id);
+        // Keep catalogue detail pages independent of ItemStack construction. Some client
+        // registries/components may not be ready for safe stack rendering in this screen.
+        // A simple category tile is reliable for every registered item and block.
+        boolean blockEntry = "block".equals(type);
         graphics.fill(x, y, x + 48, y + 48, 0xFF34343C);
-        if (!stack.isEmpty()) {
-            graphics.item(stack, x + 16, y + 16);
-            graphics.text(this.font, stack.getHoverName(), x + 58, y + 7, 0xFFFFD98A);
-        } else {
-            graphics.text(this.font, prettyName(id), x + 58, y + 7, 0xFFFFD98A);
-        }
+        graphics.fill(x, y, x + 48, y + 3, blockEntry ? 0xFF7FAF83 : 0xFFB58A45);
+        String categoryMark = blockEntry ? "B" : "I";
+        int markX = x + (48 - this.font.width(categoryMark)) / 2;
+        graphics.text(this.font, categoryMark, markX, y + 18, 0xFFFFFFFF);
+        graphics.text(this.font, prettyName(id), x + 58, y + 7, 0xFFFFD98A);
 
         int cursorY = y + 58;
         cursorY = drawLine(graphics, "Registry ID: eclipseashes:" + id, x, cursorY, 0xFFB8C7D9);
@@ -89,12 +86,6 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
             cursorY = drawLine(graphics, line, x, cursorY + 3, 0xFFE4E4E4);
         }
         return cursorY;
-    }
-
-    private ItemStack itemStackFor(String path) {
-        Identifier itemId = Identifier.fromNamespaceAndPath("eclipseashes", path);
-        Item item = BuiltInRegistries.ITEM.get(itemId).map(holder -> holder.value()).orElse(Items.AIR);
-        return item == Items.AIR ? ItemStack.EMPTY : new ItemStack(item);
     }
 
     private String descriptionFor(String itemId, boolean block) {
