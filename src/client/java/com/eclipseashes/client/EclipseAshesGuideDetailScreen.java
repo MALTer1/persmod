@@ -34,8 +34,7 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
         this.addRenderableWidget(Button.builder(Component.literal("Back to Catalogue"), button -> this.onClose())
                 .bounds(center - 70, this.height - 28, 140, 20).build());
 
-        // Prepare stacks during screen initialization rather than constructing them in the
-        // extraction/render pass. This avoids the early component-binding crash seen before.
+        // Resolve stacks during initialization, not while drawing the screen.
         if (!"feature".equals(type)) {
             this.displayStack = safeStack(id);
             this.recipeGrid = compressionRecipe(id) ? buildCompressionGrid(id) : null;
@@ -62,29 +61,22 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
             return;
         }
 
-        // The tile is only a background; the registered item's real Minecraft icon is drawn on it.
         graphics.fill(x, y, x + 42, y + 42, 0xFF34343C);
         graphics.fill(x, y, x + 42, y + 3, "block".equals(type) ? 0xFF7FAF83 : 0xFFB58A45);
-        if (displayStack != null) {
-            graphics.item(displayStack, x + 13, y + 12);
-        }
+        if (displayStack != null) graphics.item(displayStack, x + 13, y + 12);
         graphics.text(this.font, prettyName(id), x + 52, y + 5, 0xFFFFD98A);
         graphics.text(this.font, "Eclipse Ashes", x + 52, y + 19, 0xFFB8C7D9);
         graphics.text(this.font, "Registry: eclipseashes:" + id, x, y + 47, 0xFFB8C7D9);
 
         int cursorY = y + 62;
-        cursorY = drawSection(graphics, "ABOUT", descriptionFor(id, "block".equals(type)),
-                x, cursorY, textWidth);
-
+        cursorY = drawSection(graphics, "ABOUT", descriptionFor(id, "block".equals(type)), x, cursorY, textWidth);
         if (compressionRecipe(id)) {
             cursorY += 3;
             drawLine(graphics, "FORGE CONVERSION — 9 matching material items", x, cursorY, 0xFFFFB86B);
             drawCompressionRecipe(graphics, x, cursorY + 14);
-            drawSection(graphics, "HOW TO USE IT", usesFor(id, "block".equals(type)),
-                    x, cursorY + 72, textWidth);
+            drawSection(graphics, "HOW TO USE IT", usesFor(id, true), x, cursorY + 72, textWidth);
         } else {
-            cursorY = drawSection(graphics, "RECIPE / HOW TO OBTAIN", recipeFor(id, "block".equals(type)),
-                    x, cursorY + 4, textWidth);
+            cursorY = drawSection(graphics, "RECIPE / HOW TO OBTAIN", recipeFor(id, "block".equals(type)), x, cursorY + 4, textWidth);
             drawSection(graphics, "USES", usesFor(id, "block".equals(type)), x, cursorY + 4, textWidth);
         }
     }
@@ -98,8 +90,8 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
                 graphics.fill(sx, sy, sx + 16, sy + 16, 0xFF45454F);
                 graphics.fill(sx, sy, sx + 16, sy + 1, 0xFF777783);
                 if (recipeGrid != null) {
-                    int index = row * 3 + column;
-                    if (recipeGrid[index] != null) graphics.item(recipeGrid[index], sx, sy);
+                    ItemStack ingredient = recipeGrid[row * 3 + column];
+                    if (ingredient != null) graphics.item(ingredient, sx, sy);
                 }
             }
         }
@@ -122,13 +114,16 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
     private ItemStack safeStack(String itemId) {
         try {
             Identifier identifier = Identifier.fromNamespaceAndPath("eclipseashes", itemId);
-            Item item = BuiltInRegistries.ITEM.get(identifier);
-            if (item == null || item == BuiltInRegistries.ITEM.get(Identifier.fromNamespaceAndPath("minecraft", "air"))) {
-                return null;
-            }
+            Item item = BuiltInRegistries.ITEM.get(identifier)
+                    .map(reference -> reference.value())
+                    .orElse(null);
+            Item air = BuiltInRegistries.ITEM.get(Identifier.fromNamespaceAndPath("minecraft", "air"))
+                    .map(reference -> reference.value())
+                    .orElse(null);
+            if (item == null || item == air) return null;
             return new ItemStack(item);
         } catch (IllegalStateException exception) {
-            // Some early startup states do not yet have item components bound.
+            // Item components may not be bound during an early initialization state.
             return null;
         }
     }
@@ -138,51 +133,37 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
     }
 
     private void drawFeature(GuiGraphicsExtractor graphics, int x, int y, int width) {
-        String heading = featureName(id);
-        graphics.text(this.font, heading, x, y + 4, 0xFFFFD98A);
-        int cursorY = y + 24;
-        cursorY = drawLine(graphics, "Status: " + featureStatus(id), x, cursorY, 0xFFB8C7D9);
+        graphics.text(this.font, featureName(id), x, y + 4, 0xFFFFD98A);
+        int cursorY = drawLine(graphics, "Status: " + featureStatus(id), x, y + 24, 0xFFB8C7D9);
         drawSection(graphics, "OVERVIEW", featureDescription(id), x, cursorY + 4, width);
     }
 
     private int drawSection(GuiGraphicsExtractor graphics, String heading, String body, int x, int y, int width) {
         int cursorY = drawLine(graphics, heading, x, y, 0xFFFFB86B);
-        for (String line : wrapText(body, width)) {
-            cursorY = drawLine(graphics, line, x, cursorY + 2, 0xFFE4E4E4);
-        }
+        for (String line : wrapText(body, width)) cursorY = drawLine(graphics, line, x, cursorY + 2, 0xFFE4E4E4);
         return cursorY;
     }
 
     private String descriptionFor(String itemId, boolean block) {
         if (block && itemId.endsWith("_ore")) {
-            String material = prettyName(itemId.substring(0, itemId.length() - 4));
-            return material + " ore. Mine it with a pickaxe that meets the block's tool requirement. The exact drops are controlled by the ore's loot table.";
+            return prettyName(itemId.substring(0, itemId.length() - 4)) + " ore. Mine it with a pickaxe that meets the block's tool requirement. The exact drops are controlled by the ore's loot table.";
         }
         if (block && itemId.endsWith("_block")) {
-            String material = prettyName(itemId.substring(0, itemId.length() - 6));
-            return "A compact storage and building block made from " + material + ". The forge conversion uses nine matching material items and a Blacksmith Hammer.";
+            return "A compact storage and building block made from " + prettyName(itemId.substring(0, itemId.length() - 6)) + ". The current forge conversion uses nine matching material items and a Blacksmith Hammer.";
         }
-        if (block) {
-            return switch (itemId) {
-                case "metal_forge" -> "A workstation for the mod's metalworking progression.";
-                case "basic_workshop" -> "A workshop station that provides access to supported early metalworking operations.";
-                case "part_maker" -> "A station used to configure molds and select a component shape.";
-                case "casting_station" -> "Casts matching heated metal using a configured mold.";
-                case "assembly_station" -> "A workstation for combining compatible forged components.";
-                case "maintenance_station" -> "A workstation for supported weapon maintenance and finishing.";
-                case "forge_floor", "forge_section", "advanced_forge" -> "A structural part of the Eclipse Ashes forge setup.";
-                default -> "A registered Eclipse Ashes block. Its behavior depends on the block implementation and data files.";
-            };
-        }
-        if (itemId.startsWith("raw_")) {
-            return "Raw " + prettyName(itemId.substring(4)) + " material. This is the starting material tier for its Eclipse Ashes metal progression; check the ore's drop data for how it is obtained.";
-        }
-        if (itemId.startsWith("unrefined_")) {
-            return "Unrefined " + prettyName(itemId.substring(10)) + ". An intermediate material tier intended for further processing before the refined material stage.";
-        }
-        if (itemId.startsWith("refined_")) {
-            return "Refined " + prettyName(itemId.substring(8)) + ". This is the processed material tier for the metal and is intended for later crafting and forging.";
-        }
+        if (block) return switch (itemId) {
+            case "metal_forge" -> "A workstation for the mod's metalworking progression.";
+            case "basic_workshop" -> "A workshop station that provides access to supported early metalworking operations.";
+            case "part_maker" -> "A station used to configure molds and select a component shape.";
+            case "casting_station" -> "Casts matching heated metal using a configured mold.";
+            case "assembly_station" -> "A workstation for combining compatible forged components.";
+            case "maintenance_station" -> "A workstation for supported weapon maintenance and finishing.";
+            case "forge_floor", "forge_section", "advanced_forge" -> "A structural part of the Eclipse Ashes forge setup.";
+            default -> "A registered Eclipse Ashes block. Its behavior depends on the block implementation and data files.";
+        };
+        if (itemId.startsWith("raw_")) return "Raw " + prettyName(itemId.substring(4)) + " material. This is the starting material tier; check the matching ore's loot table to see what it drops.";
+        if (itemId.startsWith("unrefined_")) return "Unrefined " + prettyName(itemId.substring(10)) + ". An intermediate material tier intended for further processing.";
+        if (itemId.startsWith("refined_")) return "Refined " + prettyName(itemId.substring(8)) + ". This is the processed material tier for the metal progression.";
         return switch (itemId) {
             case "mold" -> "A reusable workshop tool. Configure it with a material and supported part shape before using it at the Casting Station.";
             case "heated_metal" -> "Metal prepared for casting. It must match the material selected in the mold used at the Casting Station.";
@@ -199,37 +180,24 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
     }
 
     private String recipeFor(String itemId, boolean block) {
-        if (block && itemId.endsWith("_ore")) {
-            return "Not crafted. Find the ore in the world and mine it with a suitable pickaxe. The block's loot table determines the exact drop.";
-        }
-        if (itemId.startsWith("raw_")) {
-            return "Obtained from the corresponding ore when its loot table drops this raw material. No crafting-table recipe is documented for this item.";
-        }
-        if (itemId.startsWith("unrefined_") || itemId.startsWith("refined_")) {
-            return "This material belongs to the processing progression. Use the relevant forge/workshop operation shown in-game; a crafting-table recipe is not documented here.";
-        }
+        if (block && itemId.endsWith("_ore")) return "Not crafted. Find the ore in the world and mine it with a suitable pickaxe. The block's loot table determines the exact drop.";
+        if (itemId.startsWith("raw_")) return "Obtained from the corresponding ore when its loot table drops this raw material. No crafting-table recipe is implemented yet.";
+        if (itemId.startsWith("unrefined_") || itemId.startsWith("refined_")) return "This material belongs to the processing progression. The specific process still needs to be designed and implemented.";
         return switch (itemId) {
-            case "mold" -> "Configure this at the Part Maker. It is a station-based process, not a 3×3 crafting-table recipe.";
-            case "heated_metal" -> "Use the supported Metal Forge heating process. The current source does not document a crafting-table recipe.";
+            case "mold" -> "Configure this at the Part Maker. This is a station-based process, not a crafting-table recipe.";
+            case "heated_metal" -> "Use the planned Metal Forge heating process. Recipe behavior still needs to be finalized.";
             case "cast_metal" -> "Casting Station: provide Heated Metal and a Mold configured for the matching material and part category.";
-            case "metal_plate" -> "Part Maker / shaping process: use a cast configured as a Basic Part. This is a station process, not a crafting-table recipe.";
-            case "blacksmith_hammer", "sharpening_stone" -> "A crafting-table recipe is not documented in the current source, so this guide does not invent one.";
-            case "forged_blade", "forged_handle", "forged_guard", "unfinished_weapon" ->
-                    "Use the relevant forge or assembly station when its recipe becomes available. No verified 3×3 crafting recipe is documented here.";
-            default -> "No verified crafting-table recipe is documented for this entry yet. This page will show a 3×3 recipe when an actual recipe is available.";
+            case "metal_plate" -> "Part Maker / shaping process: use a cast configured as a Basic Part.";
+            case "blacksmith_hammer", "sharpening_stone" -> "No recipe is implemented yet. We should decide the ingredients before adding its recipe data.";
+            case "forged_blade", "forged_handle", "forged_guard", "unfinished_weapon" -> "Use the planned forge and assembly progression. Exact inputs and outputs still need to be decided.";
+            default -> "No recipe is implemented yet. This page will display a 3×3 grid when we define and add a real recipe.";
         };
     }
 
     private String usesFor(String itemId, boolean block) {
-        if (block && itemId.endsWith("_ore")) {
-            return "Mine it for the material specified by its loot table. Tool requirements are enforced by the block.";
-        }
-        if (block && itemId.endsWith("_block")) {
-            return "Stores nine matching material items in one block and can be used as a building block.";
-        }
-        if (block) {
-            return "Used as part of the Eclipse Ashes workshop or forge setup.";
-        }
+        if (block && itemId.endsWith("_ore")) return "Mine it for the material specified by its loot table. Tool requirements are enforced by the block.";
+        if (block && itemId.endsWith("_block")) return "Stores nine matching material items in one block and can be used as a building block.";
+        if (block) return "Used as part of the Eclipse Ashes workshop or forge setup.";
         if (itemId.startsWith("raw_")) return "Starting material tier; follow its processing path through the forge/workshop.";
         if (itemId.startsWith("unrefined_")) return "Intermediate material tier for further processing.";
         if (itemId.startsWith("refined_")) return "Processed material tier for supported crafting and forging progression.";
@@ -240,8 +208,7 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
             case "blacksmith_hammer" -> "Used by supported metalworking interactions and forge block conversion.";
             case "metal_plate" -> "A metalworking component for supported crafting and assembly.";
             case "sharpening_stone" -> "Used by the Maintenance Station's current finishing system.";
-            case "forged_blade", "forged_handle", "forged_guard", "unfinished_weapon" ->
-                    "Part of the mod's weapon forging and assembly progression.";
+            case "forged_blade", "forged_handle", "forged_guard", "unfinished_weapon" -> "Part of the mod's weapon forging and assembly progression.";
             default -> "No additional use is documented in the current source yet.";
         };
     }
@@ -286,9 +253,7 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
             if (this.font.width(candidate) > maxWidth && !line.isEmpty()) {
                 lines.add(line.toString());
                 line = new StringBuilder(word);
-            } else {
-                line = new StringBuilder(candidate);
-            }
+            } else line = new StringBuilder(candidate);
         }
         if (!line.isEmpty()) lines.add(line.toString());
         return lines;
