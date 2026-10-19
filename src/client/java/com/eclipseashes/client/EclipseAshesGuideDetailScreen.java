@@ -235,7 +235,7 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
                     + prettyName(material) + ".";
         }
         if (block && itemId.endsWith("_block")) {
-            return "Metal Forge: place nine matching ingots/material items in the material slots and keep at least one lava bucket (1,000 mB) in the forge. Processing takes 200 ticks and consumes one lava bucket. A Blacksmith Hammer is also required to trigger block forging.";
+            return "The metalworking recipe logic requires nine matching ingots/material items and a Blacksmith Hammer to create this block. This is a separate block-forging operation, not the Metal Forge's lava-based 200-tick material-processing cycle.";
         }
         if (itemId.startsWith("raw_")) {
             return "Metal Forge: process one Raw material with lava to obtain its Unrefined version. The forge consumes 1,000 mB of lava and takes 200 ticks per item.";
