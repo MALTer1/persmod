@@ -187,12 +187,12 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
             case "forge_floor", "forge_section", "advanced_forge" -> "A structural part of the Eclipse Ashes forge setup.";
             default -> "A registered Eclipse Ashes block. Its behavior depends on the block implementation and data files.";
         };
-        if (itemId.startsWith("raw_")) return "Raw " + prettyName(itemId.substring(4)) + " material. This is the starting material tier; check the matching ore's loot table to see what it drops.";
-        if (itemId.startsWith("unrefined_")) return "Unrefined " + prettyName(itemId.substring(10)) + ". An intermediate material tier intended for further processing.";
-        if (itemId.startsWith("refined_")) return "Refined " + prettyName(itemId.substring(8)) + ". This is the processed material tier for the metal progression.";
+        if (itemId.startsWith("raw_")) return "Starting material dropped by its matching ore. Put it in the Metal Forge with lava to process it into the Unrefined tier.";
+        if (itemId.startsWith("unrefined_")) return "Intermediate material produced by processing its Raw form in the Metal Forge. Process it again with lava to obtain the Refined tier.";
+        if (itemId.startsWith("refined_")) return "Processed material produced from its Unrefined form in the Metal Forge. A further forge cycle produces the finished ingot.";
         return switch (itemId) {
             case "mold" -> "A reusable workshop tool. Configure it with a material and supported part shape before using it at the Casting Station.";
-            case "heated_metal" -> "Metal prepared for casting. It must match the material selected in the mold used at the Casting Station.";
+            case "heated_metal" -> "Material-tagged hot metal produced by processing finished metal in the Metal Forge. Its material must match the configured Mold used for casting or anvil shaping.";
             case "cast_metal" -> "The output of casting matching Heated Metal with a configured Mold. Its saved data identifies the material and selected category.";
             case "blacksmith_hammer" -> "A metalworking tool used by supported forge interactions, including converting nine matching material items into a storage block.";
             case "metal_plate" -> "A shaped metalworking component produced from a cast configured as a Basic Part.";
@@ -206,17 +206,35 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
     }
 
     private String recipeFor(String itemId, boolean block) {
-        if (block && itemId.endsWith("_ore")) return "Not crafted. Find the ore in the world and mine it with a suitable pickaxe. The block's loot table determines the exact drop.";
-        if (itemId.startsWith("raw_")) return "Obtained from the corresponding ore when its loot table drops this raw material. No crafting-table recipe is implemented yet.";
-        if (itemId.startsWith("unrefined_") || itemId.startsWith("refined_")) return "This material belongs to the processing progression. The specific process still needs to be designed and implemented.";
+        if (block && itemId.endsWith("_ore")) {
+            String material = itemId.substring(0, itemId.length() - "_ore".length());
+            return "Mine this ore with a pickaxe that meets its tool requirement. The current loot table drops one Raw "
+                    + prettyName(material) + ".";
+        }
+        if (block && itemId.endsWith("_block")) {
+            return "Metal Forge: place nine matching ingots/material items in the material slots and keep at least one lava bucket (1,000 mB) in the forge. Processing takes 200 ticks and consumes one lava bucket. A Blacksmith Hammer is also required to trigger block forging.";
+        }
+        if (itemId.startsWith("raw_")) {
+            return "Metal Forge: process one Raw material with lava to obtain its Unrefined version. The forge consumes 1,000 mB of lava and takes 200 ticks per item.";
+        }
+        if (itemId.startsWith("unrefined_")) {
+            return "Metal Forge: process one Unrefined material with lava to obtain its Refined version. The forge consumes 1,000 mB of lava and takes 200 ticks per item.";
+        }
+        if (itemId.startsWith("refined_")) {
+            return "Metal Forge: process one Refined material with lava to obtain the finished ingot. The forge consumes 1,000 mB of lava and takes 200 ticks per item.";
+        }
         return switch (itemId) {
-            case "mold" -> "Configure this at the Part Maker. This is a station-based process, not a crafting-table recipe.";
-            case "heated_metal" -> "Use the planned Metal Forge heating process. Recipe behavior still needs to be finalized.";
-            case "cast_metal" -> "Casting Station: provide Heated Metal and a Mold configured for the matching material and part category.";
-            case "metal_plate" -> "Part Maker / shaping process: use a cast configured as a Basic Part.";
-            case "blacksmith_hammer", "sharpening_stone" -> "No recipe is implemented yet. We should decide the ingredients before adding its recipe data.";
-            case "forged_blade", "forged_handle", "forged_guard", "unfinished_weapon" -> "Use the planned forge and assembly progression. Exact inputs and outputs still need to be decided.";
-            default -> "No recipe is implemented yet. This page will display a 3×3 grid when we define and add a real recipe.";
+            case "mold" -> "Part Maker: use the station menu to configure a mold with a material and supported part category. The configured data is required by casting and anvil shaping.";
+            case "heated_metal" -> "Metal Forge: process a finished metal ingot/material with lava. The output stores its material name so it can be matched to a configured Mold.";
+            case "cast_metal" -> "Casting Station: bring a configured Mold and Heated Metal of the same material. The station consumes one Heated Metal and returns a Cast Metal piece carrying the mold's material and category.";
+            case "metal_plate" -> "Shape a Cast Metal piece configured as Basic Part while carrying a Blacksmith Hammer, or use a matching Heated Metal and configured Mold on a workshop anvil.";
+            case "forged_blade" -> "Shape a Cast Metal piece configured as Head while carrying a Blacksmith Hammer, or use matching Heated Metal and a configured Head Mold on a workshop anvil.";
+            case "forged_handle" -> "Shape a Cast Metal piece configured as Handle while carrying a Blacksmith Hammer, or use matching Heated Metal and a configured Handle Mold on a workshop anvil.";
+            case "forged_guard" -> "Shape a Cast Metal piece configured as Connector while carrying a Blacksmith Hammer, or use matching Heated Metal and a configured Connector Mold on a workshop anvil.";
+            case "unfinished_weapon" -> "Assembly Station: combine one Forged Blade, one Forged Handle, and one Forged Guard. All three components must have the same material.";
+            case "sharpening_stone" -> "The current source registers this item and consumes it at the Maintenance Station, but does not define a crafting recipe for it yet.";
+            case "blacksmith_hammer" -> "The current source uses this tool for cast shaping and block forging, but does not define a crafting recipe for it yet.";
+            default -> "No recipe or acquisition method is confirmed for this entry in the current source.";
         };
     }
 
@@ -234,7 +252,7 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
             case "blacksmith_hammer" -> "Used by supported metalworking interactions and forge block conversion.";
             case "metal_plate" -> "A metalworking component for supported crafting and assembly.";
             case "sharpening_stone" -> "Used by the Maintenance Station's current finishing system.";
-            case "forged_blade", "forged_handle", "forged_guard", "unfinished_weapon" -> "Part of the mod's weapon forging and assembly progression.";
+            case "forged_blade", "forged_handle", "forged_guard", "unfinished_weapon" -> "Part of the implemented weapon-making loop: shape matching material parts, assemble a Blade, Handle, and Guard, then finish the unfinished weapon.";
             default -> "No additional use is documented in the current source yet.";
         };
     }
