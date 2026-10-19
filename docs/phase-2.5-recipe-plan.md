@@ -24,9 +24,9 @@ These are intentionally simple first-pass recipes. Adjust ingredient counts duri
 ### Blacksmith Hammer
 Pattern:
 ```
-II 
-IS 
- S 
+II
+IS
+ S
 ```
 - I = Iron Ingot
 - S = Stick
@@ -37,7 +37,6 @@ Pattern:
 ```
 III
 I I
-   
 ```
 - I = Iron Ingot
 - Output = 1 Mold
