@@ -38,7 +38,7 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
         // are not bound yet, extractBackground() retries safely after initialization.
         if (!"feature".equals(type)) {
             this.displayStack = safeStackForEntry(type, id);
-            this.recipeGrid = compressionRecipe(id) ? buildCompressionGrid(id) : null;
+            this.recipeGrid = hasRecipeGrid(id) ? buildRecipeGrid(id) : null;
         }
     }
 
@@ -49,7 +49,7 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
         // never brings back the previous guide crash.
         if (!"feature".equals(type)) {
             if (displayStack == null) displayStack = safeStackForEntry(type, id);
-            if (recipeGrid == null && compressionRecipe(id)) recipeGrid = buildCompressionGrid(id);
+            if (recipeGrid == null && hasRecipeGrid(id)) recipeGrid = buildRecipeGrid(id);
         }
         graphics.fill(0, 0, this.width, this.height, 0xC0101018);
         int left = Math.max(12, this.width / 2 - 170);
@@ -78,18 +78,21 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
 
         int cursorY = y + 62;
         cursorY = drawSection(graphics, "ABOUT", descriptionFor(id, "block".equals(type)), x, cursorY, textWidth);
-        if (compressionRecipe(id)) {
+        if (hasRecipeGrid(id)) {
             cursorY += 3;
-            drawLine(graphics, "FORGE CONVERSION — 9 matching material items", x, cursorY, 0xFFFFB86B);
-            drawCompressionRecipe(graphics, x, cursorY + 14);
-            drawSection(graphics, "HOW TO USE IT", usesFor(id, true), x, cursorY + 72, textWidth);
+            String gridHeading = compressionRecipe(id)
+                    ? "FORGE CONVERSION — 9 matching material items"
+                    : "ASSEMBLY STATION — REQUIRED COMPONENTS";
+            drawLine(graphics, gridHeading, x, cursorY, 0xFFFFB86B);
+            drawRecipeGrid(graphics, x, cursorY + 14);
+            drawSection(graphics, "HOW TO USE IT", usesFor(id, compressionRecipe(id)), x, cursorY + 72, textWidth);
         } else {
             cursorY = drawSection(graphics, "RECIPE / HOW TO OBTAIN", recipeFor(id, "block".equals(type)), x, cursorY + 4, textWidth);
             drawSection(graphics, "USES", usesFor(id, "block".equals(type)), x, cursorY + 4, textWidth);
         }
     }
 
-    private void drawCompressionRecipe(GuiGraphicsExtractor graphics, int x, int y) {
+    private void drawRecipeGrid(GuiGraphicsExtractor graphics, int x, int y) {
         int slot = 17;
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 3; column++) {
@@ -107,16 +110,36 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
         graphics.fill(x + 77, y + 17, x + 109, y + 49, 0xFF34343C);
         if (displayStack != null) graphics.item(displayStack, x + 85, y + 25);
         graphics.text(this.font, prettyName(id), x + 114, y + 26, 0xFFE4E4E4);
-        graphics.text(this.font, "Use the Blacksmith Hammer at the forge.", x, y + 55, 0xFFB8C7D9);
+        String instruction = compressionRecipe(id)
+                ? "Use a Blacksmith Hammer to forge the block."
+                : "Use one Blade, Handle, and Guard of the same material.";
+        graphics.text(this.font, instruction, x, y + 55, 0xFFB8C7D9);
     }
 
-    private ItemStack[] buildCompressionGrid(String blockId) {
-        String materialId = blockId.substring(0, blockId.length() - "_block".length());
-        ItemStack ingredient = safeStack(materialId);
-        if (ingredient == null) return null;
-        ItemStack[] grid = new ItemStack[9];
-        for (int i = 0; i < grid.length; i++) grid[i] = ingredient.copy();
-        return grid;
+    private boolean hasRecipeGrid(String itemId) {
+        return compressionRecipe(itemId)
+                || ("item".equals(type) && "unfinished_weapon".equals(itemId));
+    }
+
+    private ItemStack[] buildRecipeGrid(String entryId) {
+        if (compressionRecipe(entryId)) {
+            String materialId = entryId.substring(0, entryId.length() - "_block".length());
+            ItemStack ingredient = safeStack(materialId);
+            if (ingredient == null) return null;
+            ItemStack[] grid = new ItemStack[9];
+            for (int i = 0; i < grid.length; i++) grid[i] = ingredient.copy();
+            return grid;
+        }
+
+        if ("item".equals(type) && "unfinished_weapon".equals(entryId)) {
+            ItemStack[] grid = new ItemStack[9];
+            grid[0] = safeStack("forged_blade");
+            grid[1] = safeStack("forged_handle");
+            grid[2] = safeStack("forged_guard");
+            return grid;
+        }
+
+        return null;
     }
 
     private ItemStack safeStackForEntry(String entryType, String path) {
