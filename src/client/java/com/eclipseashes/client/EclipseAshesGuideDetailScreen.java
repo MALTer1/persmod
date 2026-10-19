@@ -34,15 +34,23 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
         this.addRenderableWidget(Button.builder(Component.literal("Back to Catalogue"), button -> this.onClose())
                 .bounds(center - 70, this.height - 28, 140, 20).build());
 
-        // Resolve stacks during initialization, not while drawing the screen.
+        // Try resolving assets during initialization. If Minecraft's item components
+        // are not bound yet, extractBackground() retries safely after initialization.
         if (!"feature".equals(type)) {
-            this.displayStack = safeStack(id);
+            this.displayStack = safeStackForEntry(type, id);
             this.recipeGrid = compressionRecipe(id) ? buildCompressionGrid(id) : null;
         }
     }
 
     @Override
     public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+        // Retry stack creation here if the screen initialized before item components
+        // were ready. The resolver catches initialization-state exceptions, so this
+        // never brings back the previous guide crash.
+        if (!"feature".equals(type)) {
+            if (displayStack == null) displayStack = safeStackForEntry(type, id);
+            if (recipeGrid == null && compressionRecipe(id)) recipeGrid = buildCompressionGrid(id);
+        }
         graphics.fill(0, 0, this.width, this.height, 0xC0101018);
         int left = Math.max(12, this.width / 2 - 170);
         int right = Math.min(this.width - 12, this.width / 2 + 170);
@@ -111,12 +119,25 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
         return grid;
     }
 
-    private ItemStack safeStack(String itemId) {
+    private ItemStack safeStackForEntry(String entryType, String path) {
         try {
-            Identifier identifier = Identifier.fromNamespaceAndPath("eclipseashes", itemId);
-            Item item = BuiltInRegistries.ITEM.get(identifier)
-                    .map(reference -> reference.value())
-                    .orElse(null);
+            Identifier identifier = Identifier.fromNamespaceAndPath("eclipseashes", path);
+            Item item;
+            if ("block".equals(entryType)) {
+                // Resolve blocks through the block registry first, then use their
+                // inventory item. This supports blocks whose item registration is
+                // not a simple direct lookup by the displayed entry.
+                var block = BuiltInRegistries.BLOCK.get(identifier)
+                        .map(reference -> reference.value())
+                        .orElse(null);
+                if (block == null) return null;
+                item = block.asItem();
+            } else {
+                item = BuiltInRegistries.ITEM.get(identifier)
+                        .map(reference -> reference.value())
+                        .orElse(null);
+            }
+
             Item air = BuiltInRegistries.ITEM.get(Identifier.fromNamespaceAndPath("minecraft", "air"))
                     .map(reference -> reference.value())
                     .orElse(null);
@@ -124,8 +145,13 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
             return new ItemStack(item);
         } catch (IllegalStateException exception) {
             // Item components may not be bound during an early initialization state.
+            // The screen retries on later frames, once the client is ready.
             return null;
         }
+    }
+
+    private ItemStack safeStack(String itemId) {
+        return safeStackForEntry("item", itemId);
     }
 
     private boolean compressionRecipe(String itemId) {
