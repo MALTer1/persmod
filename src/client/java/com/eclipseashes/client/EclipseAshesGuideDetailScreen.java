@@ -34,8 +34,9 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
         this.addRenderableWidget(Button.builder(Component.literal("Back to Catalogue"), button -> this.onClose())
                 .bounds(center - 70, this.height - 28, 140, 20).build());
 
-        // Try resolving assets during initialization. If Minecraft's item components
-        // are not bound yet, extractBackground() retries safely after initialization.
+        // Try resolving assets during initialization. Some registry entries can
+        // still reject ItemStack construction at this point; the resolver treats
+        // that as a missing icon rather than letting the guide crash.
         if (!"feature".equals(type)) {
             this.displayStack = safeStackForEntry(type, id);
             this.recipeGrid = hasRecipeGrid(id) ? buildRecipeGrid(id) : null;
@@ -44,9 +45,8 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
 
     @Override
     public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
-        // Retry stack creation here if the screen initialized before item components
-        // were ready. The resolver catches initialization-state exceptions, so this
-        // never brings back the previous guide crash.
+        // Retry stack creation if the item components were not bound yet. Any
+        // runtime failure in optional icon construction is contained by the resolver.
         if (!"feature".equals(type)) {
             if (displayStack == null) displayStack = safeStackForEntry(type, id);
             if (recipeGrid == null && hasRecipeGrid(id)) recipeGrid = buildRecipeGrid(id);
@@ -166,9 +166,12 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
                     .orElse(null);
             if (item == null || item == air) return null;
             return new ItemStack(item);
-        } catch (IllegalStateException exception) {
-            // Item components may not be bound during an early initialization state.
-            // The screen retries on later frames, once the client is ready.
+        } catch (RuntimeException exception) {
+            // On Minecraft 26.3, constructing an ItemStack can throw a
+            // NullPointerException when a registry holder's components are not
+            // bound yet. Icons are optional UI decoration: omit the icon and keep
+            // the guide usable instead of crashing the entire client. Runtime
+            // failures are contained here because this method only resolves icons.
             return null;
         }
     }
