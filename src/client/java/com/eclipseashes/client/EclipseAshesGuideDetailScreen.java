@@ -71,7 +71,7 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
 
         graphics.fill(x, y, x + 42, y + 42, 0xFF34343C);
         graphics.fill(x, y, x + 42, y + 3, "block".equals(type) ? 0xFF7FAF83 : 0xFFB58A45);
-        if (displayStack != null) graphics.item(displayStack, x + 13, y + 12);
+        if (displayStack != null) graphics.fakeItem(displayStack, x + 13, y + 12);
         graphics.text(this.font, prettyName(id), x + 52, y + 5, 0xFFFFD98A);
         graphics.text(this.font, "Eclipse Ashes", x + 52, y + 19, 0xFFB8C7D9);
         graphics.text(this.font, "Registry: eclipseashes:" + id, x, y + 47, 0xFFB8C7D9);
@@ -102,13 +102,13 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
                 graphics.fill(sx, sy, sx + 16, sy + 1, 0xFF777783);
                 if (recipeGrid != null) {
                     ItemStack ingredient = recipeGrid[row * 3 + column];
-                    if (ingredient != null) graphics.item(ingredient, sx, sy);
+                    if (ingredient != null) graphics.fakeItem(ingredient, sx, sy);
                 }
             }
         }
         graphics.text(this.font, "→", x + 58, y + 22, 0xFFFFFFFF);
         graphics.fill(x + 77, y + 17, x + 109, y + 49, 0xFF34343C);
-        if (displayStack != null) graphics.item(displayStack, x + 85, y + 25);
+        if (displayStack != null) graphics.fakeItem(displayStack, x + 85, y + 25);
         graphics.text(this.font, prettyName(id), x + 114, y + 26, 0xFFE4E4E4);
         String instruction = compressionRecipe(id)
                 ? "Use a Blacksmith Hammer to forge the block."
