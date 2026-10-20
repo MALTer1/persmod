@@ -6,9 +6,7 @@
     "I I"
   ],
   "key": {
-    "I": {
-      "item": "minecraft:iron_ingot"
-    }
+    "I": "minecraft:iron_ingot"
   },
   "result": {
     "id": "eclipseashes:mold",
