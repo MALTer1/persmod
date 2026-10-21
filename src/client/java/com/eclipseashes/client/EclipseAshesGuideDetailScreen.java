@@ -38,20 +38,20 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
         this.addRenderableWidget(Button.builder(Component.literal("Back to Catalogue"), button -> this.onClose())
                 .bounds(center - 70, this.height - 28, 140, 20).build());
 
-        // Try resolving assets during initialization. Some registry entries can
-        // still reject ItemStack construction at this point; the resolver treats
-        // that as a missing icon rather than letting the guide crash.
-        if (!"feature".equals(type)) {
-            this.displayStack = safeStackForEntry(type, id);
-            this.recipeGrid = hasRecipeGrid(id) ? buildRecipeGrid(id) : null;
-        }
+        // Do not construct ItemStacks during screen initialization. In 26.x,
+        // item data components may not be bound yet during screen transitions
+        // or resource reloads. Resolve icons lazily during extraction instead.
+        this.displayStack = null;
+        this.recipeGrid = null;
     }
 
     @Override
     public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
-        // Retry stack creation if the item components were not bound yet. Any
-        // runtime failure in optional icon construction is contained by the resolver.
-        if (!"feature".equals(type)) {
+        // Item stacks are only safe to construct once a world is active and
+        // the client is not transitioning through a loading overlay. Avoid
+        // repeated exceptions/log spam while components are temporarily unbound.
+        Minecraft minecraft = Minecraft.getInstance();
+        if (!"feature".equals(type) && minecraft.level != null && minecraft.overlay == null) {
             if (displayStack == null) displayStack = safeStackForEntry(type, id);
             if (recipeGrid == null && hasRecipeGrid(id)) recipeGrid = buildRecipeGrid(id);
         }
@@ -152,6 +152,11 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
             identifier = Identifier.fromNamespaceAndPath("eclipseashes", path);
         } catch (RuntimeException exception) {
             LOGGER.warn("[Eclipse Ashes Guide] Invalid identifier for type='{}', path='{}'", entryType, path, exception);
+            return null;
+        }
+
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.level == null || minecraft.overlay != null) {
             return null;
         }
 
