@@ -3,6 +3,9 @@ package com.eclipseashes.client;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -15,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 
 /** Detail page opened from the Eclipse Ashes in-game guide. */
 public final class EclipseAshesGuideDetailScreen extends Screen {
+    private static final Logger LOGGER = LogUtils.getLogger();
     private final Screen parent;
     private final String type;
     private final String id;
@@ -143,35 +147,52 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
     }
 
     private ItemStack safeStackForEntry(String entryType, String path) {
+        Identifier identifier;
         try {
-            Identifier identifier = Identifier.fromNamespaceAndPath("eclipseashes", path);
+            identifier = Identifier.fromNamespaceAndPath("eclipseashes", path);
+        } catch (RuntimeException exception) {
+            LOGGER.warn("[Eclipse Ashes Guide] Invalid identifier for type='{}', path='{}'", entryType, path, exception);
+            return null;
+        }
+
+        try {
             Item item;
             if ("block".equals(entryType)) {
-                // Resolve blocks through the block registry first, then use their
-                // inventory item. This supports blocks whose item registration is
-                // not a simple direct lookup by the displayed entry.
                 var block = BuiltInRegistries.BLOCK.get(identifier)
                         .map(reference -> reference.value())
                         .orElse(null);
-                if (block == null) return null;
+                if (block == null) {
+                    LOGGER.warn("[Eclipse Ashes Guide] Block registry lookup returned empty for {}", identifier);
+                    return null;
+                }
                 item = block.asItem();
+                LOGGER.info("[Eclipse Ashes Guide] Resolved block {} to item {}", identifier,
+                        BuiltInRegistries.ITEM.getKey(item));
             } else {
                 item = BuiltInRegistries.ITEM.get(identifier)
                         .map(reference -> reference.value())
                         .orElse(null);
+                if (item == null) {
+                    LOGGER.warn("[Eclipse Ashes Guide] Item registry lookup returned empty for {}", identifier);
+                    return null;
+                }
+                LOGGER.info("[Eclipse Ashes Guide] Resolved item {}", identifier);
             }
 
             Item air = BuiltInRegistries.ITEM.get(Identifier.fromNamespaceAndPath("minecraft", "air"))
                     .map(reference -> reference.value())
                     .orElse(null);
-            if (item == null || item == air) return null;
-            return new ItemStack(item);
+            if (item == air) {
+                LOGGER.warn("[Eclipse Ashes Guide] Resolved {} to air; no icon will be drawn", identifier);
+                return null;
+            }
+
+            ItemStack stack = new ItemStack(item);
+            LOGGER.info("[Eclipse Ashes Guide] ItemStack created for {} (empty={})", identifier, stack.isEmpty());
+            return stack;
         } catch (RuntimeException exception) {
-            // On Minecraft 26.3, constructing an ItemStack can throw a
-            // NullPointerException when a registry holder's components are not
-            // bound yet. Icons are optional UI decoration: omit the icon and keep
-            // the guide usable instead of crashing the entire client. Runtime
-            // failures are contained here because this method only resolves icons.
+            LOGGER.error("[Eclipse Ashes Guide] Failed to resolve/create ItemStack for type='{}', id='{}'",
+                    entryType, identifier, exception);
             return null;
         }
     }
