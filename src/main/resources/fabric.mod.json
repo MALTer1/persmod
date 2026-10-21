@@ -1,22 +1,28 @@
 {
   "schemaVersion": 1,
   "id": "eclipseashes",
-  "version": "1.0.0",
+  "version": "${version}",
   "name": "Eclipse Ashes",
   "description": "Eclipse Ashes RPG progression mod.",
   "environment": "*",
   "entrypoints": {
-  "main": [
-    "com.eclipseashes.EclipseAshes"
-  ],
-  "client": [
-    "com.eclipseashes.client.EclipseAshesClient"
-  ]
+    "main": [
+      "com.eclipseashes.EclipseAshes"
+    ],
+    "client": [
+      "com.eclipseashes.client.EclipseAshesClient"
+    ],
+    "modmenu": [
+      "com.eclipseashes.client.EclipseAshesModMenuIntegration"
+    ]
   },
   "depends": {
     "fabricloader": ">=0.19.5",
     "minecraft": "26.3",
     "java": ">=25",
     "fabric-api": "*"
+  },
+  "suggests": {
+    "modmenu": "*"
   }
 }
