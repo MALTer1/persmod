@@ -51,7 +51,7 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
         // the client is not transitioning through a loading overlay. Avoid
         // repeated exceptions/log spam while components are temporarily unbound.
         Minecraft minecraft = Minecraft.getInstance();
-        if (!"feature".equals(type) && minecraft.level != null && minecraft.overlay == null) {
+        if (!"feature".equals(type) && minecraft.level != null) {
             if (displayStack == null) displayStack = safeStackForEntry(type, id);
             if (recipeGrid == null && hasRecipeGrid(id)) recipeGrid = buildRecipeGrid(id);
         }
@@ -156,7 +156,7 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
         }
 
         Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.level == null || minecraft.overlay != null) {
+        if (minecraft.level == null) {
             return null;
         }
 
