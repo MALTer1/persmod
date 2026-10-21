@@ -8,7 +8,22 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.chat.Component;
 
+import java.util.Set;
+
 public class EclipseAshesClient implements ClientModInitializer {
+    private static final Set<String> HIDE_GUIDE_ON_SCREENS = Set.of(
+            "TitleScreen",
+            "SelectWorldScreen",
+            "CreateWorldScreen",
+            "WorldCreationUi",
+            "WorldCreationScreen",
+            "EditGameRulesScreen",
+            "DatapackSelectionScreen",
+            "BackupConfirmScreen",
+            "OptionsScreen",
+            "LanguageSelectScreen",
+            "PackSelectionScreen"
+    );
 
     @Override
     public void onInitializeClient() {
@@ -33,9 +48,10 @@ public class EclipseAshesClient implements ClientModInitializer {
                 MaintenanceStationScreen::new
         );
 
-        // Add the guide button to all screens, including vanilla screens.
+        // Keep the quick-access guide in gameplay, but not on title-menu
+        // or world-setup screens. Mod Menu provides the menu/settings entry.
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-            if (screen instanceof EclipseAshesGuideScreen) {
+            if (screen instanceof EclipseAshesGuideScreen || isMainMenuOrWorldSetup(screen)) {
                 return;
             }
 
@@ -51,5 +67,14 @@ public class EclipseAshesClient implements ClientModInitializer {
 
             Screens.getWidgets(screen).add(guideButton);
         });
+    }
+
+    private static boolean isMainMenuOrWorldSetup(net.minecraft.client.gui.screens.Screen screen) {
+        for (Class<?> type = screen.getClass(); type != null; type = type.getSuperclass()) {
+            if (HIDE_GUIDE_ON_SCREENS.contains(type.getSimpleName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
