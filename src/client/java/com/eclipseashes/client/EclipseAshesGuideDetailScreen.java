@@ -176,20 +176,20 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
         }
 
         if ("item".equals(type) && "blacksmith_hammer".equals(entryId)) {
-            grid[0] = safeStack("iron_ingot");
-            grid[1] = safeStack("iron_ingot");
-            grid[3] = safeStack("iron_ingot");
-            grid[4] = safeStack("stick");
-            grid[7] = safeStack("stick");
+            grid[0] = safeVanillaStack("iron_ingot");
+            grid[1] = safeVanillaStack("iron_ingot");
+            grid[3] = safeVanillaStack("iron_ingot");
+            grid[4] = safeVanillaStack("stick");
+            grid[7] = safeVanillaStack("stick");
             return grid;
         }
 
         if ("item".equals(type) && "mold".equals(entryId)) {
-            grid[0] = safeStack("iron_ingot");
-            grid[1] = safeStack("iron_ingot");
-            grid[2] = safeStack("iron_ingot");
-            grid[3] = safeStack("iron_ingot");
-            grid[5] = safeStack("iron_ingot");
+            grid[0] = safeVanillaStack("iron_ingot");
+            grid[1] = safeVanillaStack("iron_ingot");
+            grid[2] = safeVanillaStack("iron_ingot");
+            grid[3] = safeVanillaStack("iron_ingot");
+            grid[5] = safeVanillaStack("iron_ingot");
             return grid;
         }
 
@@ -277,6 +277,19 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
 
     private ItemStack safeStack(String itemId) {
         return safeStackForEntry("item", itemId);
+    }
+
+    private ItemStack safeVanillaStack(String itemId) {
+        try {
+            Identifier identifier = Identifier.fromNamespaceAndPath("minecraft", itemId);
+            Item item = BuiltInRegistries.ITEM.get(identifier)
+                    .map(reference -> reference.value())
+                    .orElse(null);
+            return item == null ? null : new ItemStack(item);
+        } catch (RuntimeException exception) {
+            LOGGER.warn("[Eclipse Ashes Guide] Could not resolve vanilla recipe ingredient {}", itemId, exception);
+            return null;
+        }
     }
 
     private boolean compressionRecipe(String itemId) {
