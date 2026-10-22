@@ -153,7 +153,7 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
     private String recipeGridInstruction(String itemId) {
         if (compressionRecipe(itemId)) return "Use a Blacksmith Hammer to forge the block.";
         if ("unfinished_weapon".equals(itemId)) return "Use one Blade, Handle, and Guard of the same material.";
-        if ("blacksmith_hammer".equals(itemId)) return "Pattern: three iron ingots across the top, with two sticks down the center. Output: one Blacksmith Hammer.";
+        if ("blacksmith_hammer".equals(itemId)) return "Pattern: iron ingots on both sides of an iron block in the top row, with two sticks down the center. Output: one Blacksmith Hammer.";
         if ("mold".equals(itemId)) return "Pattern: iron ingots. Configure the crafted Mold at the Part Maker.";
         return "Process one input with 1,000 mB of lava for 200 ticks.";
     }
@@ -178,7 +178,7 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
 
         if ("item".equals(type) && "blacksmith_hammer".equals(entryId)) {
             grid[0] = safeVanillaStack("iron_ingot");
-            grid[1] = safeVanillaStack("iron_ingot");
+            grid[1] = safeVanillaStack("iron_block");
             grid[2] = safeVanillaStack("iron_ingot");
             grid[4] = safeVanillaStack("stick");
             grid[7] = safeVanillaStack("stick");
@@ -382,7 +382,7 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
             case "forged_guard" -> "Shape a Cast Metal piece configured as Connector while carrying a Blacksmith Hammer, or use matching Heated Metal and a configured Connector Mold on a workshop anvil.";
             case "unfinished_weapon" -> "Assembly Station: combine one Forged Blade, one Forged Handle, and one Forged Guard. All three components must have the same material.";
             case "sharpening_stone" -> "The current source registers this item and consumes it at the Maintenance Station, but does not define a crafting recipe for it yet.";
-            case "blacksmith_hammer" -> "Crafting Table: place three iron ingots across the top row and two sticks down the center column to make one Blacksmith Hammer.";
+            case "blacksmith_hammer" -> "Crafting Table: place an iron block in the top-center slot, iron ingots on either side, and two sticks down the center column to make one Blacksmith Hammer.";
             default -> "No recipe or acquisition method is confirmed for this entry in the current source.";
         };
     }
