@@ -84,9 +84,7 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
         cursorY = drawSection(graphics, "ABOUT", descriptionFor(id, "block".equals(type)), x, cursorY, textWidth);
         if (hasRecipeGrid(id)) {
             cursorY += 3;
-            String gridHeading = compressionRecipe(id)
-                    ? "FORGE CONVERSION — 9 matching material items"
-                    : "ASSEMBLY STATION — REQUIRED COMPONENTS";
+            String gridHeading = recipeGridHeading(id);
             drawLine(graphics, gridHeading, x, cursorY, 0xFFFFB86B);
             drawRecipeGrid(graphics, x, cursorY + 14);
             drawSection(graphics, "HOW TO USE IT", usesFor(id, compressionRecipe(id)), x, cursorY + 72, textWidth);
@@ -114,36 +112,111 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
         graphics.fill(x + 77, y + 17, x + 109, y + 49, 0xFF34343C);
         if (displayStack != null) graphics.fakeItem(displayStack, x + 85, y + 25);
         graphics.text(this.font, prettyName(id), x + 114, y + 26, 0xFFE4E4E4);
-        String instruction = compressionRecipe(id)
-                ? "Use a Blacksmith Hammer to forge the block."
-                : "Use one Blade, Handle, and Guard of the same material.";
+        String instruction = recipeGridInstruction(id);
         graphics.text(this.font, instruction, x, y + 55, 0xFFB8C7D9);
     }
 
     private boolean hasRecipeGrid(String itemId) {
         return compressionRecipe(itemId)
+                || isCraftingRecipe(itemId)
+                || isForgeProcessingOutput(itemId)
                 || ("item".equals(type) && "unfinished_weapon".equals(itemId));
     }
 
+    private boolean isCraftingRecipe(String itemId) {
+        return "item".equals(type)
+                && ("blacksmith_hammer".equals(itemId) || "mold".equals(itemId));
+    }
+
+    private boolean isForgeProcessingOutput(String itemId) {
+        if (!"item".equals(type)) return false;
+        return itemId.startsWith("unrefined_")
+                || itemId.startsWith("refined_")
+                || itemId.equals("heated_metal")
+                || itemId.equals("crimson_iron")
+                || itemId.equals("moonsteel")
+                || itemId.equals("sunsteel")
+                || itemId.equals("dragonite")
+                || itemId.equals("void_crystal")
+                || itemId.equals("celestial_alloy")
+                || itemId.equals("eclipse");
+    }
+
+    private String recipeGridHeading(String itemId) {
+        if (compressionRecipe(itemId)) return "FORGE CONVERSION — 9 MATCHING MATERIAL ITEMS";
+        if ("unfinished_weapon".equals(itemId)) return "ASSEMBLY STATION — REQUIRED COMPONENTS";
+        if (isCraftingRecipe(itemId)) return "CRAFTING TABLE — SHAPED RECIPE";
+        return "METAL FORGE — INPUT TO OUTPUT";
+    }
+
+    private String recipeGridInstruction(String itemId) {
+        if (compressionRecipe(itemId)) return "Use a Blacksmith Hammer to forge the block.";
+        if ("unfinished_weapon".equals(itemId)) return "Use one Blade, Handle, and Guard of the same material.";
+        if ("blacksmith_hammer".equals(itemId)) return "Pattern: iron ingots and sticks. Output: one Blacksmith Hammer.";
+        if ("mold".equals(itemId)) return "Pattern: iron ingots. Configure the crafted Mold at the Part Maker.";
+        return "Process one input with 1,000 mB of lava for 200 ticks.";
+    }
+
     private ItemStack[] buildRecipeGrid(String entryId) {
+        ItemStack[] grid = new ItemStack[9];
+
         if (compressionRecipe(entryId)) {
             String materialId = entryId.substring(0, entryId.length() - "_block".length());
             ItemStack ingredient = safeStack(materialId);
             if (ingredient == null) return null;
-            ItemStack[] grid = new ItemStack[9];
             for (int i = 0; i < grid.length; i++) grid[i] = ingredient.copy();
             return grid;
         }
 
         if ("item".equals(type) && "unfinished_weapon".equals(entryId)) {
-            ItemStack[] grid = new ItemStack[9];
             grid[0] = safeStack("forged_blade");
             grid[1] = safeStack("forged_handle");
             grid[2] = safeStack("forged_guard");
             return grid;
         }
 
+        if ("item".equals(type) && "blacksmith_hammer".equals(entryId)) {
+            grid[0] = safeStack("iron_ingot");
+            grid[1] = safeStack("iron_ingot");
+            grid[3] = safeStack("iron_ingot");
+            grid[4] = safeStack("stick");
+            grid[7] = safeStack("stick");
+            return grid;
+        }
+
+        if ("item".equals(type) && "mold".equals(entryId)) {
+            grid[0] = safeStack("iron_ingot");
+            grid[1] = safeStack("iron_ingot");
+            grid[2] = safeStack("iron_ingot");
+            grid[3] = safeStack("iron_ingot");
+            grid[5] = safeStack("iron_ingot");
+            return grid;
+        }
+
+        String inputId = forgeInputFor(entryId);
+        if (inputId != null) {
+            ItemStack ingredient = safeStack(inputId);
+            if (ingredient != null) {
+                grid[4] = ingredient;
+                return grid;
+            }
+        }
         return null;
+    }
+
+    private String forgeInputFor(String outputId) {
+        if (outputId.startsWith("unrefined_")) {
+            return "raw_" + outputId.substring("unrefined_".length());
+        }
+        if (outputId.startsWith("refined_")) {
+            return "unrefined_" + outputId.substring("refined_".length());
+        }
+        if ("heated_metal".equals(outputId)) return "iron_ingot";
+        return switch (outputId) {
+            case "crimson_iron", "moonsteel", "sunsteel", "dragonite", "void_crystal",
+                    "celestial_alloy", "eclipse" -> "refined_" + outputId;
+            default -> null;
+        };
     }
 
     private ItemStack safeStackForEntry(String entryType, String path) {
@@ -267,7 +340,9 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
             return "The metalworking recipe logic requires nine matching ingots/material items and a Blacksmith Hammer to create this block. This is a separate block-forging operation, not the Metal Forge's lava-based 200-tick material-processing cycle.";
         }
         if (itemId.startsWith("raw_")) {
-            return "Metal Forge: process one Raw material with lava to obtain its Unrefined version. The forge consumes 1,000 mB of lava and takes 200 ticks per item.";
+            String material = itemId.substring("raw_".length());
+            return "Obtain this material from its matching ore's loot table. To process it further, put one Raw "
+                    + prettyName(material) + " into the Metal Forge with lava; it becomes Unrefined after 200 ticks.";
         }
         if (itemId.startsWith("unrefined_")) {
             return "Metal Forge: process one Unrefined material with lava to obtain its Refined version. The forge consumes 1,000 mB of lava and takes 200 ticks per item.";
@@ -276,7 +351,7 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
             return "Metal Forge: process one Refined material with lava to obtain the finished ingot. The forge consumes 1,000 mB of lava and takes 200 ticks per item.";
         }
         return switch (itemId) {
-            case "mold" -> "Part Maker: use the station menu to configure a mold with a material and supported part category. The configured data is required by casting and anvil shaping.";
+            case "mold" -> "Crafting Table: use the shaped iron-ingot recipe shown above to make a basic Mold. Then use the Part Maker to configure its material, category, family, length, shape, and width.";
             case "heated_metal" -> "Metal Forge: process a finished metal ingot/material with lava. The output stores its material name so it can be matched to a configured Mold.";
             case "cast_metal" -> "Casting Station: bring a configured Mold and Heated Metal of the same material. The station consumes one Heated Metal and returns a Cast Metal piece carrying the mold's material and category.";
             case "metal_plate" -> "Shape a Cast Metal piece configured as Basic Part while carrying a Blacksmith Hammer, or use a matching Heated Metal and configured Mold on a workshop anvil.";
@@ -285,7 +360,7 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
             case "forged_guard" -> "Shape a Cast Metal piece configured as Connector while carrying a Blacksmith Hammer, or use matching Heated Metal and a configured Connector Mold on a workshop anvil.";
             case "unfinished_weapon" -> "Assembly Station: combine one Forged Blade, one Forged Handle, and one Forged Guard. All three components must have the same material.";
             case "sharpening_stone" -> "The current source registers this item and consumes it at the Maintenance Station, but does not define a crafting recipe for it yet.";
-            case "blacksmith_hammer" -> "The current source uses this tool for cast shaping and block forging, but does not define a crafting recipe for it yet.";
+            case "blacksmith_hammer" -> "Crafting Table: use the shaped recipe shown above with three iron ingots and two sticks to make one Blacksmith Hammer.";
             default -> "No recipe or acquisition method is confirmed for this entry in the current source.";
         };
     }
