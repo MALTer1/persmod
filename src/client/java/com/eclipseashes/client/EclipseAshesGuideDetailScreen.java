@@ -144,6 +144,7 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
 
     private String recipeGridHeading(String itemId) {
         if (compressionRecipe(itemId)) return "FORGE CONVERSION — 9 MATCHING MATERIAL ITEMS";
+        if ("heated_metal".equals(itemId)) return "METAL FORGE — EXAMPLE INPUT TO OUTPUT";
         if ("unfinished_weapon".equals(itemId)) return "ASSEMBLY STATION — REQUIRED COMPONENTS";
         if (isCraftingRecipe(itemId)) return "CRAFTING TABLE — SHAPED RECIPE";
         return "METAL FORGE — INPUT TO OUTPUT";
@@ -358,10 +359,18 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
                     + prettyName(material) + " into the Metal Forge with lava; it becomes Unrefined after 200 ticks.";
         }
         if (itemId.startsWith("unrefined_")) {
-            return "Metal Forge: process one Unrefined material with lava to obtain its Refined version. The forge consumes 1,000 mB of lava and takes 200 ticks per item.";
+            String material = itemId.substring("unrefined_".length());
+            return "Metal Forge: one Raw " + prettyName(material)
+                    + " becomes this Unrefined material. The forge consumes 1,000 mB of lava and takes 200 ticks per item.";
         }
         if (itemId.startsWith("refined_")) {
-            return "Metal Forge: process one Refined material with lava to obtain the finished ingot. The forge consumes 1,000 mB of lava and takes 200 ticks per item.";
+            String material = itemId.substring("refined_".length());
+            return "Metal Forge: one Unrefined " + prettyName(material)
+                    + " becomes this Refined material. The forge consumes 1,000 mB of lava and takes 200 ticks per item.";
+        }
+        if (isForgeProcessingOutput(itemId) && !"heated_metal".equals(itemId)) {
+            return "Metal Forge: one Refined " + prettyName(itemId)
+                    + " becomes this finished material. The forge consumes 1,000 mB of lava and takes 200 ticks per item.";
         }
         return switch (itemId) {
             case "mold" -> "Crafting Table: use the shaped iron-ingot recipe shown above to make a basic Mold. Then use the Part Maker to configure its material, category, family, length, shape, and width.";
