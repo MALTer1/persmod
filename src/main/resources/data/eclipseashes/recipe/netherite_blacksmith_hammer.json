@@ -4,6 +4,7 @@
   "base": "eclipseashes:diamond_blacksmith_hammer",
   "addition": "minecraft:netherite_ingot",
   "result": {
-    "id": "eclipseashes:netherite_blacksmith_hammer"
+    "id": "eclipseashes:netherite_blacksmith_hammer",
+    "count": 1
   }
 }
