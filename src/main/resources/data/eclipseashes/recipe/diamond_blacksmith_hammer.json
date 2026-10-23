@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " D ",
+    "DHD",
+    " D "
+  ],
+  "key": {
+    "D": "minecraft:diamond",
+    "H": "eclipseashes:blacksmith_hammer"
+  },
+  "result": {
+    "id": "eclipseashes:diamond_blacksmith_hammer",
+    "count": 1
+  }
+}
