@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": "minecraft:netherite_upgrade_smithing_template",
+  "base": "eclipseashes:diamond_blacksmith_hammer",
+  "addition": "minecraft:netherite_ingot",
+  "result": {
+    "id": "eclipseashes:netherite_blacksmith_hammer"
+  }
+}
