@@ -11,6 +11,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
@@ -47,6 +48,41 @@ public final class EclipseAshesGuideScreen extends Screen {
             addSectionButton("Features", "features", center - 151);
             addSectionButton("Items", "items", center - 76);
             addSectionButton("Blocks", "blocks", center - 1);
+
+            if ("features".equals(section)) {
+                String[][] features = {
+                        {"ores", "Ores and Materials"},
+                        {"tools", "Tools and Equipment"},
+                        {"workshop", "Forge and Workshop"},
+                        {"player", "Player Progression"},
+                        {"world", "World Generation"},
+                        {"story", "Creatures and Story"}
+                };
+                int rowY = 82;
+                for (String[] feature : features) {
+                    String featureId = feature[0];
+                    this.addRenderableWidget(Button.builder(Component.literal(feature[1]), button ->
+                            Minecraft.getInstance().gui.setScreen(
+                                    new EclipseAshesGuideDetailScreen(this, "feature", featureId)
+                            )).bounds(center - 150, rowY, 300, 12).build());
+                    rowY += 13;
+                }
+            } else {
+                List<String> entries = catalogueEntries();
+                int start = page * PAGE_SIZE;
+                int end = Math.min(entries.size(), start + PAGE_SIZE);
+                int rowY = 82;
+                for (int i = start; i < end; i++) {
+                    String entry = entries.get(i);
+                    String entryId = entry.toLowerCase(java.util.Locale.ROOT).replace(' ', '_');
+                    String type = "items".equals(section) ? "item" : "block";
+                    this.addRenderableWidget(Button.builder(Component.literal(entry), button ->
+                            Minecraft.getInstance().gui.setScreen(
+                                    new EclipseAshesGuideDetailScreen(this, type, entryId)
+                            )).bounds(center - 150, rowY, 300, 12).build());
+                    rowY += 13;
+                }
+            }
 
             List<String> entries = catalogueEntries();
             int maxPage = Math.max(0, (entries.size() - 1) / PAGE_SIZE);
@@ -119,38 +155,16 @@ public final class EclipseAshesGuideScreen extends Screen {
             GuiGraphicsExtractor graphics, int x, int y, int right, int bottom
     ) {
         if ("features".equals(section)) {
-            y = drawLine(graphics, "FEATURE DIRECTORY", x, y, 0xFFFFFFFF);
-            y = drawLine(graphics, "Implemented systems", x, y + 4, 0xFFFFD98A);
-            y = drawLine(graphics, "• Ores and materials", x + 8, y, 0xFFE4D5BC);
-            y = drawLine(graphics, "• Tools and equipment", x + 8, y, 0xFFE4D5BC);
-            y = drawLine(graphics, "• Forge and workshop stations", x + 8, y, 0xFFE4D5BC);
-            y = drawLine(graphics, "Planned systems", x, y + 5, 0xFFB8C7D9);
-            y = drawLine(graphics, "• Player races, ranks, levels, and breathing", x + 8, y, 0xFFB8C7D9);
-            y = drawLine(graphics, "• World generation and settlements", x + 8, y, 0xFFB8C7D9);
-            y = drawLine(graphics, "• Creatures, quests, and story", x + 8, y, 0xFFB8C7D9);
-            drawLine(graphics, "Use Items and Blocks to inspect registered content.", x, y + 6, 0xFFB8B8B8);
+            drawLine(graphics, "FEATURE DIRECTORY — select a topic below", x, y, 0xFFFFFFFF);
             return;
         }
 
         List<String> entries = catalogueEntries();
         String heading = "items".equals(section) ? "ECLIPSE ASHES ITEMS" : "ECLIPSE ASHES BLOCKS";
-        drawLine(graphics, heading + "  (" + entries.size() + ")", x, y, 0xFFFFFFFF);
-
-        if (entries.isEmpty()) {
-            drawLine(graphics, "No Eclipse Ashes entries found in this registry.", x, y + 18, 0xFFB8B8B8);
-            return;
-        }
-
-        int start = page * PAGE_SIZE;
-        int end = Math.min(entries.size(), start + PAGE_SIZE);
-        int rowY = y + 18;
-        for (int i = start; i < end && rowY < bottom - 8; i++) {
-            drawLine(graphics, "• " + entries.get(i), x, rowY, 0xFFE4D5BC);
-            rowY += 12;
-        }
+        drawLine(graphics, heading + " (" + entries.size() + ") — select an entry below", x, y, 0xFFFFFFFF);
         int maxPage = Math.max(0, (entries.size() - 1) / PAGE_SIZE);
-        drawLine(graphics, "Page " + (Math.min(page, maxPage) + 1) + " of " + (maxPage + 1)
-                + " — use Previous / Next below", x, bottom - 15, 0xFFB8B8B8);
+        drawLine(graphics, "Page " + (Math.min(page, maxPage) + 1) + " of " + (maxPage + 1),
+                x, bottom - 15, 0xFFB8B8B8);
     }
 
     private List<String> catalogueEntries() {
@@ -158,7 +172,9 @@ public final class EclipseAshesGuideScreen extends Screen {
         if ("items".equals(section)) {
             for (Item item : BuiltInRegistries.ITEM) {
                 Identifier id = BuiltInRegistries.ITEM.getKey(item);
-                if (id != null && "eclipseashes".equals(id.getNamespace())) {
+                // BlockItem instances are represented in the Blocks catalogue to avoid
+                // listing every placed block a second time as an ordinary item.
+                if (id != null && "eclipseashes".equals(id.getNamespace()) && !(item instanceof BlockItem)) {
                     entries.add(prettyName(id.getPath()));
                 }
             }

@@ -8,8 +8,8 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.chat.Component;
 
-public class EclipseAshesClient implements ClientModInitializer {
 
+public class EclipseAshesClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         MenuScreens.register(
@@ -33,9 +33,10 @@ public class EclipseAshesClient implements ClientModInitializer {
                 MaintenanceStationScreen::new
         );
 
-        // Add the guide button to all screens, including vanilla screens.
+        // Keep the quick-access guide in gameplay, but not on title-menu
+        // or world-setup screens. Mod Menu provides the menu/settings entry.
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-            if (screen instanceof EclipseAshesGuideScreen) {
+            if (client.level == null || screen instanceof EclipseAshesGuideScreen) {
                 return;
             }
 
@@ -52,4 +53,5 @@ public class EclipseAshesClient implements ClientModInitializer {
             Screens.getWidgets(screen).add(guideButton);
         });
     }
+
 }

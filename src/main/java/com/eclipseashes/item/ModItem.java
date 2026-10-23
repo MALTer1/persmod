@@ -43,6 +43,8 @@ public class ModItem {
     public static final Item CAST_METAL = register("cast_metal");
     public static final Item HEATED_METAL = register("heated_metal");
     public static final Item BLACKSMITH_HAMMER = register("blacksmith_hammer");
+    public static final Item DIAMOND_BLACKSMITH_HAMMER = register("diamond_blacksmith_hammer");
+    public static final Item NETHERITE_BLACKSMITH_HAMMER = register("netherite_blacksmith_hammer");
     public static final Item METAL_PLATE = register("metal_plate");
     public static final Item FORGED_BLADE = register("forged_blade");
     public static final Item FORGED_HANDLE = register("forged_handle");
