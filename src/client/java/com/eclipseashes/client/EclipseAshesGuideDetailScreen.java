@@ -125,7 +125,7 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
 
     private boolean isCraftingRecipe(String itemId) {
         return "item".equals(type)
-                && ("blacksmith_hammer".equals(itemId) || "mold".equals(itemId));
+                && ("blacksmith_hammer".equals(itemId) || "diamond_blacksmith_hammer".equals(itemId) || "mold".equals(itemId));
     }
 
     private boolean isForgeProcessingOutput(String itemId) {
@@ -154,6 +154,7 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
         if (compressionRecipe(itemId)) return "Use a Blacksmith Hammer to forge the block.";
         if ("unfinished_weapon".equals(itemId)) return "Use one Blade, Handle, and Guard of the same material.";
         if ("blacksmith_hammer".equals(itemId)) return "Pattern: iron ingots on both sides of an iron block in the top row, with two sticks down the center. Output: one Blacksmith Hammer.";
+        if ("diamond_blacksmith_hammer".equals(itemId)) return "Upgrade: place a Blacksmith Hammer in the center and four diamonds above, below, left, and right. Output: one Diamond Blacksmith Hammer.";
         if ("mold".equals(itemId)) return "Pattern: iron ingots. Configure the crafted Mold at the Part Maker.";
         return "Process one input with 1,000 mB of lava for 200 ticks.";
     }
@@ -182,6 +183,15 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
             grid[2] = safeVanillaStack("iron_ingot");
             grid[4] = safeVanillaStack("stick");
             grid[7] = safeVanillaStack("stick");
+            return grid;
+        }
+
+        if ("item".equals(type) && "diamond_blacksmith_hammer".equals(entryId)) {
+            grid[1] = safeVanillaStack("diamond");
+            grid[3] = safeVanillaStack("diamond");
+            grid[4] = safeStack("blacksmith_hammer");
+            grid[5] = safeVanillaStack("diamond");
+            grid[7] = safeVanillaStack("diamond");
             return grid;
         }
 
@@ -383,6 +393,8 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
             case "unfinished_weapon" -> "Assembly Station: combine one Forged Blade, one Forged Handle, and one Forged Guard. All three components must have the same material.";
             case "sharpening_stone" -> "The current source registers this item and consumes it at the Maintenance Station, but does not define a crafting recipe for it yet.";
             case "blacksmith_hammer" -> "Crafting Table: place an iron block in the top-center slot, iron ingots on either side, and two sticks down the center column to make one Blacksmith Hammer.";
+            case "diamond_blacksmith_hammer" -> "Crafting Table: upgrade a Blacksmith Hammer with four diamonds arranged above, below, left, and right of it.";
+            case "netherite_blacksmith_hammer" -> "Smithing Table: upgrade a Diamond Blacksmith Hammer with a Netherite Upgrade Smithing Template and a Netherite Ingot, following the standard Netherite upgrade process.";
             default -> "No recipe or acquisition method is confirmed for this entry in the current source.";
         };
     }
@@ -398,7 +410,9 @@ public final class EclipseAshesGuideDetailScreen extends Screen {
             case "mold" -> "Configure material and part category for the Casting Station.";
             case "heated_metal" -> "Input to the Casting Station when it matches the configured Mold.";
             case "cast_metal" -> "Input to supported workshop shaping operations.";
-            case "blacksmith_hammer" -> "Used by supported metalworking interactions and forge block conversion.";
+            case "blacksmith_hammer" -> "Used by supported metalworking interactions and forge block conversion. It can be upgraded to a Diamond Blacksmith Hammer.";
+            case "diamond_blacksmith_hammer" -> "An upgraded metalworking hammer; it can be upgraded to Netherite using the standard Netherite smithing process.";
+            case "netherite_blacksmith_hammer" -> "The Netherite-tier metalworking hammer.";
             case "metal_plate" -> "A metalworking component for supported crafting and assembly.";
             case "sharpening_stone" -> "Used by the Maintenance Station's current finishing system.";
             case "forged_blade", "forged_handle", "forged_guard", "unfinished_weapon" -> "Part of the implemented weapon-making loop: shape matching material parts, assemble a Blade, Handle, and Guard, then finish the unfinished weapon.";
