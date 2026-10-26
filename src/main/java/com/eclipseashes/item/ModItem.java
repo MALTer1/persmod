@@ -58,7 +58,7 @@ public class ModItem {
     private static Item registerTrainingDummy() {
         ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, EclipseAshes.id("training_dummy"));
         return Registry.register(BuiltInRegistries.ITEM, key,
-                new TrainingDummyItem(new Item.Properties().setId(key).stacksTo(1)));
+                new TrainingDummyItem(new Item.Properties().setId(key).stacksTo(64)));
     }
 
     private static Item register(String name) {
