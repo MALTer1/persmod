@@ -1,7 +1,7 @@
 package com.eclipseashes.block;
 
 import com.eclipseashes.item.ModItem;
-import com.eclipseashes.block.ModBlocks;
+import com.eclipseashes.item.WeaponStatCalculator;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -11,8 +11,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.level.block.Blocks;
 
 /** Server-side recipes for the first playable metalworking loop. */
 public final class MetalworkingRecipes {
@@ -42,7 +46,7 @@ public final class MetalworkingRecipes {
 
         ItemStack cast = new ItemStack(ModItem.CAST_METAL);
         CustomData.set(DataComponents.CUSTOM_DATA, cast, moldData.copy());
-        cast.set(DataComponents.CUSTOM_NAME, Component.literal(material + " Cast " + stringTag(moldData, "category")));
+        cast.set(DataComponents.CUSTOM_NAME, Component.literal(material + " Cast " + category));
         consume(player, metalSlot, 1);
         give(player, cast);
         message(player, "Cast complete. Take the cast piece to the Modded Anvil.");
@@ -92,24 +96,31 @@ public final class MetalworkingRecipes {
             return true;
         }
 
-        String bladeMaterial = stringTag(customData(player.getInventory().getItem(bladeSlot)), "material");
-        String handleMaterial = stringTag(customData(player.getInventory().getItem(handleSlot)), "material");
-        String guardMaterial = stringTag(customData(player.getInventory().getItem(guardSlot)), "material");
-        if (bladeMaterial.isBlank() || !bladeMaterial.equals(handleMaterial) || !bladeMaterial.equals(guardMaterial)) {
-            message(player, "The Blade, Handle, and Guard must use the same metal.");
+        CompoundTag bladeData = customData(player.getInventory().getItem(bladeSlot));
+        CompoundTag handleData = customData(player.getInventory().getItem(handleSlot));
+        CompoundTag guardData = customData(player.getInventory().getItem(guardSlot));
+        String bladeMaterial = stringTag(bladeData, "material");
+        String handleMaterial = stringTag(handleData, "material");
+        String guardMaterial = stringTag(guardData, "material");
+        if (bladeMaterial.isBlank() || handleMaterial.isBlank() || guardMaterial.isBlank()) {
+            message(player, "Every weapon component must have material data. Recreate any unconfigured parts.");
             return true;
         }
 
         ItemStack weapon = new ItemStack(ModItem.UNFINISHED_WEAPON);
         CompoundTag data = new CompoundTag();
         data.putString("material", bladeMaterial);
+        data.put("blade", bladeData.copy());
+        data.put("handle", handleData.copy());
+        data.put("guard", guardData.copy());
+        data.putString("eclipseashes_weapon_schema", "1");
         CustomData.set(DataComponents.CUSTOM_DATA, weapon, data);
-        weapon.set(DataComponents.CUSTOM_NAME, Component.literal("Unfinished " + bladeMaterial + " Sword"));
+        weapon.set(DataComponents.CUSTOM_NAME, Component.literal("Unfinished Custom Sword"));
         consume(player, bladeSlot, 1);
         consume(player, handleSlot, 1);
         consume(player, guardSlot, 1);
         give(player, weapon);
-        message(player, "Weapon assembled. Take it to the Maintenance Station for finishing.");
+        message(player, "Weapon assembled. Mixed materials are supported. Take it to the Maintenance Station for finishing.");
         return true;
     }
 
@@ -130,23 +141,68 @@ public final class MetalworkingRecipes {
             return true;
         }
 
-        String material = stringTag(customData(player.getInventory().getItem(weaponSlot)), "material");
-        if (material.isBlank()) {
-            message(player, "This unfinished weapon has no material data and cannot be finished.");
+        CompoundTag unfinishedData = customData(player.getInventory().getItem(weaponSlot));
+        CompoundTag bladeData = unfinishedData.getCompound("blade").orElse(new CompoundTag());
+        CompoundTag handleData = unfinishedData.getCompound("handle").orElse(new CompoundTag());
+        CompoundTag guardData = unfinishedData.getCompound("guard").orElse(new CompoundTag());
+        if (!"1".equals(stringTag(unfinishedData, "eclipseashes_weapon_schema"))
+                || stringTag(bladeData, "material").isBlank()
+                || stringTag(handleData, "material").isBlank()
+                || stringTag(guardData, "material").isBlank()) {
+            message(player, "This unfinished weapon is missing component data and cannot be finished. Assemble a new weapon from configured parts.");
             return true;
         }
+
+        WeaponStatCalculator.WeaponStats stats =
+                WeaponStatCalculator.calculate(bladeData, handleData, guardData);
+        String bladeMaterial = stringTag(bladeData, "material");
+        String handleMaterial = stringTag(handleData, "material");
+        String guardMaterial = stringTag(guardData, "material");
+
+        // The vanilla sword supplies the existing sword appearance and damageable-item behavior.
+        // Per-stack attributes and durability turn it into a calculated custom weapon.
         ItemStack sword = new ItemStack(Items.IRON_SWORD);
-        sword.set(DataComponents.CUSTOM_NAME, Component.literal("Forged " + material + " Sword"));
-        CompoundTag data = new CompoundTag();
-        data.putString("material", material);
-        data.putString("eclipseashes_finished_weapon", "1");
-        CustomData.set(DataComponents.CUSTOM_DATA, sword, data);
+        sword.set(DataComponents.CUSTOM_NAME, Component.literal(
+                "Forged " + bladeMaterial + " Blade / " + handleMaterial + " Handle / " + guardMaterial + " Guard"));
+        sword.set(DataComponents.MAX_DAMAGE, stats.durability());
+        sword.set(DataComponents.DAMAGE, 0);
+        sword.set(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.builder()
+                .add(Attributes.ATTACK_DAMAGE,
+                        new AttributeModifier(Identifier.fromNamespaceAndPath("eclipseashes", "forged_weapon_damage"),
+                                stats.damage(), AttributeModifier.Operation.ADD_VALUE),
+                        EquipmentSlotGroup.MAINHAND)
+                .add(Attributes.ATTACK_SPEED,
+                        new AttributeModifier(Identifier.fromNamespaceAndPath("eclipseashes", "forged_weapon_speed"),
+                                stats.attackSpeed() - 4.0, AttributeModifier.Operation.ADD_VALUE),
+                        EquipmentSlotGroup.MAINHAND)
+                .build());
+
+        CompoundTag finishedData = new CompoundTag();
+        finishedData.putString("eclipseashes_finished_weapon", "1");
+        finishedData.putString("eclipseashes_weapon_schema", "1");
+        finishedData.put("blade", bladeData.copy());
+        finishedData.put("handle", handleData.copy());
+        finishedData.put("guard", guardData.copy());
+        finishedData.putString("blade_material", bladeMaterial);
+        finishedData.putString("handle_material", handleMaterial);
+        finishedData.putString("guard_material", guardMaterial);
+        finishedData.putDouble("damage", stats.damage());
+        finishedData.putInt("durability", stats.durability());
+        finishedData.putDouble("attack_speed", stats.attackSpeed());
+        finishedData.putDouble("reach", stats.reach());
+        finishedData.putDouble("handling", stats.handling());
+        CustomData.set(DataComponents.CUSTOM_DATA, sword, finishedData);
+
         consume(player, weaponSlot, 1);
         consume(player, stoneSlot, 1);
         consume(player, waterSlot, 1);
         give(player, new ItemStack(Items.BUCKET));
         give(player, sword);
-        message(player, "Quenching and sharpening complete. Your sword is ready to use.");
+        message(player, "Weapon finished. Damage: " + stats.damage()
+                + ", durability: " + stats.durability()
+                + ", attack speed: " + stats.attackSpeed()
+                + ", calculated reach: " + stats.reach()
+                + ", handling: " + stats.handling() + ".");
         return true;
     }
 
