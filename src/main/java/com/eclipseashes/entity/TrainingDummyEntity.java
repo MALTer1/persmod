@@ -1,11 +1,10 @@
 package com.eclipseashes.entity;
 
 import com.eclipseashes.item.ModItem;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
@@ -21,7 +20,7 @@ public class TrainingDummyEntity extends ArmorStand {
     }
 
     @Override
-    public InteractionResult interact(Player player, InteractionHand hand) {
+    public InteractionResult interact(Player player, InteractionHand hand, Vec3 hitPos) {
         if (player.isShiftKeyDown() && hand == InteractionHand.MAIN_HAND) {
             if (!level().isClientSide()) {
                 ItemStack dummyItem = new ItemStack(ModItem.TRAINING_DUMMY);
@@ -34,7 +33,7 @@ public class TrainingDummyEntity extends ArmorStand {
             return InteractionResult.SUCCESS;
         }
 
-        return super.interact(player, hand);
+        return super.interact(player, hand, hitPos);
     }
 
     @Override
