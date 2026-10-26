@@ -5,9 +5,11 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import com.eclipseashes.item.TrainingDummyItem;
 import net.minecraft.world.item.Item;
 
 public class ModItem {
+    // Placeable item for the damage-testing training dummy.
     public static final Item CRIMSON_IRON = register("crimson_iron");
     public static final Item RAW_CRIMSON_IRON = register("raw_crimson_iron");
     public static final Item MOONSTEEL = register("moonsteel");
@@ -51,6 +53,13 @@ public class ModItem {
     public static final Item FORGED_GUARD = register("forged_guard");
     public static final Item UNFINISHED_WEAPON = register("unfinished_weapon");
     public static final Item SHARPENING_STONE = register("sharpening_stone");
+    public static final Item TRAINING_DUMMY = registerTrainingDummy();
+
+    private static Item registerTrainingDummy() {
+        ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, EclipseAshes.id("training_dummy"));
+        return Registry.register(BuiltInRegistries.ITEM, key,
+                new TrainingDummyItem(new Item.Properties().setId(key).stacksTo(1)));
+    }
 
     private static Item register(String name) {
         ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, EclipseAshes.id(name));
