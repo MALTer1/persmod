@@ -1,10 +1,13 @@
 package com.eclipseashes.client;
 
 import com.eclipseashes.block.ModMenuTypes;
+import com.eclipseashes.entity.ModEntities;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.entity.ArmorStandRenderer;
+import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.chat.Component;
 
@@ -12,6 +15,7 @@ import net.minecraft.network.chat.Component;
 public class EclipseAshesClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+        EntityRenderers.register(ModEntities.TRAINING_DUMMY, ArmorStandRenderer::new);
         MenuScreens.register(
                 ModMenuTypes.METAL_FORGE,
                 MetalForgeScreen::new
