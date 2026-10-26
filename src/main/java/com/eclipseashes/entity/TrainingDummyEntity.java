@@ -118,7 +118,13 @@ public class TrainingDummyEntity extends ArmorStand {
 
     private void spawnDamagePopup(ServerLevel level, float amount) {
         EntityType<?> textDisplayType = BuiltInRegistries.ENTITY_TYPE.get(
-                Identifier.fromNamespaceAndPath("minecraft", "text_display"));
+                Identifier.fromNamespaceAndPath("minecraft", "text_display"))
+                .map(reference -> reference.value())
+                .orElse(null);
+        if (textDisplayType == null) {
+            return;
+        }
+
         var popupEntity = textDisplayType.create(level, EntitySpawnReason.TRIGGERED);
         if (!(popupEntity instanceof TextDisplay popup)) {
             return;
