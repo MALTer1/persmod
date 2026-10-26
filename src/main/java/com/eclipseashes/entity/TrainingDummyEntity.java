@@ -11,8 +11,12 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.Display;
+import net.minecraft.world.entity.Display.TextDisplay;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -58,8 +62,9 @@ public class TrainingDummyEntity extends ArmorStand {
             int green = fadeChannel(popup.green, popup.age);
             int blue = fadeChannel(popup.blue, popup.age);
             int color = (red << 16) | (green << 8) | blue;
-            popup.display.setCustomName(Component.literal(popup.number)
+            popup.display.setText(Component.literal(popup.number)
                     .withStyle(Style.EMPTY.withColor(color).withBold(true)));
+            popup.display.setTextOpacity((byte) Math.max(0, 255 - popup.age * 13));
         }
     }
 
@@ -112,8 +117,10 @@ public class TrainingDummyEntity extends ArmorStand {
     }
 
     private void spawnDamagePopup(ServerLevel level, float amount) {
-        ArmorStand popup = EntityType.ARMOR_STAND.create(level, EntitySpawnReason.TRIGGERED);
-        if (popup == null) {
+        EntityType<?> textDisplayType = BuiltInRegistries.ENTITY_TYPE.get(
+                Identifier.fromNamespaceAndPath("minecraft", "text_display"));
+        var popupEntity = textDisplayType.create(level, EntitySpawnReason.TRIGGERED);
+        if (!(popupEntity instanceof TextDisplay popup)) {
             return;
         }
 
@@ -122,11 +129,11 @@ public class TrainingDummyEntity extends ArmorStand {
                 ? Integer.toString(Math.round(amount))
                 : String.format(Locale.ROOT, "%.1f", amount);
 
-        popup.setCustomName(Component.literal(number)
+        popup.setText(Component.literal(number)
                 .withStyle(Style.EMPTY.withColor(color).withBold(true)));
-        popup.setCustomNameVisible(true);
-        popup.setInvisible(true);
-        popup.setMarker(true);
+        popup.setBillboardConstraints(Display.BillboardConstraints.CENTER);
+        popup.setBackgroundColor(0x00000000);
+        popup.setTextOpacity((byte) 255);
         popup.setNoGravity(true);
 
         double x = getX() + (getRandom().nextDouble() - 0.5D) * 0.35D;
@@ -141,7 +148,7 @@ public class TrainingDummyEntity extends ArmorStand {
     }
 
     private static final class Popup {
-        private final ArmorStand display;
+        private final TextDisplay display;
         private final double x;
         private double y;
         private final double z;
@@ -151,7 +158,7 @@ public class TrainingDummyEntity extends ArmorStand {
         private final int blue;
         private int age;
 
-        private Popup(ArmorStand display, double x, double y, double z, String number,
+        private Popup(TextDisplay display, double x, double y, double z, String number,
                       int red, int green, int blue) {
             this.display = display;
             this.x = x;
