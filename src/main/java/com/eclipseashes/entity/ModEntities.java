@@ -5,7 +5,9 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
 
 public final class ModEntities {
@@ -24,6 +26,7 @@ public final class ModEntities {
     }
 
     public static void initialize() {
-        // Loading this class registers the entity type.
+        // Custom living entity types need their own default attribute supplier.
+        FabricDefaultAttributeRegistry.register(TRAINING_DUMMY, LivingEntity.createLivingAttributes());
     }
 }
