@@ -13,6 +13,7 @@ import com.eclipseashes.block.ModWorkshopBlocks;
 import com.eclipseashes.block.ModBlockEntities;
 import com.eclipseashes.block.ModMenuTypes;
 import com.eclipseashes.block.WorkshopAnvilInteraction;
+import com.eclipseashes.entity.ModEntities;
 
 public class EclipseAshes implements ModInitializer {
 
@@ -23,6 +24,7 @@ public class EclipseAshes implements ModInitializer {
     public void onInitialize() {
 
         ModItem.initialize();
+        ModEntities.initialize();
         ModBlocks.initialize();
         ModTools.initialize();
         ModCreativeTab.initialize();
