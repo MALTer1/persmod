@@ -167,13 +167,23 @@ public final class MetalworkingRecipes {
         sword.set(DataComponents.MAX_DAMAGE, stats.durability());
         sword.set(DataComponents.DAMAGE, 0);
         sword.set(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.builder()
+                // Player base attack damage is 1.0, so subtract that base to make
+                // the resulting total equal the calculated weapon damage.
                 .add(Attributes.ATTACK_DAMAGE,
                         new AttributeModifier(Identifier.fromNamespaceAndPath("eclipseashes", "forged_weapon_damage"),
-                                stats.damage(), AttributeModifier.Operation.ADD_VALUE),
+                                stats.damage() - 1.0, AttributeModifier.Operation.ADD_VALUE),
                         EquipmentSlotGroup.MAINHAND)
+                // Player base attack speed is 4.0; this modifier makes the final value
+                // equal the calculated attacks-per-second stat.
                 .add(Attributes.ATTACK_SPEED,
                         new AttributeModifier(Identifier.fromNamespaceAndPath("eclipseashes", "forged_weapon_speed"),
                                 stats.attackSpeed() - 4.0, AttributeModifier.Operation.ADD_VALUE),
+                        EquipmentSlotGroup.MAINHAND)
+                // Entity interaction range is a real attribute, unlike the old display-only
+                // reach value. Minecraft's default player range is 3.0 blocks.
+                .add(Attributes.ENTITY_INTERACTION_RANGE,
+                        new AttributeModifier(Identifier.fromNamespaceAndPath("eclipseashes", "forged_weapon_reach"),
+                                stats.reach() - 3.0, AttributeModifier.Operation.ADD_VALUE),
                         EquipmentSlotGroup.MAINHAND)
                 .build());
 
