@@ -15,6 +15,7 @@ import net.minecraft.network.chat.Component;
 public class EclipseAshesClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+        WeaponTooltipHandler.register();
         EntityRenderers.register(ModEntities.TRAINING_DUMMY, ArmorStandRenderer::new);
         MenuScreens.register(
                 ModMenuTypes.METAL_FORGE,
