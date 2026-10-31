@@ -184,9 +184,7 @@ public final class MetalworkingRecipes {
                         new AttributeModifier(Identifier.fromNamespaceAndPath("eclipseashes", "forged_weapon_reach"),
                                 stats.reach() - 3.0, AttributeModifier.Operation.ADD_VALUE),
                         EquipmentSlotGroup.MAINHAND)
-                // Keep Minecraft's modifier amounts out of the tooltip. The custom
-                // Eclipse Ashes tooltip shows the final calculated stats instead.
-                .build().withTooltip(false));
+                .build());
 
         CompoundTag finishedData = new CompoundTag();
         finishedData.putString("eclipseashes_finished_weapon", "1");
