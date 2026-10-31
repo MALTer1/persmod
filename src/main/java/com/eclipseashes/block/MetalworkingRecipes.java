@@ -159,9 +159,7 @@ public final class MetalworkingRecipes {
         String handleMaterial = stringTag(handleData, "material");
         String guardMaterial = stringTag(guardData, "material");
 
-        // The vanilla sword supplies the existing sword appearance and damageable-item behavior.
-        // Per-stack attributes and durability turn it into a calculated custom weapon.
-        ItemStack sword = new ItemStack(Items.IRON_SWORD);
+        // Use a distinct Eclipse Ashes item so its enchantment compatibility is controlled by our tags.\n        ItemStack sword = new ItemStack(ModItem.FORGED_WEAPON);
         sword.set(DataComponents.CUSTOM_NAME, Component.literal(
                 "Forged " + bladeMaterial + " Blade / " + handleMaterial + " Handle / " + guardMaterial + " Guard"));
         sword.set(DataComponents.MAX_DAMAGE, stats.durability());
