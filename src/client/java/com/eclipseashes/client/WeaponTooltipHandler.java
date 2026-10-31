@@ -30,7 +30,7 @@ public final class WeaponTooltipHandler {
             lines.add(Component.literal("Damage: " + format(data.getDouble("damage").orElse(0.0))));
             lines.add(Component.literal("Attack Speed: " + format(data.getDouble("attack_speed").orElse(0.0)) + " attacks/sec"));
             lines.add(Component.literal("Durability: " + data.getInt("durability").orElse(0)));
-            lines.add(Component.literal("Reach: " + format(data.getDouble("reach").orElse(0.0)) + " (display only for now)"));
+            lines.add(Component.literal("Entity Reach: " + format(data.getDouble("reach").orElse(0.0)) + " blocks"));
             lines.add(Component.literal("Handling: " + format(data.getDouble("handling").orElse(1.0)) + " (display only for now)"));
             lines.add(Component.literal("Blade: " + data.getString("blade_material").orElse("Unknown")));
             lines.add(Component.literal("Handle: " + data.getString("handle_material").orElse("Unknown")));
