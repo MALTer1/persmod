@@ -5,9 +5,11 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import com.eclipseashes.item.TrainingDummyItem;
 import net.minecraft.world.item.Item;
 
 public class ModItem {
+    // Placeable item for the damage-testing training dummy.
     public static final Item CRIMSON_IRON = register("crimson_iron");
     public static final Item RAW_CRIMSON_IRON = register("raw_crimson_iron");
     public static final Item MOONSTEEL = register("moonsteel");
@@ -50,11 +52,24 @@ public class ModItem {
     public static final Item FORGED_HANDLE = register("forged_handle");
     public static final Item FORGED_GUARD = register("forged_guard");
     public static final Item UNFINISHED_WEAPON = register("unfinished_weapon");
+    public static final Item FORGED_WEAPON = register("forged_weapon", new Item.Properties().durability(250));
     public static final Item SHARPENING_STONE = register("sharpening_stone");
+    public static final Item TRAINING_DUMMY = registerTrainingDummy();
+
+    private static Item registerTrainingDummy() {
+        ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, EclipseAshes.id("training_dummy"));
+        return Registry.register(BuiltInRegistries.ITEM, key,
+                new TrainingDummyItem(new Item.Properties().setId(key).stacksTo(64)));
+    }
 
     private static Item register(String name) {
         ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, EclipseAshes.id(name));
         return Registry.register(BuiltInRegistries.ITEM, key, new Item(new Item.Properties().setId(key)));
+    }
+
+    private static Item register(String name, Item.Properties properties) {
+        ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, EclipseAshes.id(name));
+        return Registry.register(BuiltInRegistries.ITEM, key, new Item(properties.setId(key).repairable(net.minecraft.world.item.Items.IRON_INGOT)));
     }
 
     public static void initialize() {
