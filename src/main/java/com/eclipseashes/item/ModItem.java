@@ -67,7 +67,12 @@ public class ModItem {
         return Registry.register(BuiltInRegistries.ITEM, key, new Item(new Item.Properties().setId(key)));
     }
 
-    private static Item register(String name, Item.Properties properties) {\n        ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, EclipseAshes.id(name));\n        return Registry.register(BuiltInRegistries.ITEM, key, properties.setId(key).durability(250).repairable(net.minecraft.world.item.Items.IRON_INGOT));\n    }\n\n    public static void initialize() {
+    private static Item register(String name, Item.Properties properties) {
+        ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, EclipseAshes.id(name));
+        return Registry.register(BuiltInRegistries.ITEM, key, new Item(properties.setId(key).repairable(net.minecraft.world.item.Items.IRON_INGOT)));
+    }
+
+    public static void initialize() {
         // Loading this class registers the items.
     }
 }
