@@ -159,7 +159,8 @@ public final class MetalworkingRecipes {
         String handleMaterial = stringTag(handleData, "material");
         String guardMaterial = stringTag(guardData, "material");
 
-        // Use a distinct Eclipse Ashes item so its enchantment compatibility is controlled by our tags.\n        ItemStack sword = new ItemStack(ModItem.FORGED_WEAPON);
+        // Use a distinct Eclipse Ashes item so its enchantment compatibility is controlled by our tags.
+        ItemStack sword = new ItemStack(ModItem.FORGED_WEAPON);
         sword.set(DataComponents.CUSTOM_NAME, Component.literal(
                 "Forged " + bladeMaterial + " Blade / " + handleMaterial + " Handle / " + guardMaterial + " Guard"));
         sword.set(DataComponents.MAX_DAMAGE, stats.durability());
