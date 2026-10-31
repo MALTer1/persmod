@@ -65,7 +65,7 @@ public class ModCreativeTab {
                 output.accept(ModItem.FORGED_BLADE);
                 output.accept(ModItem.FORGED_HANDLE);
                 output.accept(ModItem.FORGED_GUARD);
-                output.accept(ModItem.UNFINISHED_WEAPON);
+                output.accept(ModItem.UNFINISHED_WEAPON);\n                output.accept(ModItem.FORGED_WEAPON);
                 output.accept(ModItem.SHARPENING_STONE);
                 output.accept(ModItem.TRAINING_DUMMY);
 
