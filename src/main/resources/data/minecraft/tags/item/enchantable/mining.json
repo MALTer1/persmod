@@ -29,8 +29,5 @@
     "eclipseashes:eclipse_axe",
     "eclipseashes:eclipse_shovel",
     "eclipseashes:eclipse_hoe"
-  ],
-  "remove": [
-    "minecraft:iron_sword"
   ]
 }
