@@ -52,6 +52,7 @@ public class ModItem {
     public static final Item FORGED_HANDLE = register("forged_handle");
     public static final Item FORGED_GUARD = register("forged_guard");
     public static final Item UNFINISHED_WEAPON = register("unfinished_weapon");
+    public static final Item FORGED_WEAPON = register("forged_weapon", new Item.Properties().durability(250));
     public static final Item SHARPENING_STONE = register("sharpening_stone");
     public static final Item TRAINING_DUMMY = registerTrainingDummy();
 
@@ -66,7 +67,7 @@ public class ModItem {
         return Registry.register(BuiltInRegistries.ITEM, key, new Item(new Item.Properties().setId(key)));
     }
 
-    public static void initialize() {
+    private static Item register(String name, Item.Properties properties) {\n        ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, EclipseAshes.id(name));\n        return Registry.register(BuiltInRegistries.ITEM, key, properties.setId(key).durability(250).repairable(net.minecraft.world.item.Items.IRON_INGOT));\n    }\n\n    public static void initialize() {
         // Loading this class registers the items.
     }
 }
