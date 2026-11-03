@@ -66,7 +66,9 @@ public class ModCreativeTab {
                 output.accept(ModItem.FORGED_HANDLE);
                 output.accept(ModItem.FORGED_GUARD);
                 output.accept(ModItem.UNFINISHED_WEAPON);
+                output.accept(ModItem.FORGED_WEAPON);
                 output.accept(ModItem.SHARPENING_STONE);
+                output.accept(ModItem.TRAINING_DUMMY);
 
                 output.accept(ModBlocks.CRIMSON_IRON_BLOCK);
                 output.accept(ModBlocks.MOONSTEEL_BLOCK);
